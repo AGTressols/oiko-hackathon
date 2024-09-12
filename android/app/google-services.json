@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "79750402309",
+    "project_id": "oiko-oficial-45p72k",
+    "storage_bucket": "oiko-oficial-45p72k.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79750402309:android:d8f317432ce2bb0562e76c",
+        "android_client_info": {
+          "package_name": "com.mycompany.oikooficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79750402309-7elu577ne4d69ldcadbjhibk79bnipg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.oikooficial",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "79750402309-j7e593db46lmpssg8793vc46d5rev52n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWt1FkJE7yi-Dp8_UDUf2ME0mgL9j5wZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79750402309-j7e593db46lmpssg8793vc46d5rev52n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "79750402309-ip1562egfkhn3v0prab6k127h0rqovcc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.oikooficial"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
