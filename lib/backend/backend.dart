@@ -10,6 +10,7 @@ import 'schema/cuentas_record.dart';
 import 'schema/categorias_record.dart';
 import 'schema/etiquetas_record.dart';
 import 'schema/transacciones_record.dart';
+import 'schema/iconos_categorias_record.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart' hide Order;
@@ -23,6 +24,7 @@ export 'schema/cuentas_record.dart';
 export 'schema/categorias_record.dart';
 export 'schema/etiquetas_record.dart';
 export 'schema/transacciones_record.dart';
+export 'schema/iconos_categorias_record.dart';
 
 /// Functions to query UsersRecords (as a Stream and as a Future).
 Future<int> queryUsersRecordCount({
@@ -204,6 +206,43 @@ Future<List<TransaccionesRecord>> queryTransaccionesRecordOnce({
     queryCollectionOnce(
       TransaccionesRecord.collection,
       TransaccionesRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query IconosCategoriasRecords (as a Stream and as a Future).
+Future<int> queryIconosCategoriasRecordCount({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      IconosCategoriasRecord.collection,
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<IconosCategoriasRecord>> queryIconosCategoriasRecord({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      IconosCategoriasRecord.collection,
+      IconosCategoriasRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<IconosCategoriasRecord>> queryIconosCategoriasRecordOnce({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      IconosCategoriasRecord.collection,
+      IconosCategoriasRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,

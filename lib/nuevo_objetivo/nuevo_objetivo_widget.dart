@@ -40,9 +40,7 @@ class _NuevoObjetivoWidgetState extends State<NuevoObjetivoWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -81,373 +79,432 @@ class _NuevoObjetivoWidgetState extends State<NuevoObjetivoWidget> {
                         const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Icon(
-                          Icons.calendar_today_rounded,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          size: 28.0,
+                        Flexible(
+                          child: Icon(
+                            Icons.calendar_today_rounded,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 28.0,
+                          ),
                         ),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              8.0, 0.0, 0.0, 0.0),
-                          child: Text(
-                            'Tu objetivo es...',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 20.0,
-                                  letterSpacing: 0.0,
-                                ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                8.0, 0.0, 0.0, 0.0),
+                            child: Text(
+                              'Tu objetivo es...',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 20.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 0.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 289.0,
-                        height: 98.0,
-                        decoration: const BoxDecoration(),
-                        child: GridView(
-                          padding: EdgeInsets.zero,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 5.0,
-                            childAspectRatio: 0.35,
+                Flexible(
+                  flex: 2,
+                  child: Align(
+                    alignment: const AlignmentDirectional(0.0, 0.0),
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 0.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              width: 289.0,
+                              height: 98.0,
+                              decoration: const BoxDecoration(),
+                              child: Align(
+                                alignment: const AlignmentDirectional(0.0, 0.0),
+                                child: GridView(
+                                  padding: EdgeInsets.zero,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 5.0,
+                                    childAspectRatio: 0.35,
+                                  ),
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Stack(
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0),
+                                        children: [
+                                          if (_model.periodicidad != 'Mensual')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = 'Mensual';
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                width: 286.0,
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Mensual',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          if (_model.periodicidad == 'Mensual')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = null;
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .tertiary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Mensual',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Stack(
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0),
+                                        children: [
+                                          if (_model.periodicidad !=
+                                              'Semestral')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad =
+                                                    'Semestral';
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                width: 286.0,
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Semestral',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          if (_model.periodicidad ==
+                                              'Semestral')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = null;
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .tertiary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Semestral',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Stack(
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0),
+                                        children: [
+                                          if (_model.periodicidad !=
+                                              'Trimestral')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad =
+                                                    'Trimestral';
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                width: 286.0,
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Trimestral',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          if (_model.periodicidad ==
+                                              'Trimestral')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = null;
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .tertiary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Trimestral',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Stack(
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0),
+                                        children: [
+                                          if (_model.periodicidad != 'Anual')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = 'Anual';
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                width: 286.0,
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Anual',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          if (_model.periodicidad == 'Anual')
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                _model.periodicidad = null;
+                                                safeSetState(() {});
+                                              },
+                                              child: Container(
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .tertiary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.0),
+                                                ),
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  'Anual',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            Align(
-                              alignment: const AlignmentDirectional(0.0, 0.0),
-                              child: Stack(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                children: [
-                                  if (_model.periodicidad != 'Mensual')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = 'Mensual';
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        width: 286.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Mensual',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (_model.periodicidad == 'Mensual')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = null;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .tertiary,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Mensual',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: const AlignmentDirectional(0.0, 0.0),
-                              child: Stack(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                children: [
-                                  if (_model.periodicidad != 'Semestral')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = 'Semestral';
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        width: 286.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Semestral',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (_model.periodicidad == 'Semestral')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = null;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .tertiary,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Semestral',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: const AlignmentDirectional(0.0, 0.0),
-                              child: Stack(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                children: [
-                                  if (_model.periodicidad != 'Trimestral')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = 'Trimestral';
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        width: 286.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Trimestral',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (_model.periodicidad == 'Trimestral')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = null;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .tertiary,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Trimestral',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: const AlignmentDirectional(0.0, 0.0),
-                              child: Stack(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                children: [
-                                  if (_model.periodicidad != 'Anual')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = 'Anual';
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        width: 286.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Anual',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (_model.periodicidad == 'Anual')
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.periodicidad = null;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .tertiary,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Anual',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryBackground,
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 Padding(
@@ -501,7 +558,7 @@ class _NuevoObjetivoWidgetState extends State<NuevoObjetivoWidget> {
                                       _model.dropDownValueController1 ??=
                                           FormFieldController<String>(null),
                                   options: const ['Gasto', 'Ingreso', 'Ahorro'],
-                                  onChanged: (val) => setState(
+                                  onChanged: (val) => safeSetState(
                                       () => _model.dropDownValue1 = val),
                                   width: 183.0,
                                   height: 50.0,
@@ -616,7 +673,7 @@ class _NuevoObjetivoWidgetState extends State<NuevoObjetivoWidget> {
                                   isOverButton: true,
                                   isSearchable: false,
                                   isMultiSelect: true,
-                                  onMultiSelectChanged: (val) => setState(
+                                  onMultiSelectChanged: (val) => safeSetState(
                                       () => _model.dropDownValue2 = val),
                                 ),
                               ),
@@ -674,7 +731,7 @@ class _NuevoObjetivoWidgetState extends State<NuevoObjetivoWidget> {
                                 Switch.adaptive(
                                   value: _model.switchValue!,
                                   onChanged: (newValue) async {
-                                    setState(
+                                    safeSetState(
                                         () => _model.switchValue = newValue);
                                   },
                                   activeColor:

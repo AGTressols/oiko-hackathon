@@ -34,9 +34,7 @@ class _TransaccionRegistradaWidgetState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -53,7 +51,7 @@ class _TransaccionRegistradaWidgetState
                 extra: <String, dynamic>{
                   kTransitionInfoKey: const TransitionInfo(
                     hasTransition: true,
-                    transitionType: PageTransitionType.rightToLeft,
+                    transitionType: PageTransitionType.leftToRight,
                   ),
                 },
               );

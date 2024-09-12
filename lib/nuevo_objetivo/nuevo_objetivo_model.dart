@@ -10,7 +10,6 @@ class NuevoObjetivoModel extends FlutterFlowModel<NuevoObjetivoWidget> {
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // State field(s) for DropDown widget.
   String? dropDownValue1;
   FormFieldController<String>? dropDownValueController1;
@@ -29,7 +28,6 @@ class NuevoObjetivoModel extends FlutterFlowModel<NuevoObjetivoWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     textFieldFocusNode?.dispose();
     textController?.dispose();
   }

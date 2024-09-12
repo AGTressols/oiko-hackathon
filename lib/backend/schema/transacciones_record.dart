@@ -55,6 +55,11 @@ class TransaccionesRecord extends FirestoreRecord {
   String get observacion => _observacion ?? '';
   bool hasObservacion() => _observacion != null;
 
+  // "cuentaCredito" field.
+  DocumentReference? _cuentaCredito;
+  DocumentReference? get cuentaCredito => _cuentaCredito;
+  bool hasCuentaCredito() => _cuentaCredito != null;
+
   // "traspasoCuenta" field.
   DocumentReference? _traspasoCuenta;
   DocumentReference? get traspasoCuenta => _traspasoCuenta;
@@ -69,6 +74,7 @@ class TransaccionesRecord extends FirestoreRecord {
     _categoria = snapshotData['categoria'] as DocumentReference?;
     _etiqueta = snapshotData['etiqueta'] as DocumentReference?;
     _observacion = snapshotData['observacion'] as String?;
+    _cuentaCredito = snapshotData['cuentaCredito'] as DocumentReference?;
     _traspasoCuenta = snapshotData['traspasoCuenta'] as DocumentReference?;
   }
 
@@ -115,6 +121,7 @@ Map<String, dynamic> createTransaccionesRecordData({
   DocumentReference? categoria,
   DocumentReference? etiqueta,
   String? observacion,
+  DocumentReference? cuentaCredito,
   DocumentReference? traspasoCuenta,
 }) {
   final firestoreData = mapToFirestore(
@@ -127,6 +134,7 @@ Map<String, dynamic> createTransaccionesRecordData({
       'categoria': categoria,
       'etiqueta': etiqueta,
       'observacion': observacion,
+      'cuentaCredito': cuentaCredito,
       'traspasoCuenta': traspasoCuenta,
     }.withoutNulls,
   );
@@ -148,6 +156,7 @@ class TransaccionesRecordDocumentEquality
         e1?.categoria == e2?.categoria &&
         e1?.etiqueta == e2?.etiqueta &&
         e1?.observacion == e2?.observacion &&
+        e1?.cuentaCredito == e2?.cuentaCredito &&
         e1?.traspasoCuenta == e2?.traspasoCuenta;
   }
 
@@ -161,6 +170,7 @@ class TransaccionesRecordDocumentEquality
         e?.categoria,
         e?.etiqueta,
         e?.observacion,
+        e?.cuentaCredito,
         e?.traspasoCuenta
       ]);
 

@@ -1,14 +1,16 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/backend/firebase_storage/storage.dart';
+import '/components/eliminar_confirmacon_categoria_widget.dart';
+import '/components/iconos_categorias_widget.dart';
 import '/components/nueva_etiqueta_widget.dart';
+import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/upload_data.dart';
+import '/flutter_flow/form_field_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'detalle_categoria_model.dart';
 export 'detalle_categoria_model.dart';
@@ -16,10 +18,10 @@ export 'detalle_categoria_model.dart';
 class DetalleCategoriaWidget extends StatefulWidget {
   const DetalleCategoriaWidget({
     super.key,
-    required this.parametroCategoria,
+    required this.categoria,
   });
 
-  final CategoriasRecord? parametroCategoria;
+  final CategoriasRecord? categoria;
 
   @override
   State<DetalleCategoriaWidget> createState() => _DetalleCategoriaWidgetState();
@@ -37,23 +39,20 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      FFAppState().flowCategoria = FlowCategoriaStruct(
-        nombre: widget.parametroCategoria?.categoria,
-        categoriaRef: widget.parametroCategoria?.reference,
-      );
-      FFAppState().imagen = widget.parametroCategoria!.logo;
-      setState(() {});
+      FFAppState().imagen = widget.categoria!.logo;
+      safeSetState(() {});
     });
 
     _model.textController1 ??=
-        TextEditingController(text: widget.parametroCategoria?.categoria);
+        TextEditingController(text: widget.categoria?.categoria);
     _model.textFieldFocusNode1 ??= FocusNode();
 
     _model.textController2 ??= TextEditingController(
         text: formatNumber(
-      widget.parametroCategoria?.presupuesto,
+      widget.categoria?.presupuesto,
       formatType: FormatType.decimal,
       decimalType: DecimalType.automatic,
+      currency: '\$',
     ));
     _model.textFieldFocusNode2 ??= FocusNode();
   }
@@ -70,9 +69,7 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -91,6 +88,8 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
             ),
             onPressed: () async {
               context.pop();
+              FFAppState().flowMovimiento = '';
+              safeSetState(() {});
             },
           ),
           actions: const [],
@@ -104,151 +103,214 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        final selectedMedia = await selectMedia(
-                          imageQuality: 100,
-                          mediaSource: MediaSource.photoGallery,
-                          multiImage: false,
-                        );
-                        if (selectedMedia != null &&
-                            selectedMedia.every((m) =>
-                                validateFileFormat(m.storagePath, context))) {
-                          setState(() => _model.isDataUploading = true);
-                          var selectedUploadedFiles = <FFUploadedFile>[];
-
-                          var downloadUrls = <String>[];
-                          try {
-                            selectedUploadedFiles = selectedMedia
-                                .map((m) => FFUploadedFile(
-                                      name: m.storagePath.split('/').last,
-                                      bytes: m.bytes,
-                                      height: m.dimensions?.height,
-                                      width: m.dimensions?.width,
-                                      blurHash: m.blurHash,
-                                    ))
-                                .toList();
-
-                            downloadUrls = (await Future.wait(
-                              selectedMedia.map(
-                                (m) async =>
-                                    await uploadData(m.storagePath, m.bytes),
-                              ),
-                            ))
-                                .where((u) => u != null)
-                                .map((u) => u!)
-                                .toList();
-                          } finally {
-                            _model.isDataUploading = false;
-                          }
-                          if (selectedUploadedFiles.length ==
-                                  selectedMedia.length &&
-                              downloadUrls.length == selectedMedia.length) {
-                            setState(() {
-                              _model.uploadedLocalFile =
-                                  selectedUploadedFiles.first;
-                              _model.uploadedFileUrl = downloadUrls.first;
-                            });
-                          } else {
-                            setState(() {});
-                            return;
-                          }
-                        }
-
-                        FFAppState().imagen = _model.uploadedFileUrl;
-                        setState(() {});
-                      },
-                      child: Container(
-                        width: 80.0,
-                        height: 80.0,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.network(
-                          FFAppState().imagen,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                        child: TextFormField(
-                          controller: _model.textController1,
-                          focusNode: _model.textFieldFocusNode1,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  letterSpacing: 0.0,
-                                ),
-                            hintStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  letterSpacing: 0.0,
-                                ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).alternate,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
+                Flexible(
+                  flex: 10,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 25,
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            await showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              enableDrag: false,
+                              context: context,
+                              builder: (context) {
+                                return GestureDetector(
+                                  onTap: () => FocusScope.of(context).unfocus(),
+                                  child: Padding(
+                                    padding: MediaQuery.viewInsetsOf(context),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.sizeOf(context).height *
+                                              0.75,
+                                      child: const IconosCategoriasWidget(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ).then((value) => safeSetState(() {}));
+                          },
+                          child: Container(
+                            width: MediaQuery.sizeOf(context).width * 0.2,
+                            height: MediaQuery.sizeOf(context).width * 0.2,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).primary,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            errorBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            focusedErrorBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(context).alternate,
-                            suffixIcon: const Icon(
-                              Icons.edit_rounded,
+                            child: Image.network(
+                              FFAppState().imagen,
+                              fit: BoxFit.cover,
                             ),
                           ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 5,
+                        child: Align(
+                          alignment: const AlignmentDirectional(-1.0, -0.8),
+                          child: Icon(
+                            Icons.edit_rounded,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 15.0,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 70,
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              8.0, 0.0, 8.0, 0.0),
+                          child: TextFormField(
+                            controller: _model.textController1,
+                            focusNode: _model.textFieldFocusNode1,
+                            autofocus: false,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    letterSpacing: 0.0,
+                                  ),
+                              hintText: 'Nueva categoría',
+                              hintStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    fontSize: 24.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              filled: true,
+                              fillColor: FlutterFlowTheme.of(context).alternate,
+                              suffixIcon: const Icon(
+                                Icons.edit_rounded,
+                              ),
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Outfit',
+                                  fontSize: 28.0,
+                                  letterSpacing: 0.0,
+                                ),
+                            validator: _model.textController1Validator
+                                .asValidator(context),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
+                  child: Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          'Movimiento',
                           style:
                               FlutterFlowTheme.of(context).bodyMedium.override(
                                     fontFamily: 'Outfit',
-                                    fontSize: 28.0,
+                                    fontSize: 18.0,
                                     letterSpacing: 0.0,
                                   ),
-                          validator: _model.textController1Validator
-                              .asValidator(context),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
                 Flexible(
+                  flex: 6,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: FlutterFlowDropDown<String>(
+                            controller: _model.dropDownValueController ??=
+                                FormFieldController<String>(
+                              _model.dropDownValue ??=
+                                  widget.categoria?.movimiento,
+                            ),
+                            options: const ['Gasto', 'Ingreso', 'Ahorro'],
+                            onChanged: (val) =>
+                                safeSetState(() => _model.dropDownValue = val),
+                            width: MediaQuery.sizeOf(context).width * 0.4,
+                            height: MediaQuery.sizeOf(context).height * 0.07,
+                            textStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Outfit',
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  fontSize: 18.0,
+                                  letterSpacing: 0.0,
+                                ),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              size: 24.0,
+                            ),
+                            fillColor: FlutterFlowTheme.of(context).alternate,
+                            elevation: 2.0,
+                            borderColor: FlutterFlowTheme.of(context).alternate,
+                            borderWidth: 2.0,
+                            borderRadius: 8.0,
+                            margin: const EdgeInsetsDirectional.fromSTEB(
+                                16.0, 4.0, 16.0, 4.0),
+                            hidesUnderline: true,
+                            isOverButton: true,
+                            isSearchable: false,
+                            isMultiSelect: false,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
                   child: Padding(
                     padding:
                         const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
@@ -268,139 +330,86 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            64.0, 12.0, 64.0, 0.0),
-                        child: TextFormField(
-                          controller: _model.textController2,
-                          focusNode: _model.textFieldFocusNode2,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                ),
-                            hintStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  letterSpacing: 0.0,
-                                ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color(0x00000000),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color(0x00000000),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            errorBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            focusedErrorBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(context).alternate,
-                            contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                                8.0, 16.0, 8.0, 16.0),
-                            suffixIcon: const Icon(
-                              Icons.edit_rounded,
-                            ),
-                          ),
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
+                Flexible(
+                  flex: 5,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              64.0, 12.0, 64.0, 0.0),
+                          child: TextFormField(
+                            controller: _model.textController2,
+                            focusNode: _model.textFieldFocusNode2,
+                            autofocus: false,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    fontSize: 18.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                              hintText: '\$ ...',
+                              hintStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
                                     fontFamily: 'Outfit',
                                     fontSize: 20.0,
                                     letterSpacing: 0.0,
                                   ),
-                          textAlign: TextAlign.center,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          validator: _model.textController2Validator
-                              .asValidator(context),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        'Etiquetas',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              fontFamily: 'Outfit',
-                              fontSize: 18.0,
-                              letterSpacing: 0.0,
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              filled: true,
+                              fillColor: FlutterFlowTheme.of(context).alternate,
+                              contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  8.0, 16.0, 8.0, 16.0),
+                              suffixIcon: Icon(
+                                Icons.edit_rounded,
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                              ),
                             ),
-                      ),
-                      Flexible(
-                        child: Align(
-                          alignment: const AlignmentDirectional(1.0, 0.0),
-                          child: FlutterFlowIconButton(
-                            borderColor: Colors.transparent,
-                            borderRadius: 20.0,
-                            borderWidth: 1.0,
-                            buttonSize: 30.0,
-                            fillColor:
-                                FlutterFlowTheme.of(context).secondaryText,
-                            icon: Icon(
-                              Icons.add,
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              size: 15.0,
-                            ),
-                            onPressed: () async {
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                enableDrag: false,
-                                context: context,
-                                builder: (context) {
-                                  return GestureDetector(
-                                    onTap: () => _model
-                                            .unfocusNode.canRequestFocus
-                                        ? FocusScope.of(context)
-                                            .requestFocus(_model.unfocusNode)
-                                        : FocusScope.of(context).unfocus(),
-                                    child: Padding(
-                                      padding: MediaQuery.viewInsetsOf(context),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.sizeOf(context).height *
-                                                0.5,
-                                        child: const NuevaEtiquetaWidget(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ).then((value) => safeSetState(() {}));
-                            },
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Outfit',
+                                  fontSize: 20.0,
+                                  letterSpacing: 0.0,
+                                ),
+                            textAlign: TextAlign.center,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true),
+                            validator: _model.textController2Validator
+                                .asValidator(context),
                           ),
                         ),
                       ),
@@ -408,26 +417,97 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                   ),
                 ),
                 Flexible(
+                  flex: 6,
+                  child: Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Etiquetas',
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Outfit',
+                                  fontSize: 18.0,
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Align(
+                            alignment: const AlignmentDirectional(1.0, 0.0),
+                            child: FlutterFlowIconButton(
+                              borderColor: Colors.transparent,
+                              borderRadius: 20.0,
+                              borderWidth: 1.0,
+                              buttonSize: 30.0,
+                              fillColor:
+                                  FlutterFlowTheme.of(context).secondaryText,
+                              icon: Icon(
+                                Icons.add,
+                                color: FlutterFlowTheme.of(context)
+                                    .primaryBackground,
+                                size: 15.0,
+                              ),
+                              onPressed: () async {
+                                await showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  enableDrag: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return GestureDetector(
+                                      onTap: () =>
+                                          FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.5,
+                                          child: NuevaEtiquetaWidget(
+                                            categoria:
+                                                widget.categoria!.reference,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ).then((value) => safeSetState(() {}));
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 7,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
                         child: Container(
-                          width: double.infinity,
-                          height: 150.0,
+                          width: MediaQuery.sizeOf(context).width * 1.0,
+                          height: MediaQuery.sizeOf(context).height * 1.0,
                           decoration: const BoxDecoration(),
                           child: StreamBuilder<List<EtiquetasRecord>>(
                             stream: queryEtiquetasRecord(
                               queryBuilder: (etiquetasRecord) => etiquetasRecord
                                   .where(
-                                    'uid',
-                                    isEqualTo: currentUserUid,
+                                    'categoria',
+                                    isEqualTo: widget.categoria?.reference,
                                   )
                                   .where(
-                                    'categoria',
-                                    isEqualTo:
-                                        FFAppState().flowCategoria.categoriaRef,
+                                    'activa',
+                                    isEqualTo: true,
                                   ),
                             ),
                             builder: (context, snapshot) {
@@ -437,10 +517,10 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                                   child: SizedBox(
                                     width: 50.0,
                                     height: 50.0,
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        FlutterFlowTheme.of(context).primary,
-                                      ),
+                                    child: SpinKitChasingDots(
+                                      color:
+                                          FlutterFlowTheme.of(context).primary,
+                                      size: 50.0,
                                     ),
                                   ),
                                 );
@@ -454,7 +534,7 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   mainAxisSpacing: 10.0,
-                                  childAspectRatio: 0.35,
+                                  childAspectRatio: 0.2,
                                 ),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: gridViewEtiquetasRecordList.length,
@@ -465,67 +545,89 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                                   return Stack(
                                     alignment: const AlignmentDirectional(0.0, 0.0),
                                     children: [
-                                      Container(
-                                        width: 286.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                gridViewEtiquetasRecord
-                                                    .etiqueta,
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    FlutterFlowTheme.of(context)
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                        child: Container(
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  1.0,
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.03,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            borderRadius:
+                                                BorderRadius.circular(100.0),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                flex: 80,
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          16.0, 0.0, 0.0, 0.0),
+                                                  child: Text(
+                                                    gridViewEtiquetasRecord
+                                                        .etiqueta,
+                                                    textAlign: TextAlign.center,
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
                                                         .bodyMedium
                                                         .override(
                                                           fontFamily: 'Outfit',
                                                           fontSize: 14.0,
                                                           letterSpacing: 0.0,
                                                         ),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: const AlignmentDirectional(
-                                                  0.0, 0.0),
-                                              child: Padding(
-                                                padding: const EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        0.0, 0.0, 4.0, 0.0),
-                                                child: InkWell(
-                                                  splashColor:
-                                                      Colors.transparent,
-                                                  focusColor:
-                                                      Colors.transparent,
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  highlightColor:
-                                                      Colors.transparent,
-                                                  onTap: () async {
-                                                    await gridViewEtiquetasRecord
-                                                        .reference
-                                                        .delete();
-                                                  },
-                                                  child: Icon(
-                                                    Icons.close_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryBackground,
-                                                    size: 18.0,
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Flexible(
+                                                flex: 20,
+                                                child: Align(
+                                                  alignment:
+                                                      const AlignmentDirectional(
+                                                          0.0, 0.0),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 0.0,
+                                                                4.0, 0.0),
+                                                    child: InkWell(
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      focusColor:
+                                                          Colors.transparent,
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      onTap: () async {
+                                                        await gridViewEtiquetasRecord
+                                                            .reference
+                                                            .update(
+                                                                createEtiquetasRecordData(
+                                                          activa: false,
+                                                        ));
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close_rounded,
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                        size: 18.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -539,77 +641,136 @@ class _DetalleCategoriaWidgetState extends State<DetalleCategoriaWidget> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 32.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FFButtonWidget(
-                        onPressed: () async {
-                          await widget.parametroCategoria!.reference
-                              .update(createCategoriasRecordData(
-                            categoria: _model.textController1.text,
-                            logo: FFAppState().imagen,
-                            presupuesto:
-                                double.tryParse(_model.textController2.text),
-                          ));
-                          FFAppState().flowCategoria = FlowCategoriaStruct();
-                          FFAppState().imagen = '';
-                          setState(() {});
+                Flexible(
+                  flex: 8,
+                  child: Align(
+                    alignment: const AlignmentDirectional(0.0, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: FFButtonWidget(
+                            onPressed: () async {
+                              if ((_model.textController1.text != '') &&
+                                  (_model.dropDownValue != null &&
+                                      _model.dropDownValue != '')) {
+                                await widget.categoria!.reference
+                                    .update(createCategoriasRecordData(
+                                  movimiento: _model.dropDownValue,
+                                  categoria: _model.textController1.text,
+                                  logo: FFAppState().imagen,
+                                  presupuesto: double.tryParse(
+                                      _model.textController2.text),
+                                ));
+                                context.safePop();
+                              } else {
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) {
+                                    return AlertDialog(
+                                      title:
+                                          const Text('Completar campos obligatorios'),
+                                      content: const Text(
+                                          'Deben estar seleccionados el nombre y el movimiento.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(alertDialogContext),
+                                          child: const Text('Ok'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              }
 
-                          context.pushNamed('categorias');
-                        },
-                        text: 'Guardar cambios',
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              24.0, 0.0, 24.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).primary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
+                              FFAppState().imagen = '';
+                              FFAppState().modificacionEtiquetas = [];
+                              safeSetState(() {});
+                            },
+                            text: 'GUARDAR CAMBIOS',
+                            options: FFButtonOptions(
+                              height: 40.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  24.0, 0.0, 24.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
+                              color: FlutterFlowTheme.of(context).primary,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .override(
                                     fontFamily: 'Outfit',
                                     color: FlutterFlowTheme.of(context)
                                         .primaryBackground,
                                     letterSpacing: 0.0,
                                   ),
-                          elevation: 3.0,
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                            width: 1.0,
+                              elevation: 3.0,
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 32.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlutterFlowIconButton(
-                        borderColor: FlutterFlowTheme.of(context).alternate,
-                        borderRadius: 100.0,
-                        borderWidth: 1.0,
-                        buttonSize: 60.0,
-                        fillColor: FlutterFlowTheme.of(context).secondaryText,
-                        icon: Icon(
-                          Icons.delete_rounded,
-                          color: FlutterFlowTheme.of(context).primaryText,
-                          size: 40.0,
+                Flexible(
+                  flex: 5,
+                  child: Align(
+                    alignment: const AlignmentDirectional(0.0, 12.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: FlutterFlowIconButton(
+                            borderColor: FlutterFlowTheme.of(context).alternate,
+                            borderRadius: 100.0,
+                            borderWidth: 1.0,
+                            buttonSize: MediaQuery.sizeOf(context).width * 0.15,
+                            fillColor:
+                                FlutterFlowTheme.of(context).secondaryText,
+                            icon: Icon(
+                              Icons.delete_rounded,
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              size: 40.0,
+                            ),
+                            onPressed: () async {
+                              await showModalBottomSheet(
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                enableDrag: false,
+                                context: context,
+                                builder: (context) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        FocusScope.of(context).unfocus(),
+                                    child: Padding(
+                                      padding: MediaQuery.viewInsetsOf(context),
+                                      child: SizedBox(
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.5,
+                                        child:
+                                            EliminarConfirmaconCategoriaWidget(
+                                          categoria:
+                                              widget.categoria!.reference,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).then((value) => safeSetState(() {}));
+                            },
+                          ),
                         ),
-                        onPressed: () async {
-                          await widget.parametroCategoria!.reference.delete();
-
-                          context.pushNamed('categorias');
-                        },
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],

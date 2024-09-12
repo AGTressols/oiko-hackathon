@@ -40,12 +40,18 @@ class CategoriasRecord extends FirestoreRecord {
   double get presupuesto => _presupuesto ?? 0.0;
   bool hasPresupuesto() => _presupuesto != null;
 
+  // "activa" field.
+  bool? _activa;
+  bool get activa => _activa ?? false;
+  bool hasActiva() => _activa != null;
+
   void _initializeFields() {
     _uid = snapshotData['uid'] as String?;
     _movimiento = snapshotData['movimiento'] as String?;
     _categoria = snapshotData['categoria'] as String?;
     _logo = snapshotData['logo'] as String?;
     _presupuesto = castToType<double>(snapshotData['presupuesto']);
+    _activa = snapshotData['activa'] as bool?;
   }
 
   static CollectionReference get collection =>
@@ -88,6 +94,7 @@ Map<String, dynamic> createCategoriasRecordData({
   String? categoria,
   String? logo,
   double? presupuesto,
+  bool? activa,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -96,6 +103,7 @@ Map<String, dynamic> createCategoriasRecordData({
       'categoria': categoria,
       'logo': logo,
       'presupuesto': presupuesto,
+      'activa': activa,
     }.withoutNulls,
   );
 
@@ -111,12 +119,19 @@ class CategoriasRecordDocumentEquality implements Equality<CategoriasRecord> {
         e1?.movimiento == e2?.movimiento &&
         e1?.categoria == e2?.categoria &&
         e1?.logo == e2?.logo &&
-        e1?.presupuesto == e2?.presupuesto;
+        e1?.presupuesto == e2?.presupuesto &&
+        e1?.activa == e2?.activa;
   }
 
   @override
-  int hash(CategoriasRecord? e) => const ListEquality()
-      .hash([e?.uid, e?.movimiento, e?.categoria, e?.logo, e?.presupuesto]);
+  int hash(CategoriasRecord? e) => const ListEquality().hash([
+        e?.uid,
+        e?.movimiento,
+        e?.categoria,
+        e?.logo,
+        e?.presupuesto,
+        e?.activa
+      ]);
 
   @override
   bool isValidKey(Object? o) => o is CategoriasRecord;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import '/backend/backend.dart';
 
@@ -139,20 +140,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => const CategoriasWidget(),
         ),
         FFRoute(
-          name: 'detalleCategoria',
-          path: '/detalleCategoria',
-          asyncParams: {
-            'parametroCategoria':
-                getDoc(['Categorias'], CategoriasRecord.fromSnapshot),
-          },
-          builder: (context, params) => DetalleCategoriaWidget(
-            parametroCategoria: params.getParam(
-              'parametroCategoria',
-              ParamType.Document,
-            ),
-          ),
-        ),
-        FFRoute(
           name: 'cuentas',
           path: '/cuentas',
           builder: (context, params) => const CuentasWidget(),
@@ -167,6 +154,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             parametroCuenta: params.getParam(
               'parametroCuenta',
               ParamType.Document,
+            ),
+            nuevoUsuario: params.getParam(
+              'nuevoUsuario',
+              ParamType.bool,
             ),
           ),
         ),
@@ -186,9 +177,75 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => const NuevoObjetivoWidget(),
         ),
         FFRoute(
-          name: 'Screeshots',
-          path: '/screeshots',
-          builder: (context, params) => const ScreeshotsWidget(),
+          name: 'Estadisticas',
+          path: '/estadisticas',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'Estadisticas')
+              : const EstadisticasWidget(),
+        ),
+        FFRoute(
+          name: 'nuevaCuentaa',
+          path: '/nuevaCuentaa',
+          builder: (context, params) => NuevaCuentaaWidget(
+            cuentaAhorro: params.getParam(
+              'cuentaAhorro',
+              ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'emailVerification',
+          path: '/emailVerification',
+          builder: (context, params) => const EmailVerificationWidget(),
+        ),
+        FFRoute(
+          name: 'pruebas',
+          path: '/pruebas',
+          builder: (context, params) => const PruebasWidget(),
+        ),
+        FFRoute(
+          name: 'bienvenidaOiko',
+          path: '/bienvenidaOiko',
+          builder: (context, params) => const BienvenidaOikoWidget(),
+        ),
+        FFRoute(
+          name: 'newlsignupInfoUsuario',
+          path: '/newlsignupInfoUsuario',
+          builder: (context, params) => const NewlsignupInfoUsuarioWidget(),
+        ),
+        FFRoute(
+          name: 'newlsignupCuentas',
+          path: '/newlsignupCuentas',
+          builder: (context, params) => const NewlsignupCuentasWidget(),
+        ),
+        FFRoute(
+          name: 'newlsignupCategorias',
+          path: '/newlsignupCategorias',
+          builder: (context, params) => const NewlsignupCategoriasWidget(),
+        ),
+        FFRoute(
+          name: 'tests',
+          path: '/tests',
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'tests') : const TestsWidget(),
+        ),
+        FFRoute(
+          name: 'detalleCategoria',
+          path: '/detalleCategoria',
+          asyncParams: {
+            'categoria': getDoc(['Categorias'], CategoriasRecord.fromSnapshot),
+          },
+          builder: (context, params) => DetalleCategoriaWidget(
+            categoria: params.getParam(
+              'categoria',
+              ParamType.Document,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'flowAhorro',
+          path: '/flowAhorro',
+          builder: (context, params) => const FlowAhorroWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -379,10 +436,9 @@ class FFRoute {
                   child: SizedBox(
                     width: 50.0,
                     height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        FlutterFlowTheme.of(context).primary,
-                      ),
+                    child: SpinKitChasingDots(
+                      color: FlutterFlowTheme.of(context).primary,
+                      size: 50.0,
                     ),
                   ),
                 )

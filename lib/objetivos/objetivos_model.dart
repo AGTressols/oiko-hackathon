@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class ObjetivosModel extends FlutterFlowModel<ObjetivosWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // State field(s) for TabBar widget.
   TabController? tabBarController;
   int get tabBarCurrentIndex =>
@@ -16,7 +15,6 @@ class ObjetivosModel extends FlutterFlowModel<ObjetivosWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     tabBarController?.dispose();
   }
 }

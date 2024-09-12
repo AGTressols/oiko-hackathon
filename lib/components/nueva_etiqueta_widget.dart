@@ -5,12 +5,16 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'nueva_etiqueta_model.dart';
 export 'nueva_etiqueta_model.dart';
 
 class NuevaEtiquetaWidget extends StatefulWidget {
-  const NuevaEtiquetaWidget({super.key});
+  const NuevaEtiquetaWidget({
+    super.key,
+    required this.categoria,
+  });
+
+  final DocumentReference? categoria;
 
   @override
   State<NuevaEtiquetaWidget> createState() => _NuevaEtiquetaWidgetState();
@@ -43,8 +47,6 @@ class _NuevaEtiquetaWidgetState extends State<NuevaEtiquetaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -171,12 +173,10 @@ class _NuevaEtiquetaWidgetState extends State<NuevaEtiquetaWidget> {
                                 .doc()
                                 .set(createEtiquetasRecordData(
                                   uid: currentUserUid,
-                                  categoria:
-                                      FFAppState().flowCategoria.categoriaRef,
+                                  categoria: widget.categoria,
                                   etiqueta: _model.textController.text,
+                                  activa: true,
                                 ));
-                            FFAppState().imagen = '';
-                            setState(() {});
                             Navigator.pop(context);
                           },
                           text: 'Agregar',

@@ -30,10 +30,16 @@ class EtiquetasRecord extends FirestoreRecord {
   String get etiqueta => _etiqueta ?? '';
   bool hasEtiqueta() => _etiqueta != null;
 
+  // "activa" field.
+  bool? _activa;
+  bool get activa => _activa ?? false;
+  bool hasActiva() => _activa != null;
+
   void _initializeFields() {
     _uid = snapshotData['uid'] as String?;
     _categoria = snapshotData['categoria'] as DocumentReference?;
     _etiqueta = snapshotData['etiqueta'] as String?;
+    _activa = snapshotData['activa'] as bool?;
   }
 
   static CollectionReference get collection =>
@@ -74,12 +80,14 @@ Map<String, dynamic> createEtiquetasRecordData({
   String? uid,
   DocumentReference? categoria,
   String? etiqueta,
+  bool? activa,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
       'uid': uid,
       'categoria': categoria,
       'etiqueta': etiqueta,
+      'activa': activa,
     }.withoutNulls,
   );
 
@@ -93,12 +101,13 @@ class EtiquetasRecordDocumentEquality implements Equality<EtiquetasRecord> {
   bool equals(EtiquetasRecord? e1, EtiquetasRecord? e2) {
     return e1?.uid == e2?.uid &&
         e1?.categoria == e2?.categoria &&
-        e1?.etiqueta == e2?.etiqueta;
+        e1?.etiqueta == e2?.etiqueta &&
+        e1?.activa == e2?.activa;
   }
 
   @override
   int hash(EtiquetasRecord? e) =>
-      const ListEquality().hash([e?.uid, e?.categoria, e?.etiqueta]);
+      const ListEquality().hash([e?.uid, e?.categoria, e?.etiqueta, e?.activa]);
 
   @override
   bool isValidKey(Object? o) => o is EtiquetasRecord;

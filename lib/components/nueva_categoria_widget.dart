@@ -114,7 +114,8 @@ class _NuevaCategoriaWidgetState extends State<NuevaCategoriaWidget> {
                               if (selectedMedia != null &&
                                   selectedMedia.every((m) => validateFileFormat(
                                       m.storagePath, context))) {
-                                setState(() => _model.isDataUploading = true);
+                                safeSetState(
+                                    () => _model.isDataUploading = true);
                                 var selectedUploadedFiles = <FFUploadedFile>[];
 
                                 var downloadUrls = <String>[];
@@ -145,19 +146,19 @@ class _NuevaCategoriaWidgetState extends State<NuevaCategoriaWidget> {
                                         selectedMedia.length &&
                                     downloadUrls.length ==
                                         selectedMedia.length) {
-                                  setState(() {
+                                  safeSetState(() {
                                     _model.uploadedLocalFile =
                                         selectedUploadedFiles.first;
                                     _model.uploadedFileUrl = downloadUrls.first;
                                   });
                                 } else {
-                                  setState(() {});
+                                  safeSetState(() {});
                                   return;
                                 }
                               }
 
                               FFAppState().imagen = _model.uploadedFileUrl;
-                              setState(() {});
+                              safeSetState(() {});
                             },
                             child: Container(
                               width: 55.0,
@@ -265,7 +266,7 @@ class _NuevaCategoriaWidgetState extends State<NuevaCategoriaWidget> {
                                   categoria: _model.textController.text,
                                 ));
                             FFAppState().imagen = '';
-                            setState(() {});
+                            safeSetState(() {});
                             Navigator.pop(context);
                           },
                           text: 'Agregar',

@@ -34,9 +34,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -81,6 +79,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
+                        flex: 40,
                         child: Material(
                           color: Colors.transparent,
                           elevation: 3.0,
@@ -88,8 +87,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           child: Container(
-                            width: double.infinity,
-                            height: 80.0,
+                            width: MediaQuery.sizeOf(context).width * 1.0,
+                            height: MediaQuery.sizeOf(context).height * 0.1,
                             decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context).alternate,
                               borderRadius: BorderRadius.circular(30.0),
@@ -101,80 +100,101 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    width: 65.0,
-                                    height: 65.0,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          FlutterFlowTheme.of(context).primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Align(
-                                      alignment: const AlignmentDirectional(0.0, 0.0),
-                                      child: AuthUserStreamWidget(
-                                        builder: (context) => Container(
-                                          width: 60.0,
-                                          height: 60.0,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Image.network(
-                                            currentUserPhoto,
-                                            fit: BoxFit.cover,
+                                  Flexible(
+                                    flex: 25,
+                                    child: Container(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          0.17,
+                                      height: MediaQuery.sizeOf(context).width *
+                                          0.17,
+                                      decoration: BoxDecoration(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Align(
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0),
+                                        child: AuthUserStreamWidget(
+                                          builder: (context) => Container(
+                                            width: MediaQuery.sizeOf(context)
+                                                    .width *
+                                                0.16,
+                                            height: MediaQuery.sizeOf(context)
+                                                    .width *
+                                                0.16,
+                                            clipBehavior: Clip.antiAlias,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.network(
+                                              currentUserPhoto,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
                                   Flexible(
+                                    flex: 74,
                                     child: Align(
                                       alignment:
                                           const AlignmentDirectional(-1.0, 0.0),
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 0.0, 0.0, 0.0),
+                                            16.0, 8.0, 0.0, 8.0),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Align(
-                                              alignment: const AlignmentDirectional(
-                                                  -1.0, 0.0),
-                                              child: AuthUserStreamWidget(
-                                                builder: (context) => Text(
-                                                  currentUserDisplayName,
-                                                  textAlign: TextAlign.start,
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .displayMedium
-                                                      .override(
-                                                        fontFamily: 'Outfit',
-                                                        fontSize: 20.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                            Flexible(
+                                              flex: 70,
+                                              child: Align(
+                                                alignment: const AlignmentDirectional(
+                                                    -1.0, 0.0),
+                                                child: AuthUserStreamWidget(
+                                                  builder: (context) => Text(
+                                                    currentUserDisplayName,
+                                                    textAlign: TextAlign.start,
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .displayMedium
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          fontSize: 20.0,
+                                                          letterSpacing: 0.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                            Align(
-                                              alignment: const AlignmentDirectional(
-                                                  -1.0, 0.0),
-                                              child: Text(
-                                                currentUserEmail,
-                                                textAlign: TextAlign.start,
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .displaySmall
-                                                        .override(
-                                                          fontFamily: 'Outfit',
-                                                          fontSize: 14.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
+                                            Expanded(
+                                              flex: 30,
+                                              child: Align(
+                                                alignment: const AlignmentDirectional(
+                                                    -1.0, 0.0),
+                                                child: Text(
+                                                  currentUserEmail,
+                                                  textAlign: TextAlign.start,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .displaySmall
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        fontSize: 14.0,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -188,222 +208,250 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                           ),
                         ),
                       ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 16.0, 0.0, 16.0),
-                          child: wrapWithModel(
-                            model: _model.switchDarkLightModeModel,
-                            updateCallback: () => setState(() {}),
-                            child: const SwitchDarkLightModeWidget(),
+                      if (responsiveVisibility(
+                        context: context,
+                        phone: false,
+                        tablet: false,
+                        tabletLandscape: false,
+                        desktop: false,
+                      ))
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 16.0, 0.0, 16.0),
+                            child: wrapWithModel(
+                              model: _model.switchDarkLightModeModel,
+                              updateCallback: () => safeSetState(() {}),
+                              child: const SwitchDarkLightModeWidget(),
+                            ),
                           ),
                         ),
-                      ),
-                      Material(
-                        color: Colors.transparent,
-                        elevation: 3.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: Container(
-                            width: double.infinity,
-                            height: 235.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context).alternate,
+                      Flexible(
+                        flex: 60,
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 64.0, 0.0, 0.0),
+                          child: Material(
+                            color: Colors.transparent,
+                            elevation: 3.0,
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
-                            alignment: const AlignmentDirectional(0.0, 0.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        8.0, 4.0, 8.0, 4.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed('infoUsuario');
-                                      },
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.person_rounded,
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                        ),
-                                        title: Text(
-                                          'Información personal',
-                                          style: FlutterFlowTheme.of(context)
-                                              .displaySmall
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                        ),
-                                        trailing: Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 20.0,
-                                        ),
-                                        tileColor: FlutterFlowTheme.of(context)
-                                            .primaryBackground,
-                                        dense: false,
-                                        contentPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
-                                                8.0, 0.0, 8.0, 0.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30.0),
+                              child: Container(
+                                width: MediaQuery.sizeOf(context).width * 1.0,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.35,
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  borderRadius: BorderRadius.circular(30.0),
                                 ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        8.0, 4.0, 8.0, 4.0),
-                                    child: ListTile(
-                                      leading: Icon(
-                                        Icons.notifications_rounded,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                      ),
-                                      title: Text(
-                                        'Notificaciones',
-                                        style: FlutterFlowTheme.of(context)
-                                            .displaySmall
-                                            .override(
-                                              fontFamily: 'Outfit',
-                                              fontSize: 16.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.normal,
+                                alignment: const AlignmentDirectional(0.0, 0.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 4.0, 8.0, 4.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.pushNamed('infoUsuario');
+                                          },
+                                          child: ListTile(
+                                            leading: Icon(
+                                              Icons.person_rounded,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primaryText,
                                             ),
-                                      ),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 20.0,
-                                      ),
-                                      tileColor: FlutterFlowTheme.of(context)
-                                          .primaryBackground,
-                                      dense: false,
-                                      contentPadding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              8.0, 0.0, 8.0, 0.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        8.0, 4.0, 8.0, 4.0),
-                                    child: ListTile(
-                                      leading: Icon(
-                                        Icons.delete_rounded,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                      ),
-                                      title: Text(
-                                        'Eliminar cuenta',
-                                        style: FlutterFlowTheme.of(context)
-                                            .displaySmall
-                                            .override(
-                                              fontFamily: 'Outfit',
-                                              fontSize: 16.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.normal,
+                                            title: Text(
+                                              'Información personal',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .displaySmall
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        fontSize: 16.0,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
                                             ),
-                                      ),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 20.0,
-                                      ),
-                                      tileColor: FlutterFlowTheme.of(context)
-                                          .primaryBackground,
-                                      dense: false,
-                                      contentPadding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              8.0, 0.0, 8.0, 0.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 20.0,
+                                            ),
+                                            tileColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryBackground,
+                                            dense: false,
+                                            contentPadding:
+                                                const EdgeInsetsDirectional.fromSTEB(
+                                                    8.0, 0.0, 8.0, 0.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        8.0, 4.0, 8.0, 4.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context)
-                                            .clearRedirectLocation();
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 4.0, 8.0, 4.0),
+                                        child: ListTile(
+                                          leading: Icon(
+                                            Icons.notifications_rounded,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                          ),
+                                          title: Text(
+                                            'Notificaciones',
+                                            style: FlutterFlowTheme.of(context)
+                                                .displaySmall
+                                                .override(
+                                                  fontFamily: 'Outfit',
+                                                  fontSize: 16.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                          ),
+                                          trailing: Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            size: 20.0,
+                                          ),
+                                          tileColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryBackground,
+                                          dense: false,
+                                          contentPadding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  8.0, 0.0, 8.0, 0.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 4.0, 8.0, 4.0),
+                                        child: ListTile(
+                                          leading: Icon(
+                                            Icons.delete_rounded,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                          ),
+                                          title: Text(
+                                            'Eliminar cuenta',
+                                            style: FlutterFlowTheme.of(context)
+                                                .displaySmall
+                                                .override(
+                                                  fontFamily: 'Outfit',
+                                                  fontSize: 16.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                          ),
+                                          trailing: Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            size: 20.0,
+                                          ),
+                                          tileColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryBackground,
+                                          dense: false,
+                                          contentPadding:
+                                              const EdgeInsetsDirectional.fromSTEB(
+                                                  8.0, 0.0, 8.0, 0.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 4.0, 8.0, 4.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            GoRouter.of(context)
+                                                .prepareAuthEvent();
+                                            await authManager.signOut();
+                                            GoRouter.of(context)
+                                                .clearRedirectLocation();
 
-                                        context.goNamedAuth(
-                                            'loginPage', context.mounted);
-                                      },
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.logout_rounded,
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                        ),
-                                        title: Text(
-                                          'Cerrar sesión',
-                                          style: FlutterFlowTheme.of(context)
-                                              .displaySmall
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                        ),
-                                        trailing: Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 20.0,
-                                        ),
-                                        tileColor: FlutterFlowTheme.of(context)
-                                            .primaryBackground,
-                                        dense: false,
-                                        contentPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
-                                                8.0, 0.0, 8.0, 0.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
+                                            context.goNamedAuth(
+                                                'loginPage', context.mounted);
+                                          },
+                                          child: ListTile(
+                                            leading: Icon(
+                                              Icons.logout_rounded,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primaryText,
+                                            ),
+                                            title: Text(
+                                              'Cerrar sesión',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .displaySmall
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        fontSize: 16.0,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                            ),
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 20.0,
+                                            ),
+                                            tileColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryBackground,
+                                            dense: false,
+                                            contentPadding:
+                                                const EdgeInsetsDirectional.fromSTEB(
+                                                    8.0, 0.0, 8.0, 0.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),

@@ -304,10 +304,10 @@ class DarkModeTheme extends FlutterFlowTheme {
   late Color secondaryText = const Color(0xFF95A1AC);
   late Color primaryBackground = const Color(0xFF1D2428);
   late Color secondaryBackground = const Color(0xFF14181B);
-  late Color accent1 = const Color(0x4C4B39EF);
+  late Color accent1 = const Color(0xFF5000FF);
   late Color accent2 = const Color(0xFF01674F);
   late Color accent3 = const Color(0x4DEE8B60);
-  late Color accent4 = const Color(0xB2262D34);
+  late Color accent4 = const Color(0xFF242A31);
   late Color success = const Color(0xFF00B086);
   late Color warning = const Color(0xFFF9CF58);
   late Color error = const Color(0xFFDB0023);

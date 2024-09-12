@@ -35,7 +35,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
       vsync: this,
       length: 2,
       initialIndex: 0,
-    )..addListener(() => setState(() {}));
+    )..addListener(() => safeSetState(() {}));
     _model.emailAddressTextController ??= TextEditingController();
     _model.emailAddressFocusNode ??= FocusNode();
 
@@ -117,12 +117,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         body: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -133,12 +131,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                 height: double.infinity,
                 decoration: BoxDecoration(
                   color: FlutterFlowTheme.of(context).secondaryBackground,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Image.asset(
-                      'assets/images/fondo-login.png',
-                    ).image,
-                  ),
                 ),
                 alignment: const AlignmentDirectional(0.0, -1.0),
                 child: SingleChildScrollView(
@@ -470,7 +462,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                     contentPadding:
                                                         const EdgeInsets.all(24.0),
                                                     suffixIcon: InkWell(
-                                                      onTap: () => setState(
+                                                      onTap: () => safeSetState(
                                                         () => _model
                                                                 .passwordVisibility =
                                                             !_model
@@ -516,116 +508,76 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                 padding: const EdgeInsetsDirectional
                                                     .fromSTEB(
                                                         0.0, 0.0, 0.0, 16.0),
-                                                child: StreamBuilder<
-                                                    List<UsersRecord>>(
-                                                  stream: queryUsersRecord(
-                                                    singleRecord: true,
-                                                  ),
-                                                  builder: (context, snapshot) {
-                                                    // Customize what your widget looks like when it's loading.
-                                                    if (!snapshot.hasData) {
-                                                      return Center(
-                                                        child: SizedBox(
-                                                          width: 50.0,
-                                                          height: 50.0,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            valueColor:
-                                                                AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
+                                                child: FFButtonWidget(
+                                                  onPressed: () async {
+                                                    GoRouter.of(context)
+                                                        .prepareAuthEvent();
+
+                                                    final user =
+                                                        await authManager
+                                                            .signInWithEmail(
+                                                      context,
+                                                      _model
+                                                          .emailAddressTextController
+                                                          .text,
+                                                      _model
+                                                          .passwordTextController
+                                                          .text,
+                                                    );
+                                                    if (user == null) {
+                                                      return;
                                                     }
-                                                    List<UsersRecord>
-                                                        buttonUsersRecordList =
-                                                        snapshot.data!;
-                                                    // Return an empty Container when the item does not exist.
-                                                    if (snapshot
-                                                        .data!.isEmpty) {
-                                                      return Container();
-                                                    }
-                                                    final buttonUsersRecord =
-                                                        buttonUsersRecordList
-                                                                .isNotEmpty
-                                                            ? buttonUsersRecordList
-                                                                .first
-                                                            : null;
 
-                                                    return FFButtonWidget(
-                                                      onPressed: () async {
-                                                        GoRouter.of(context)
-                                                            .prepareAuthEvent();
-
-                                                        final user =
-                                                            await authManager
-                                                                .signInWithEmail(
-                                                          context,
-                                                          _model
-                                                              .emailAddressTextController
-                                                              .text,
-                                                          _model
-                                                              .passwordTextController
-                                                              .text,
-                                                        );
-                                                        if (user == null) {
-                                                          return;
-                                                        }
-
-                                                        context.goNamedAuth(
+                                                    if (currentUserEmail !=
+                                                            '') {
+                                                      if (currentUserDisplayName !=
+                                                              '') {
+                                                        context.pushNamedAuth(
                                                             'HomePage',
                                                             context.mounted);
-                                                      },
-                                                      text: 'Ingresar',
-                                                      options: FFButtonOptions(
-                                                        width: 230.0,
-                                                        height: 52.0,
-                                                        padding:
-                                                            const EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0),
-                                                        iconPadding:
-                                                            const EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0),
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primary,
-                                                        textStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .titleSmall
-                                                                .override(
-                                                                  fontFamily:
-                                                                      'Outfit',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                ),
-                                                        elevation: 3.0,
-                                                        borderSide: const BorderSide(
-                                                          color: Colors
-                                                              .transparent,
-                                                          width: 1.0,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40.0),
-                                                      ),
-                                                    );
+                                                      } else {
+                                                        context.pushNamedAuth(
+                                                            'bienvenidaOiko',
+                                                            context.mounted);
+                                                      }
+                                                    } else {
+                                                      context.pushNamedAuth(
+                                                          'emailVerification',
+                                                          context.mounted);
+                                                    }
                                                   },
+                                                  text: 'Ingresar',
+                                                  options: FFButtonOptions(
+                                                    width: 230.0,
+                                                    height: 52.0,
+                                                    padding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 0.0,
+                                                                0.0, 0.0),
+                                                    iconPadding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 0.0,
+                                                                0.0, 0.0),
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primary,
+                                                    textStyle: FlutterFlowTheme
+                                                            .of(context)
+                                                        .titleSmall
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: Colors.white,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                                    elevation: 3.0,
+                                                    borderSide: const BorderSide(
+                                                      color: Colors.transparent,
+                                                      width: 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40.0),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -699,7 +651,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                       highlightColor:
                                                           Colors.transparent,
                                                       onTap: () async {
-                                                        setState(() {
+                                                        safeSetState(() {
                                                           _model
                                                               .tabBarController!
                                                               .animateTo(
@@ -848,94 +800,79 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                             ),
                                                           ),
                                                         ),
-                                                        isAndroid
-                                                            ? Container()
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsetsDirectional
-                                                                        .fromSTEB(
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      0.0,
+                                                                      16.0),
+                                                          child: FFButtonWidget(
+                                                            onPressed:
+                                                                () async {
+                                                              context.pushNamed(
+                                                                  'pruebas');
+                                                            },
+                                                            text:
+                                                                'Ingresá con Apple',
+                                                            icon: const FaIcon(
+                                                              FontAwesomeIcons
+                                                                  .apple,
+                                                              size: 20.0,
+                                                            ),
+                                                            options:
+                                                                FFButtonOptions(
+                                                              width: 230.0,
+                                                              height: 44.0,
+                                                              padding:
+                                                                  const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              iconPadding:
+                                                                  const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              color: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .secondaryBackground,
+                                                              textStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'Outfit',
+                                                                        letterSpacing:
                                                                             0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            16.0),
-                                                                child:
-                                                                    FFButtonWidget(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    GoRouter.of(
-                                                                            context)
-                                                                        .prepareAuthEvent();
-                                                                    final user =
-                                                                        await authManager
-                                                                            .signInWithApple(context);
-                                                                    if (user ==
-                                                                        null) {
-                                                                      return;
-                                                                    }
-
-                                                                    context.goNamedAuth(
-                                                                        'HomePage',
-                                                                        context
-                                                                            .mounted);
-                                                                  },
-                                                                  text:
-                                                                      'Ingresá con Apple',
-                                                                  icon: const FaIcon(
-                                                                    FontAwesomeIcons
-                                                                        .apple,
-                                                                    size: 20.0,
-                                                                  ),
-                                                                  options:
-                                                                      FFButtonOptions(
-                                                                    width:
-                                                                        230.0,
-                                                                    height:
-                                                                        44.0,
-                                                                    padding: const EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                    iconPadding:
-                                                                        const EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .secondaryBackground,
-                                                                    textStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .override(
-                                                                          fontFamily:
-                                                                              'Outfit',
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                    elevation:
-                                                                        0.0,
-                                                                    borderSide:
-                                                                        BorderSide(
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .alternate,
-                                                                      width:
-                                                                          2.0,
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            40.0),
-                                                                    hoverColor:
-                                                                        FlutterFlowTheme.of(context)
-                                                                            .primaryBackground,
-                                                                  ),
-                                                                ),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                              elevation: 0.0,
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .alternate,
+                                                                width: 2.0,
                                                               ),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          40.0),
+                                                              hoverColor:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryBackground,
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -1160,7 +1097,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                     contentPadding:
                                                         const EdgeInsets.all(24.0),
                                                     suffixIcon: InkWell(
-                                                      onTap: () => setState(
+                                                      onTap: () => safeSetState(
                                                         () => _model
                                                                 .passwordCreateVisibility =
                                                             !_model
@@ -1285,7 +1222,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                     contentPadding:
                                                         const EdgeInsets.all(24.0),
                                                     suffixIcon: InkWell(
-                                                      onTap: () => setState(
+                                                      onTap: () => safeSetState(
                                                         () => _model
                                                                 .passwordConfirmVisibility =
                                                             !_model
@@ -1368,8 +1305,48 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                       return;
                                                     }
 
-                                                    context.goNamedAuth(
-                                                        'HomePage',
+                                                    await UsersRecord.collection
+                                                        .doc(user.uid)
+                                                        .update(
+                                                            createUsersRecordData(
+                                                          email: _model
+                                                              .emailAddressCreateTextController
+                                                              .text,
+                                                        ));
+
+                                                    await authManager
+                                                        .sendEmailVerification();
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Email de verificación enviado',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .displaySmall
+                                                              .override(
+                                                                fontFamily:
+                                                                    'Outfit',
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primaryText,
+                                                                fontSize: 28.0,
+                                                                letterSpacing:
+                                                                    0.0,
+                                                              ),
+                                                        ),
+                                                        duration: const Duration(
+                                                            milliseconds: 4000),
+                                                        backgroundColor:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiary,
+                                                      ),
+                                                    );
+
+                                                    context.pushNamedAuth(
+                                                        'emailVerification',
                                                         context.mounted);
                                                   },
                                                   text: 'Crear cuenta',
@@ -1429,7 +1406,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                       highlightColor:
                                                           Colors.transparent,
                                                       onTap: () async {
-                                                        setState(() {
+                                                        safeSetState(() {
                                                           _model
                                                               .tabBarController!
                                                               .animateTo(

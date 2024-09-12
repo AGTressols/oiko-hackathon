@@ -34,7 +34,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       FFAppState().flowCategoria = FlowCategoriaStruct();
       FFAppState().flowEtiqueta = FlowEtiquetaStruct();
       FFAppState().flowtraspasoCuenta = FlowCuentaStruct();
-      setState(() {});
+      safeSetState(() {});
     });
   }
 
@@ -50,9 +50,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -91,283 +89,382 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Align(
-                      alignment: const AlignmentDirectional(-1.0, 0.0),
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            16.0, 32.0, 16.0, 16.0),
-                        child: Text(
-                          'Movimiento',
-                          textAlign: TextAlign.start,
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    fontFamily: 'Outfit',
-                                    fontSize: 32.0,
-                                    letterSpacing: 0.0,
-                                  ),
+                    Flexible(
+                      flex: 15,
+                      child: Align(
+                        alignment: const AlignmentDirectional(-1.0, 0.0),
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              16.0, 32.0, 16.0, 16.0),
+                          child: Text(
+                            'Movimiento',
+                            textAlign: TextAlign.start,
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Outfit',
+                                  fontSize: 32.0,
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 0.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Fecha',
-                                style: FlutterFlowTheme.of(context)
-                                    .headlineSmall
-                                    .override(
-                                      fontFamily: 'Outfit',
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  final datePickedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: getCurrentTimestamp,
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2050),
-                                    builder: (context, child) {
-                                      return wrapInMaterialDatePickerTheme(
-                                        context,
-                                        child!,
-                                        headerBackgroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primary,
-                                        headerForegroundColor:
-                                            FlutterFlowTheme.of(context).info,
-                                        headerTextStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .headlineLarge
-                                                .override(
-                                                  fontFamily: 'Outfit',
-                                                  fontSize: 32.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                        pickerBackgroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .secondaryBackground,
-                                        pickerForegroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                        selectedDateTimeBackgroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primary,
-                                        selectedDateTimeForegroundColor:
-                                            FlutterFlowTheme.of(context).info,
-                                        actionButtonForegroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                        iconSize: 24.0,
-                                      );
-                                    },
-                                  );
-
-                                  if (datePickedDate != null) {
-                                    safeSetState(() {
-                                      _model.datePicked = DateTime(
-                                        datePickedDate.year,
-                                        datePickedDate.month,
-                                        datePickedDate.day,
-                                      );
-                                    });
-                                  }
-                                  FFAppState().flowFecha = _model.datePicked;
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  width: 134.0,
-                                  height: 36.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context).accent4,
-                                    borderRadius: BorderRadius.circular(16.0),
+                    Flexible(
+                      flex: 10,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                16.0, 0.0, 0.0, 0.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    'Fecha',
+                                    style: FlutterFlowTheme.of(context)
+                                        .headlineSmall
+                                        .override(
+                                          fontFamily: 'Outfit',
+                                          fontSize: 12.0,
+                                          letterSpacing: 0.0,
+                                        ),
                                   ),
-                                  child: Align(
-                                    alignment: const AlignmentDirectional(0.0, 0.0),
-                                    child: Text(
-                                      dateTimeFormat(
-                                          'yMMMd', FFAppState().flowFecha),
-                                      style: FlutterFlowTheme.of(context)
-                                          .displaySmall
-                                          .override(
-                                            fontFamily: 'Readex Pro',
-                                            fontSize: 14.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.normal,
-                                          ),
+                                ),
+                                InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    final datePickedDate =
+                                        await showDatePicker(
+                                      context: context,
+                                      initialDate: getCurrentTimestamp,
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime(2050),
+                                      builder: (context, child) {
+                                        return wrapInMaterialDatePickerTheme(
+                                          context,
+                                          child!,
+                                          headerBackgroundColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                          headerForegroundColor:
+                                              FlutterFlowTheme.of(context).info,
+                                          headerTextStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .headlineLarge
+                                                  .override(
+                                                    fontFamily: 'Outfit',
+                                                    fontSize: 32.0,
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                          pickerBackgroundColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .secondaryBackground,
+                                          pickerForegroundColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryText,
+                                          selectedDateTimeBackgroundColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                          selectedDateTimeForegroundColor:
+                                              FlutterFlowTheme.of(context).info,
+                                          actionButtonForegroundColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryText,
+                                          iconSize: 24.0,
+                                        );
+                                      },
+                                    );
+
+                                    if (datePickedDate != null) {
+                                      safeSetState(() {
+                                        _model.datePicked = DateTime(
+                                          datePickedDate.year,
+                                          datePickedDate.month,
+                                          datePickedDate.day,
+                                        );
+                                      });
+                                    }
+                                    FFAppState().flowFecha = _model.datePicked;
+                                    safeSetState(() {});
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.35,
+                                    height: MediaQuery.sizeOf(context).height *
+                                        0.04,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          FlutterFlowTheme.of(context).accent4,
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Text(
+                                        dateTimeFormat(
+                                            "yMMMd", FFAppState().flowFecha),
+                                        style: FlutterFlowTheme.of(context)
+                                            .displaySmall
+                                            .override(
+                                              fontFamily: 'Readex Pro',
+                                              fontSize: 14.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    Expanded(
+                    Flexible(
+                      flex: 75,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          FFButtonWidget(
-                            onPressed: () async {
-                              FFAppState().flowMovimiento = 'Gasto';
-                              setState(() {});
-
-                              context.pushNamed('flowRegistro');
-                            },
-                            text: 'Gasto',
-                            icon: const Icon(
-                              Icons.call_received_rounded,
-                              size: 30.0,
-                            ),
-                            options: FFButtonOptions(
-                              width: 187.0,
-                              height: 75.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 8.0, 0.0),
-                              color: FlutterFlowTheme.of(context).error,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .bodySmall
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    fontSize: 25.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              elevation: 3.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 1.0,
+                          Flexible(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                FFAppState().flowMovimiento = 'Gasto';
+                                safeSetState(() {});
+                                if (FFAppState().flowFecha != null) {
+                                  context.pushNamed('flowRegistro');
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: const Text('Seleccioná una fecha'),
+                                        content: const Text(
+                                            'No seleccionaste una fecha para la transacción, definir una para avanzar.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              text: 'Egreso',
+                              icon: const Icon(
+                                Icons.call_received_rounded,
+                                size: 30.0,
                               ),
-                              borderRadius: BorderRadius.circular(100.0),
+                              options: FFButtonOptions(
+                                width: MediaQuery.sizeOf(context).width * 0.5,
+                                height: MediaQuery.sizeOf(context).height * 0.1,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    24.0, 0.0, 24.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 8.0, 0.0),
+                                color: FlutterFlowTheme.of(context).error,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      fontSize: 25.0,
+                                      letterSpacing: 0.0,
+                                    ),
+                                elevation: 3.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
                             ),
                           ),
-                          FFButtonWidget(
-                            onPressed: () async {
-                              FFAppState().flowMovimiento = 'Ingreso';
-                              setState(() {});
-
-                              context.pushNamed('flowRegistro');
-                            },
-                            text: 'Ingreso',
-                            icon: const Icon(
-                              Icons.call_made_rounded,
-                              size: 30.0,
-                            ),
-                            options: FFButtonOptions(
-                              width: 187.0,
-                              height: 75.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 8.0, 0.0),
-                              color: FlutterFlowTheme.of(context).success,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .bodySmall
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    fontSize: 25.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              elevation: 3.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 1.0,
+                          Flexible(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                FFAppState().flowMovimiento = 'Ingreso';
+                                safeSetState(() {});
+                                if (FFAppState().flowFecha != null) {
+                                  context.pushNamed('flowRegistro');
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: const Text('Seleccioná una fecha'),
+                                        content: const Text(
+                                            'No seleccionaste una fecha para la transacción, definir una para avanzar.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              text: 'Ingreso',
+                              icon: const Icon(
+                                Icons.call_made_rounded,
+                                size: 30.0,
                               ),
-                              borderRadius: BorderRadius.circular(100.0),
+                              options: FFButtonOptions(
+                                width: MediaQuery.sizeOf(context).width * 0.5,
+                                height: MediaQuery.sizeOf(context).height * 0.1,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    24.0, 0.0, 24.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 8.0, 0.0),
+                                color: FlutterFlowTheme.of(context).success,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      fontSize: 25.0,
+                                      letterSpacing: 0.0,
+                                    ),
+                                elevation: 3.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
                             ),
                           ),
-                          FFButtonWidget(
-                            onPressed: () async {
-                              FFAppState().flowMovimiento = 'Ahorro';
-                              setState(() {});
-
-                              context.pushNamed('flowRegistro');
-                            },
-                            text: 'Ahorro',
-                            icon: const Icon(
-                              Icons.savings_rounded,
-                              size: 30.0,
-                            ),
-                            options: FFButtonOptions(
-                              width: 187.0,
-                              height: 75.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 8.0, 0.0),
-                              color: FlutterFlowTheme.of(context).secondary,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .bodySmall
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    fontSize: 25.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              elevation: 3.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 1.0,
+                          Flexible(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                FFAppState().flowMovimiento = 'Ahorro';
+                                safeSetState(() {});
+                                if (FFAppState().flowFecha != null) {
+                                  context.pushNamed('flowAhorro');
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: const Text('Seleccioná una fecha'),
+                                        content: const Text(
+                                            'No seleccionaste una fecha para la transacción, definir una para avanzar.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              text: 'Ahorro',
+                              icon: const Icon(
+                                Icons.savings_rounded,
+                                size: 30.0,
                               ),
-                              borderRadius: BorderRadius.circular(100.0),
+                              options: FFButtonOptions(
+                                width: MediaQuery.sizeOf(context).width * 0.5,
+                                height: MediaQuery.sizeOf(context).height * 0.1,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    24.0, 0.0, 24.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 8.0, 0.0),
+                                color: FlutterFlowTheme.of(context).secondary,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      fontSize: 25.0,
+                                      letterSpacing: 0.0,
+                                    ),
+                                elevation: 3.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
                             ),
                           ),
-                          FFButtonWidget(
-                            onPressed: () async {
-                              FFAppState().flowMovimiento = 'Traspaso';
-                              setState(() {});
-
-                              context.pushNamed('flowTraspaso');
-                            },
-                            text: 'Traspaso',
-                            icon: const Icon(
-                              Icons.compare_arrows_rounded,
-                              size: 30.0,
-                            ),
-                            options: FFButtonOptions(
-                              width: 187.0,
-                              height: 75.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 8.0, 0.0),
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .bodySmall
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    fontSize: 25.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              elevation: 3.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 1.0,
+                          Flexible(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                FFAppState().flowMovimiento = 'Traspaso';
+                                safeSetState(() {});
+                                if (FFAppState().flowFecha != null) {
+                                  context.pushNamed('flowTraspaso');
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: const Text('Seleccioná una fecha'),
+                                        content: const Text(
+                                            'No seleccionaste una fecha para la transacción, definir una para avanzar.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: const Text('Ok'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              text: 'Traspaso',
+                              icon: const Icon(
+                                Icons.compare_arrows_rounded,
+                                size: 30.0,
                               ),
-                              borderRadius: BorderRadius.circular(100.0),
+                              options: FFButtonOptions(
+                                width: MediaQuery.sizeOf(context).width * 0.5,
+                                height: MediaQuery.sizeOf(context).height * 0.1,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    24.0, 0.0, 24.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 8.0, 0.0),
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      fontSize: 25.0,
+                                      letterSpacing: 0.0,
+                                    ),
+                                elevation: 3.0,
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
                             ),
                           ),
                         ]
