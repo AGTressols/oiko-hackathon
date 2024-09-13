@@ -955,33 +955,28 @@ class _CategoriasWidgetState extends State<CategoriasWidget>
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Flexible(
-                                                child: FlutterFlowIconButton(
-                                                  borderColor:
-                                                      Colors.transparent,
-                                                  borderRadius: 20.0,
-                                                  borderWidth: 1.0,
-                                                  buttonSize: 40.0,
-                                                  fillColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .secondaryText,
-                                                  icon: Icon(
-                                                    Icons.add,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryBackground,
-                                                  ),
-                                                  onPressed: () async {
-                                                    context.pushNamed(
-                                                        'nuevaCategoriaa');
-
-                                                    FFAppState()
-                                                            .flowMovimiento =
-                                                        'Mixta';
-                                                    safeSetState(() {});
-                                                  },
+                                              FlutterFlowIconButton(
+                                                borderColor: Colors.transparent,
+                                                borderRadius: 20.0,
+                                                borderWidth: 1.0,
+                                                buttonSize: 40.0,
+                                                fillColor:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                icon: Icon(
+                                                  Icons.add,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryBackground,
                                                 ),
+                                                onPressed: () async {
+                                                  context.pushNamed(
+                                                      'nuevaCategoriaa');
+
+                                                  FFAppState().flowMovimiento =
+                                                      'Mixta';
+                                                  safeSetState(() {});
+                                                },
                                               ),
                                             ],
                                           ),

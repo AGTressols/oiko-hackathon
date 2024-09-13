@@ -1,11 +1,10 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/backend/firebase_storage/storage.dart';
+import '/components/logos_cuentas_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/upload_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'nueva_cuentaa_model.dart';
@@ -100,57 +99,26 @@ class _NuevaCuentaaWidgetState extends State<NuevaCuentaaWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            final selectedMedia = await selectMedia(
-                              imageQuality: 100,
-                              mediaSource: MediaSource.photoGallery,
-                              multiImage: false,
-                            );
-                            if (selectedMedia != null &&
-                                selectedMedia.every((m) => validateFileFormat(
-                                    m.storagePath, context))) {
-                              safeSetState(() => _model.isDataUploading = true);
-                              var selectedUploadedFiles = <FFUploadedFile>[];
-
-                              var downloadUrls = <String>[];
-                              try {
-                                selectedUploadedFiles = selectedMedia
-                                    .map((m) => FFUploadedFile(
-                                          name: m.storagePath.split('/').last,
-                                          bytes: m.bytes,
-                                          height: m.dimensions?.height,
-                                          width: m.dimensions?.width,
-                                          blurHash: m.blurHash,
-                                        ))
-                                    .toList();
-
-                                downloadUrls = (await Future.wait(
-                                  selectedMedia.map(
-                                    (m) async => await uploadData(
-                                        m.storagePath, m.bytes),
+                            await showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              enableDrag: false,
+                              context: context,
+                              builder: (context) {
+                                return GestureDetector(
+                                  onTap: () => FocusScope.of(context).unfocus(),
+                                  child: Padding(
+                                    padding: MediaQuery.viewInsetsOf(context),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.sizeOf(context).height *
+                                              0.75,
+                                      child: const LogosCuentasWidget(),
+                                    ),
                                   ),
-                                ))
-                                    .where((u) => u != null)
-                                    .map((u) => u!)
-                                    .toList();
-                              } finally {
-                                _model.isDataUploading = false;
-                              }
-                              if (selectedUploadedFiles.length ==
-                                      selectedMedia.length &&
-                                  downloadUrls.length == selectedMedia.length) {
-                                safeSetState(() {
-                                  _model.uploadedLocalFile =
-                                      selectedUploadedFiles.first;
-                                  _model.uploadedFileUrl = downloadUrls.first;
-                                });
-                              } else {
-                                safeSetState(() {});
-                                return;
-                              }
-                            }
-
-                            FFAppState().imagen = _model.uploadedFileUrl;
-                            safeSetState(() {});
+                                );
+                              },
+                            ).then((value) => safeSetState(() {}));
                           },
                           child: Container(
                             width: MediaQuery.sizeOf(context).width * 0.2,
@@ -240,10 +208,11 @@ class _NuevaCuentaaWidgetState extends State<NuevaCuentaaWidget> {
                     ],
                   ),
                 ),
-                Flexible(
-                  flex: 10,
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, 0.0),
+                Align(
+                  alignment: const AlignmentDirectional(0.0, 0.0),
+                  child: Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -288,231 +257,180 @@ class _NuevaCuentaaWidgetState extends State<NuevaCuentaaWidget> {
                     ),
                   ),
                 ),
-                Flexible(
-                  flex: 5,
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Saldo inicial',
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    fontFamily: 'Outfit',
-                                    fontSize: 18.0,
-                                    letterSpacing: 0.0,
-                                  ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 64.0, 0.0, 0.0),
+                  child: Text(
+                    'Saldo inicial',
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          fontFamily: 'Outfit',
+                          fontSize: 18.0,
+                          letterSpacing: 0.0,
                         ),
-                      ],
-                    ),
                   ),
                 ),
-                Flexible(
-                  flex: 10,
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, -1.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  64.0, 0.0, 64.0, 0.0),
-                              child: TextFormField(
-                                controller: _model.textController2,
-                                focusNode: _model.textFieldFocusNode2,
-                                autofocus: true,
-                                obscureText: false,
-                                decoration: InputDecoration(
-                                  labelStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        fontFamily: 'Outfit',
-                                        fontSize: 18.0,
-                                        letterSpacing: 0.0,
-                                      ),
-                                  hintText: '\$ ...',
-                                  hintStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        fontFamily: 'Outfit',
-                                        fontSize: 20.0,
-                                        letterSpacing: 0.0,
-                                      ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0x00000000),
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0x00000000),
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  errorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).error,
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).error,
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  filled: true,
-                                  fillColor:
-                                      FlutterFlowTheme.of(context).alternate,
-                                  contentPadding:
-                                      const EdgeInsetsDirectional.fromSTEB(
-                                          8.0, 16.0, 8.0, 16.0),
-                                  suffixIcon: const Icon(
-                                    Icons.edit_rounded,
-                                  ),
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Outfit',
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                                textAlign: TextAlign.center,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                        decimal: true),
-                                validator: _model.textController2Validator
-                                    .asValidator(context),
+                Padding(
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(64.0, 16.0, 64.0, 0.0),
+                  child: TextFormField(
+                    controller: _model.textController2,
+                    focusNode: _model.textFieldFocusNode2,
+                    autofocus: true,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      labelStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Outfit',
+                                fontSize: 18.0,
+                                letterSpacing: 0.0,
                               ),
-                            ),
-                          ),
-                        ],
+                      hintText: '\$ ...',
+                      hintStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Outfit',
+                                fontSize: 20.0,
+                                letterSpacing: 0.0,
+                              ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      errorBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      focusedErrorBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      filled: true,
+                      fillColor: FlutterFlowTheme.of(context).alternate,
+                      contentPadding:
+                          const EdgeInsetsDirectional.fromSTEB(8.0, 16.0, 8.0, 16.0),
+                      suffixIcon: const Icon(
+                        Icons.edit_rounded,
                       ),
                     ),
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          fontFamily: 'Outfit',
+                          fontSize: 20.0,
+                          letterSpacing: 0.0,
+                        ),
+                    textAlign: TextAlign.center,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    validator:
+                        _model.textController2Validator.asValidator(context),
                   ),
                 ),
-                Flexible(
-                  flex: 15,
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 32.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: FFButtonWidget(
-                              onPressed: () async {
-                                var shouldSetState = false;
-                                if (_model.textController1.text != '') {
-                                  var cuentasRecordReference =
-                                      CuentasRecord.collection.doc();
-                                  await cuentasRecordReference
-                                      .set(createCuentasRecordData(
-                                    uid: currentUserUid,
-                                    cuenta: _model.textController1.text,
-                                    logo: FFAppState().imagen,
-                                    activa: true,
-                                    ahorro: _model.switchValue,
-                                  ));
-                                  _model.nuevaCuenta =
-                                      CuentasRecord.getDocumentFromData(
-                                          createCuentasRecordData(
-                                            uid: currentUserUid,
-                                            cuenta: _model.textController1.text,
-                                            logo: FFAppState().imagen,
-                                            activa: true,
-                                            ahorro: _model.switchValue,
-                                          ),
-                                          cuentasRecordReference);
-                                  shouldSetState = true;
-
-                                  await TransaccionesRecord.collection
-                                      .doc()
-                                      .set(createTransaccionesRecordData(
-                                        uid: currentUserUid,
-                                        fecha: getCurrentTimestamp,
-                                        movimiento: 'Ajuste',
-                                        monto: double.tryParse(
-                                            _model.textController2.text),
-                                        cuenta: _model.nuevaCuenta?.reference,
-                                      ));
-                                } else {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (alertDialogContext) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Completar campos obligatorios'),
-                                        content: const Text(
-                                            'Debe estar seleccionado el nombre.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(
-                                                alertDialogContext),
-                                            child: const Text('Ok'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                  if (shouldSetState) safeSetState(() {});
-                                  return;
-                                }
-
-                                FFAppState().flowCategoria =
-                                    FlowCategoriaStruct();
-                                FFAppState().imagen = '';
-                                FFAppState().flowMovimiento = '';
-                                safeSetState(() {});
-                                context.safePop();
-                                if (shouldSetState) safeSetState(() {});
-                              },
-                              text: 'Agregar',
-                              icon: const Icon(
-                                Icons.check_rounded,
-                                size: 15.0,
-                              ),
-                              options: FFButtonOptions(
-                                height: 40.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryBackground,
-                                      letterSpacing: 0.0,
-                                    ),
-                                elevation: 3.0,
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 128.0, 0.0, 0.0),
+                  child: FFButtonWidget(
+                    onPressed: () async {
+                      var shouldSetState = false;
+                      if (_model.textController1.text != '') {
+                        var cuentasRecordReference =
+                            CuentasRecord.collection.doc();
+                        await cuentasRecordReference
+                            .set(createCuentasRecordData(
+                          uid: currentUserUid,
+                          cuenta: _model.textController1.text,
+                          logo: FFAppState().imagen,
+                          activa: true,
+                          ahorro: _model.switchValue,
+                        ));
+                        _model.nuevaCuenta = CuentasRecord.getDocumentFromData(
+                            createCuentasRecordData(
+                              uid: currentUserUid,
+                              cuenta: _model.textController1.text,
+                              logo: FFAppState().imagen,
+                              activa: true,
+                              ahorro: _model.switchValue,
                             ),
+                            cuentasRecordReference);
+                        shouldSetState = true;
+                        if (_model.textController2.text != '') {
+                          await TransaccionesRecord.collection
+                              .doc()
+                              .set(createTransaccionesRecordData(
+                                uid: currentUserUid,
+                                fecha: getCurrentTimestamp,
+                                movimiento: 'Ajuste',
+                                monto: double.tryParse(
+                                    _model.textController2.text),
+                                cuenta: _model.nuevaCuenta?.reference,
+                              ));
+                        }
+                        FFAppState().flowCategoria = FlowCategoriaStruct();
+                        FFAppState().imagen = '';
+                        FFAppState().flowMovimiento = '';
+                        safeSetState(() {});
+                        context.safePop();
+                      } else {
+                        await showDialog(
+                          context: context,
+                          builder: (alertDialogContext) {
+                            return AlertDialog(
+                              title: const Text('Completar campos obligatorios'),
+                              content:
+                                  const Text('Debe estar seleccionado el nombre.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(alertDialogContext),
+                                  child: const Text('Ok'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (shouldSetState) safeSetState(() {});
+                        return;
+                      }
+
+                      if (shouldSetState) safeSetState(() {});
+                    },
+                    text: 'Agregar',
+                    icon: const Icon(
+                      Icons.check_rounded,
+                      size: 15.0,
+                    ),
+                    options: FFButtonOptions(
+                      height: 40.0,
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                      iconPadding:
+                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                      color: FlutterFlowTheme.of(context).primary,
+                      textStyle: FlutterFlowTheme.of(context)
+                          .titleSmall
+                          .override(
+                            fontFamily: 'Outfit',
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                            letterSpacing: 0.0,
                           ),
-                        ],
+                      elevation: 3.0,
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 1.0,
                       ),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                 ),

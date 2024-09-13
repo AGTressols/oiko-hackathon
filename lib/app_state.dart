@@ -572,6 +572,12 @@ class FFAppState extends ChangeNotifier {
   void insertAtIndexInMesesDisponibles(int index, DateTime value) {
     mesesDisponibles.insert(index, value);
   }
+
+  bool _primerIngreso = true;
+  bool get primerIngreso => _primerIngreso;
+  set primerIngreso(bool value) {
+    _primerIngreso = value;
+  }
 }
 
 void _safeInit(Function() initializeField) {

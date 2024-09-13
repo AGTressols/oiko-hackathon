@@ -11,3 +11,5 @@ export 'obtener_categorias_con_transacciones_historico.dart'
 export 'obtener_etiquetas_historico.dart' show obtenerEtiquetasHistorico;
 export 'procesar_grafico_historico_gastos.dart'
     show procesarGraficoHistoricoGastos;
+export 'guardar_mes_actual_en_seleccion_periodos.dart'
+    show guardarMesActualEnSeleccionPeriodos;

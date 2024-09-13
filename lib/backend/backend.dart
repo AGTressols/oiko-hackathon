@@ -11,6 +11,7 @@ import 'schema/categorias_record.dart';
 import 'schema/etiquetas_record.dart';
 import 'schema/transacciones_record.dart';
 import 'schema/iconos_categorias_record.dart';
+import 'schema/logos_cuentas_record.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart' hide Order;
@@ -25,6 +26,7 @@ export 'schema/categorias_record.dart';
 export 'schema/etiquetas_record.dart';
 export 'schema/transacciones_record.dart';
 export 'schema/iconos_categorias_record.dart';
+export 'schema/logos_cuentas_record.dart';
 
 /// Functions to query UsersRecords (as a Stream and as a Future).
 Future<int> queryUsersRecordCount({
@@ -243,6 +245,43 @@ Future<List<IconosCategoriasRecord>> queryIconosCategoriasRecordOnce({
     queryCollectionOnce(
       IconosCategoriasRecord.collection,
       IconosCategoriasRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query LogosCuentasRecords (as a Stream and as a Future).
+Future<int> queryLogosCuentasRecordCount({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      LogosCuentasRecord.collection,
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<LogosCuentasRecord>> queryLogosCuentasRecord({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      LogosCuentasRecord.collection,
+      LogosCuentasRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<LogosCuentasRecord>> queryLogosCuentasRecordOnce({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      LogosCuentasRecord.collection,
+      LogosCuentasRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,
