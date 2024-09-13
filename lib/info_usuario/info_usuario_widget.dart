@@ -896,7 +896,7 @@ class _InfoUsuarioWidgetState extends State<InfoUsuarioWidget> {
                             Flexible(
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 16.0, 0.0, 32.0),
+                                    0.0, 32.0, 0.0, 32.0),
                                 child: FFButtonWidget(
                                   onPressed: () async {
                                     if (_model.textController1.text != '') {

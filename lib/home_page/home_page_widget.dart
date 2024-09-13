@@ -2,6 +2,7 @@ import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,38 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       FFAppState().flowEtiqueta = FlowEtiquetaStruct();
       FFAppState().flowtraspasoCuenta = FlowCuentaStruct();
       safeSetState(() {});
+      if (FFAppState().primerIngreso) {
+        await actions.guardarMesActualEnSeleccionPeriodos();
+        await Future.wait([
+          Future(() async {
+            await actions.procesarDatosGraficoPresupuesto();
+          }),
+          Future(() async {
+            await actions.calcularGastosTotales();
+          }),
+          Future(() async {
+            await actions.calcularSaldoTotal();
+          }),
+          Future(() async {
+            await actions.procesarDatosDeCuentas();
+          }),
+          Future(() async {
+            await actions.obtenerCategoriasConTransacciones();
+          }),
+          Future(() async {
+            await actions.obtenerCategoriasConTransaccionesHistorico();
+          }),
+        ]);
+        FFAppState().insertAtIndexInCategoriasHistorico(0, 'Todas');
+        safeSetState(() {});
+        FFAppState().insertAtIndexInSeleccionEtiquetasHistorico(0, 'Todas');
+        safeSetState(() {});
+        await actions.procesarGraficoHistoricoGastos();
+        FFAppState().primerIngreso = false;
+        safeSetState(() {});
+      } else {
+        return;
+      }
     });
   }
 
@@ -145,7 +178,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       context: context,
                                       initialDate: getCurrentTimestamp,
                                       firstDate: DateTime(1900),
-                                      lastDate: DateTime(2050),
+                                      lastDate: getCurrentTimestamp,
                                       builder: (context, child) {
                                         return wrapInMaterialDatePickerTheme(
                                           context,

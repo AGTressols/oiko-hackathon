@@ -6,8 +6,10 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'login_page_model.dart';
 export 'login_page_model.dart';
 
@@ -30,6 +32,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
   void initState() {
     super.initState();
     _model = createModel(context, () => LoginPageModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      FFAppState().primerIngreso = true;
+      safeSetState(() {});
+    });
 
     _model.tabBarController = TabController(
       vsync: this,
@@ -116,6 +124,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -800,79 +810,94 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                                             ),
                                                           ),
                                                         ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0,
-                                                                      16.0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              context.pushNamed(
-                                                                  'pruebas');
-                                                            },
-                                                            text:
-                                                                'Ingresá con Apple',
-                                                            icon: const FaIcon(
-                                                              FontAwesomeIcons
-                                                                  .apple,
-                                                              size: 20.0,
-                                                            ),
-                                                            options:
-                                                                FFButtonOptions(
-                                                              width: 230.0,
-                                                              height: 44.0,
-                                                              padding:
-                                                                  const EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              iconPadding:
-                                                                  const EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .secondaryBackground,
-                                                              textStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .override(
-                                                                        fontFamily:
-                                                                            'Outfit',
-                                                                        letterSpacing:
+                                                        isAndroid
+                                                            ? Container()
+                                                            : Padding(
+                                                                padding:
+                                                                    const EdgeInsetsDirectional
+                                                                        .fromSTEB(
                                                                             0.0,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                              elevation: 0.0,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .alternate,
-                                                                width: 2.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            16.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    GoRouter.of(
+                                                                            context)
+                                                                        .prepareAuthEvent();
+                                                                    final user =
+                                                                        await authManager
+                                                                            .signInWithApple(context);
+                                                                    if (user ==
+                                                                        null) {
+                                                                      return;
+                                                                    }
+
+                                                                    context.goNamedAuth(
+                                                                        'HomePage',
+                                                                        context
+                                                                            .mounted);
+                                                                  },
+                                                                  text:
+                                                                      'Ingresá con Apple',
+                                                                  icon: const FaIcon(
+                                                                    FontAwesomeIcons
+                                                                        .apple,
+                                                                    size: 20.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        230.0,
+                                                                    height:
+                                                                        44.0,
+                                                                    padding: const EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        const EdgeInsetsDirectional.fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryBackground,
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Outfit',
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                    elevation:
+                                                                        0.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .alternate,
+                                                                      width:
+                                                                          2.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            40.0),
+                                                                    hoverColor:
+                                                                        FlutterFlowTheme.of(context)
+                                                                            .primaryBackground,
+                                                                  ),
+                                                                ),
                                                               ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                              hoverColor:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primaryBackground,
-                                                            ),
-                                                          ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ),

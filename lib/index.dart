@@ -15,7 +15,6 @@ export '/cuentas/cuentas_widget.dart' show CuentasWidget;
 export '/detalle_cuenta/detalle_cuenta_widget.dart' show DetalleCuentaWidget;
 export '/nueva_categoriaa/nueva_categoriaa_widget.dart'
     show NuevaCategoriaaWidget;
-export '/objetivos/objetivos_widget.dart' show ObjetivosWidget;
 export '/nuevo_objetivo/nuevo_objetivo_widget.dart' show NuevoObjetivoWidget;
 export '/estadisticas/estadisticas_widget.dart' show EstadisticasWidget;
 export '/nueva_cuentaa/nueva_cuentaa_widget.dart' show NuevaCuentaaWidget;
@@ -29,7 +28,6 @@ export '/newlsignup_cuentas/newlsignup_cuentas_widget.dart'
     show NewlsignupCuentasWidget;
 export '/newlsignup_categorias/newlsignup_categorias_widget.dart'
     show NewlsignupCategoriasWidget;
-export '/tests/tests_widget.dart' show TestsWidget;
 export '/detalle_categoria/detalle_categoria_widget.dart'
     show DetalleCategoriaWidget;
 export '/flow_ahorro/flow_ahorro_widget.dart' show FlowAhorroWidget;

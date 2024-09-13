@@ -180,52 +180,48 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       ),
                     ),
                   ),
-                  Flexible(
-                    child: Align(
-                      alignment: const AlignmentDirectional(0.0, 0.0),
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            if (_model
-                                .emailAddressTextController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Email required!',
-                                  ),
+                  Align(
+                    alignment: const AlignmentDirectional(0.0, 0.0),
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0.0, 64.0, 0.0, 0.0),
+                      child: FFButtonWidget(
+                        onPressed: () async {
+                          if (_model.emailAddressTextController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Email required!',
                                 ),
-                              );
-                              return;
-                            }
-                            await authManager.resetPassword(
-                              email: _model.emailAddressTextController.text,
-                              context: context,
+                              ),
                             );
-                          },
-                          text: 'Enviar link',
-                          options: FFButtonOptions(
-                            width: 270.0,
-                            height: 50.0,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: FlutterFlowTheme.of(context).primary,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  letterSpacing: 0.0,
-                                ),
-                            elevation: 3.0,
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
+                            return;
+                          }
+                          await authManager.resetPassword(
+                            email: _model.emailAddressTextController.text,
+                            context: context,
+                          );
+                        },
+                        text: 'Enviar link',
+                        options: FFButtonOptions(
+                          width: 270.0,
+                          height: 50.0,
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 0.0),
+                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 0.0),
+                          color: FlutterFlowTheme.of(context).primary,
+                          textStyle:
+                              FlutterFlowTheme.of(context).titleSmall.override(
+                                    fontFamily: 'Outfit',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryBackground,
+                                    letterSpacing: 0.0,
+                                  ),
+                          elevation: 3.0,
+                          borderSide: const BorderSide(
+                            color: Colors.transparent,
+                            width: 1.0,
                           ),
                         ),
                       ),

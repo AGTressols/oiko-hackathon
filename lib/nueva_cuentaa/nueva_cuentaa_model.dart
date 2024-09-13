@@ -6,11 +6,6 @@ import 'package:flutter/material.dart';
 class NuevaCuentaaModel extends FlutterFlowModel<NuevaCuentaaWidget> {
   ///  State fields for stateful widgets in this page.
 
-  bool isDataUploading = false;
-  FFUploadedFile uploadedLocalFile =
-      FFUploadedFile(bytes: Uint8List.fromList([]));
-  String uploadedFileUrl = '';
-
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode1;
   TextEditingController? textController1;
