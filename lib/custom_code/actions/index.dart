@@ -1,4 +1,5 @@
-export 'calcular_gastos_totales.dart' show calcularGastosTotales;
+export 'calcular_gastos_e_ingresos_totales.dart'
+    show calcularGastosEIngresosTotales;
 export 'calcular_saldo_total.dart' show calcularSaldoTotal;
 export 'procesar_datos_de_cuentas.dart' show procesarDatosDeCuentas;
 export 'procesar_datos_grafico_presupuesto.dart'
@@ -13,3 +14,7 @@ export 'procesar_grafico_historico_gastos.dart'
     show procesarGraficoHistoricoGastos;
 export 'guardar_mes_actual_en_seleccion_periodos.dart'
     show guardarMesActualEnSeleccionPeriodos;
+export 'procesar_datos_grafico_ingreso_por_categoria.dart'
+    show procesarDatosGraficoIngresoPorCategoria;
+export 'procesar_datos_historico_ingreso.dart'
+    show procesarDatosHistoricoIngreso;

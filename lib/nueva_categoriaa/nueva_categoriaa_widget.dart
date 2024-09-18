@@ -288,7 +288,7 @@ class _NuevaCategoriaaWidgetState extends State<NuevaCategoriaaWidget> {
                   child: TextFormField(
                     controller: _model.textController2,
                     focusNode: _model.textFieldFocusNode2,
-                    autofocus: true,
+                    autofocus: false,
                     obscureText: false,
                     decoration: InputDecoration(
                       labelStyle:

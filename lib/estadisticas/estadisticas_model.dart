@@ -12,8 +12,8 @@ class EstadisticasModel extends FlutterFlowModel<EstadisticasWidget> {
       tabBarController != null ? tabBarController!.index : 0;
 
   // State field(s) for DropDown widget.
-  List<String>? dropDownValue;
-  FormFieldController<List<String>>? dropDownValueController;
+  List<String>? dropDownValue1;
+  FormFieldController<List<String>>? dropDownValueController1;
   // State field(s) for dropdownetiquetas widget.
   String? dropdownetiquetasValue;
   FormFieldController<String>? dropdownetiquetasValueController;
@@ -23,6 +23,9 @@ class EstadisticasModel extends FlutterFlowModel<EstadisticasWidget> {
   // State field(s) for etiquetashistorico widget.
   String? etiquetashistoricoValue;
   FormFieldController<String>? etiquetashistoricoValueController;
+  // State field(s) for DropDown widget.
+  List<String>? dropDownValue2;
+  FormFieldController<List<String>>? dropDownValueController2;
 
   @override
   void initState(BuildContext context) {}

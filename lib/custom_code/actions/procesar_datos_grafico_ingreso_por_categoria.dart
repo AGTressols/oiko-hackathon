@@ -13,9 +13,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 
-Future<void> procesarDatosGraficoPresupuesto() async {
+Future<void> procesarDatosGraficoIngresoPorCategoria() async {
   // Inicializar la lista para almacenar los datos de las categorías
-  List<Map<String, dynamic>> listaGraficoPresupuesto = [];
+  List<Map<String, dynamic>> listaGraficoIngreso = [];
+  double totalIngreso = 0.0;
 
   try {
     // Obtener el UID del usuario autenticado
@@ -51,11 +52,11 @@ Future<void> procesarDatosGraficoPresupuesto() async {
       };
     }).toList();
 
-    // Consultar las transacciones filtradas por UID, Movimiento y Fecha
+    // Consultar las transacciones filtradas por UID, Movimiento y Fecha (Ingreso)
     QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
         .collection('Transacciones')
         .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto']).get();
+        .where('movimiento', whereIn: ['Ingreso', 'ingreso']).get();
 
     // Crear un mapa para agrupar las transacciones por categoría
     Map<String, Map<String, dynamic>> categoriasData = {};
@@ -77,68 +78,55 @@ Future<void> procesarDatosGraficoPresupuesto() async {
       DocumentReference categoriaRef = transDoc['categoria'];
       DocumentSnapshot categoriaDoc = await categoriaRef.get();
       String categoria = categoriaDoc['categoria'];
-      String logo = categoriaDoc['logo'];
       double monto = double.tryParse(transDoc['monto'].toString()) ?? 0.0;
+
+      // Sumar el monto al total de ingresos
+      totalIngreso += monto;
 
       // Si la categoría ya existe en el mapa, actualizar los valores
       if (categoriasData.containsKey(categoria)) {
-        categoriasData[categoria]!['gastadoAbs'] += monto;
+        categoriasData[categoria]!['ingresoAbs'] += monto;
       } else {
         // Si no existe, crear una nueva entrada en el mapa
         categoriasData[categoria] = {
           'categoria': categoria,
-          'logo': logo,
-          'gastadoAbs': monto,
-          'presupuesto':
-              double.tryParse(categoriaDoc['presupuesto'].toString()) ?? 0.0,
+          'ingresoAbs': monto,
         };
       }
     }
 
-    // Calcular el presupuesto disponible y el presupuesto gráfico para cada categoría
+    // Calcular el porcentaje de ingreso por categoría y la altura gráfica
     categoriasData.forEach((categoria, data) {
-      double presupuestoAjustado =
-          data['presupuesto'] * seleccionPeriodos.length;
-      double presupuestoDisponible = presupuestoAjustado - data['gastadoAbs'];
-      if (presupuestoAjustado < 1) {
-        presupuestoAjustado = 1;
-      }
-      // Calcular el porcentaje del gasto sobre el presupuesto ajustado
-      double porcentajeGrafico = (data['gastadoAbs'] / presupuestoAjustado);
+      double porcentajeIngreso = (data['ingresoAbs'] / totalIngreso);
+      int heightInPx = (porcentajeIngreso * 400).toInt();
 
-      // Multiplicar el porcentaje por 235 px para obtener el valor en píxeles
-      int widthInPx = (porcentajeGrafico * 235).toInt();
-
-      // Seleccionar un color aleatorio de la lista de colores almacenada en AppState
-      List<Color> colores =
-          FFAppState().colores; // Acceso a la lista de colores
+      // Seleccionar un color aleatorio de la constante "colores" creada en FlutterFlow
+      List<Color> colores = FFAppState().colores; // Acceso a la constante
       int randomIndex = Random().nextInt(colores.length);
-      Color colorAleatorio = colores[randomIndex]; // Obtener el color
+      Color colorAleatorio = colores[randomIndex];
 
-      listaGraficoPresupuesto.add({
+      listaGraficoIngreso.add({
         'categoria': data['categoria'],
-        'logo': data['logo'],
-        'gastoAbs': data['gastadoAbs'].toInt(),
-        'presupuestoDisponible': presupuestoDisponible.toInt(),
-        'presupuestoGrafico': widthInPx,
-        'color': colorAleatorio, // Asignar el color directamente
+        'ingresoAbs': data['ingresoAbs'].toInt(),
+        'porcentajeIngreso': porcentajeIngreso,
+        'ingresoPx': heightInPx,
+        'color': colorAleatorio, // Asignar el color aleatorio
       });
     });
 
     // Almacenar los detalles en la App State
-    FFAppState().graficoPresupuestoAppState = listaGraficoPresupuesto
-        .map((e) => GraficoPresupuestoStruct(
+    FFAppState().graficoIngresoPorCategoria = listaGraficoIngreso
+        .map((e) => GraficoCategoriasIngresoStruct(
               categoria: e['categoria'] as String,
-              logo: e['logo'] as String,
-              gastadoAbs: e['gastoAbs'] as int,
-              presupuestoDisponible: e['presupuestoDisponible'] as int,
-              presupuestoGrafico: e['presupuestoGrafico'] as int,
-              color: e['color'] as Color, // Asignar el Color
+              ingresoPorCategoriaAbs: e['ingresoAbs'] as double,
+              porcentajeIngresoPorCategoria: e['porcentajeIngreso'] as double,
+              ingresoPorCategoriaPX: e['ingresoPx'] as int,
+              color: e['color'] as Color, // Asignar el color aleatorio
             ))
         .toList();
 
     print(
-        'Datos almacenados en la App State: ${FFAppState().graficoPresupuestoAppState}');
+        'Datos almacenados en la App State: ${FFAppState().graficoIngresoPorCategoria}');
   } catch (e) {
     print('Error en la consulta a Firebase: $e');
   }

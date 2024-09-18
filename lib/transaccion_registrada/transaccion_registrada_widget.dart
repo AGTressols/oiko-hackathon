@@ -1,4 +1,3 @@
-import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/custom_code/actions/index.dart' as actions;
@@ -29,44 +28,38 @@ class _TransaccionRegistradaWidgetState
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      FFAppState().flowFecha = getCurrentTimestamp;
-      FFAppState().flowMovimiento = '';
-      FFAppState().flowMonto = 0.0;
-      FFAppState().flowCuenta = FlowCuentaStruct();
-      FFAppState().flowCategoria = FlowCategoriaStruct();
-      FFAppState().flowEtiqueta = FlowEtiquetaStruct();
-      FFAppState().flowtraspasoCuenta = FlowCuentaStruct();
-      safeSetState(() {});
-      if (FFAppState().primerIngreso) {
-        await actions.guardarMesActualEnSeleccionPeriodos();
-        await Future.wait([
-          Future(() async {
-            await actions.procesarDatosGraficoPresupuesto();
-          }),
-          Future(() async {
-            await actions.calcularGastosTotales();
-          }),
-          Future(() async {
-            await actions.calcularSaldoTotal();
-          }),
-          Future(() async {
-            await actions.procesarDatosDeCuentas();
-          }),
-          Future(() async {
-            await actions.obtenerCategoriasConTransacciones();
-          }),
-          Future(() async {
-            await actions.obtenerCategoriasConTransaccionesHistorico();
-          }),
-        ]);
-        FFAppState().insertAtIndexInCategoriasHistorico(0, 'Todas');
-        safeSetState(() {});
-        FFAppState().insertAtIndexInSeleccionEtiquetasHistorico(0, 'Todas');
-        safeSetState(() {});
-        await actions.procesarGraficoHistoricoGastos();
-      } else {
-        return;
-      }
+      await actions.guardarMesActualEnSeleccionPeriodos();
+      await Future.wait([
+        Future(() async {
+          await actions.procesarDatosGraficoPresupuesto();
+        }),
+        Future(() async {
+          await actions.calcularGastosEIngresosTotales();
+        }),
+        Future(() async {
+          await actions.calcularSaldoTotal();
+        }),
+        Future(() async {
+          await actions.procesarDatosDeCuentas();
+        }),
+        Future(() async {
+          await actions.obtenerCategoriasConTransacciones();
+        }),
+        Future(() async {
+          await actions.obtenerCategoriasConTransaccionesHistorico();
+        }),
+        Future(() async {
+          await actions.procesarDatosGraficoIngresoPorCategoria();
+        }),
+        Future(() async {
+          await actions.procesarDatosHistoricoIngreso();
+        }),
+      ]);
+      FFAppState().insertAtIndexInCategoriasHistorico(0, 'Todas');
+      FFAppState().update(() {});
+      FFAppState().insertAtIndexInSeleccionEtiquetasHistorico(0, 'Todas');
+      FFAppState().update(() {});
+      await actions.procesarGraficoHistoricoGastos();
     });
   }
 

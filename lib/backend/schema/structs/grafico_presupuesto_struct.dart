@@ -3,7 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '/backend/schema/util/firestore_util.dart';
+import '/backend/schema/util/schema_util.dart';
 
+import 'index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 class GraficoPresupuestoStruct extends FFFirebaseStruct {
@@ -13,12 +15,14 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
     int? gastadoAbs,
     int? presupuestoDisponible,
     int? presupuestoGrafico,
+    Color? color,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _categoria = categoria,
         _logo = logo,
         _gastadoAbs = gastadoAbs,
         _presupuestoDisponible = presupuestoDisponible,
         _presupuestoGrafico = presupuestoGrafico,
+        _color = color,
         super(firestoreUtilData);
 
   // "categoria" field.
@@ -64,6 +68,13 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
 
   bool hasPresupuestoGrafico() => _presupuestoGrafico != null;
 
+  // "color" field.
+  Color? _color;
+  Color? get color => _color;
+  set color(Color? val) => _color = val;
+
+  bool hasColor() => _color != null;
+
   static GraficoPresupuestoStruct fromMap(Map<String, dynamic> data) =>
       GraficoPresupuestoStruct(
         categoria: data['categoria'] as String?,
@@ -71,6 +82,7 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
         gastadoAbs: castToType<int>(data['gastadoAbs']),
         presupuestoDisponible: castToType<int>(data['presupuestoDisponible']),
         presupuestoGrafico: castToType<int>(data['presupuestoGrafico']),
+        color: getSchemaColor(data['color']),
       );
 
   static GraficoPresupuestoStruct? maybeFromMap(dynamic data) => data is Map
@@ -83,6 +95,7 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
         'gastadoAbs': _gastadoAbs,
         'presupuestoDisponible': _presupuestoDisponible,
         'presupuestoGrafico': _presupuestoGrafico,
+        'color': _color,
       }.withoutNulls;
 
   @override
@@ -106,6 +119,10 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
         'presupuestoGrafico': serializeParam(
           _presupuestoGrafico,
           ParamType.int,
+        ),
+        'color': serializeParam(
+          _color,
+          ParamType.Color,
         ),
       }.withoutNulls;
 
@@ -137,6 +154,11 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
           ParamType.int,
           false,
         ),
+        color: deserializeParam(
+          data['color'],
+          ParamType.Color,
+          false,
+        ),
       );
 
   @override
@@ -149,12 +171,19 @@ class GraficoPresupuestoStruct extends FFFirebaseStruct {
         logo == other.logo &&
         gastadoAbs == other.gastadoAbs &&
         presupuestoDisponible == other.presupuestoDisponible &&
-        presupuestoGrafico == other.presupuestoGrafico;
+        presupuestoGrafico == other.presupuestoGrafico &&
+        color == other.color;
   }
 
   @override
-  int get hashCode => const ListEquality().hash(
-      [categoria, logo, gastadoAbs, presupuestoDisponible, presupuestoGrafico]);
+  int get hashCode => const ListEquality().hash([
+        categoria,
+        logo,
+        gastadoAbs,
+        presupuestoDisponible,
+        presupuestoGrafico,
+        color
+      ]);
 }
 
 GraficoPresupuestoStruct createGraficoPresupuestoStruct({
@@ -163,6 +192,7 @@ GraficoPresupuestoStruct createGraficoPresupuestoStruct({
   int? gastadoAbs,
   int? presupuestoDisponible,
   int? presupuestoGrafico,
+  Color? color,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -174,6 +204,7 @@ GraficoPresupuestoStruct createGraficoPresupuestoStruct({
       gastadoAbs: gastadoAbs,
       presupuestoDisponible: presupuestoDisponible,
       presupuestoGrafico: presupuestoGrafico,
+      color: color,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,

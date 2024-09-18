@@ -31,7 +31,7 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
 
     _model.tabBarController = TabController(
       vsync: this,
-      length: 1,
+      length: 2,
       initialIndex: 0,
     )..addListener(() => safeSetState(() {}));
   }
@@ -47,23 +47,31 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
     final chartPieChartColorsList1 = [
-      FlutterFlowTheme.of(context).primary,
-      FlutterFlowTheme.of(context).secondary,
-      FlutterFlowTheme.of(context).tertiary,
-      FlutterFlowTheme.of(context).warning,
-      const Color(0xFFC600DB),
-      const Color(0xFFCB91F4),
-      FlutterFlowTheme.of(context).accent4,
-      const Color(0xFF100EA3),
-      FlutterFlowTheme.of(context).secondaryText,
-      const Color(0xFF0FE7F9),
-      const Color(0xFF5C502E),
-      const Color(0xFF6A80C9),
-      FlutterFlowTheme.of(context).error,
-      const Color(0xFF2534B9),
-      const Color(0xFF8E80D9),
-      const Color(0xFF885495),
-      const Color(0xFF5B5ADF)
+      const Color(0xFF00DBA4),
+      const Color(0xFF7699D4),
+      const Color(0xFF9448BC),
+      const Color(0xFF480355),
+      const Color(0xFFEFBC9B),
+      const Color(0xFFEAC435),
+      const Color(0xFF345995),
+      const Color(0xFFFB4D3D),
+      const Color(0xFFCA1551),
+      const Color(0xFFDF9A57),
+      const Color(0xFFFC7A57),
+      const Color(0xFFFCD757),
+      const Color(0xFF5E5B52),
+      const Color(0xFF791E94),
+      const Color(0xFFDE6449),
+      const Color(0xFF407899),
+      const Color(0xFFCFD11A),
+      const Color(0xFF9F87AF),
+      const Color(0xFF88527F),
+      const Color(0xFF614344),
+      const Color(0xFF332C23),
+      const Color(0xFFE56399),
+      const Color(0xFFE5D4CE),
+      const Color(0xFFDE6E4B),
+      const Color(0xFF7A6563)
     ];
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -130,10 +138,13 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                     Tab(
                                       text: 'Gastos',
                                     ),
+                                    Tab(
+                                      text: 'Ingresos',
+                                    ),
                                   ],
                                   controller: _model.tabBarController,
                                   onTap: (i) async {
-                                    [() async {}][i]();
+                                    [() async {}, () async {}][i]();
                                   },
                                 ),
                               ),
@@ -169,10 +180,10 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                             FlutterFlowDropDown<
                                                                 String>(
                                                           multiSelectController: _model
-                                                                  .dropDownValueController ??=
+                                                                  .dropDownValueController1 ??=
                                                               FormListFieldController<
                                                                   String>(_model
-                                                                      .dropDownValue ??=
+                                                                      .dropDownValue1 ??=
                                                                   List<
                                                                       String>.from(
                                                             FFAppState()
@@ -225,7 +236,7 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                       context)
                                                                   .alternate,
                                                           borderWidth: 2.0,
-                                                          borderRadius: 24.0,
+                                                          borderRadius: 30.0,
                                                           margin:
                                                               const EdgeInsetsDirectional
                                                                   .fromSTEB(
@@ -240,12 +251,12 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                           onMultiSelectChanged:
                                                               (val) async {
                                                             safeSetState(() =>
-                                                                _model.dropDownValue =
+                                                                _model.dropDownValue1 =
                                                                     val);
                                                             FFAppState()
                                                                     .seleccionPeriodos =
                                                                 _model
-                                                                    .dropDownValue!
+                                                                    .dropDownValue1!
                                                                     .toList()
                                                                     .cast<
                                                                         String>();
@@ -257,7 +268,7 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                               }),
                                                               Future(() async {
                                                                 await actions
-                                                                    .calcularGastosTotales();
+                                                                    .calcularGastosEIngresosTotales();
                                                               }),
                                                               Future(() async {
                                                                 await actions
@@ -274,6 +285,10 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                               Future(() async {
                                                                 await actions
                                                                     .obtenerCategoriasConTransaccionesHistorico();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .procesarDatosGraficoIngresoPorCategoria();
                                                               }),
                                                             ]);
 
@@ -640,11 +655,11 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                 (context, gastosCuentaIndex) {
                                                                               final gastosCuentaItem = gastosCuenta[gastosCuentaIndex];
                                                                               return Container(
-                                                                                width: 150.0,
+                                                                                width: 180.0,
                                                                                 height: MediaQuery.sizeOf(context).height * 0.01,
                                                                                 decoration: BoxDecoration(
                                                                                   color: FlutterFlowTheme.of(context).alternate,
-                                                                                  borderRadius: BorderRadius.circular(8.0),
+                                                                                  borderRadius: BorderRadius.circular(30.0),
                                                                                 ),
                                                                                 child: Padding(
                                                                                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 0.0),
@@ -653,16 +668,16 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                                     children: [
                                                                                       Flexible(
-                                                                                        flex: 35,
+                                                                                        flex: 40,
                                                                                         child: Row(
                                                                                           mainAxisSize: MainAxisSize.max,
                                                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                                           children: [
                                                                                             Flexible(
-                                                                                              flex: 20,
+                                                                                              flex: 25,
                                                                                               child: Container(
-                                                                                                width: MediaQuery.sizeOf(context).width * 0.4,
-                                                                                                height: MediaQuery.sizeOf(context).width * 0.4,
+                                                                                                width: MediaQuery.sizeOf(context).width * 0.6,
+                                                                                                height: MediaQuery.sizeOf(context).width * 0.6,
                                                                                                 clipBehavior: Clip.antiAlias,
                                                                                                 decoration: const BoxDecoration(
                                                                                                   shape: BoxShape.circle,
@@ -674,12 +689,13 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                               ),
                                                                                             ),
                                                                                             Flexible(
-                                                                                              flex: 80,
+                                                                                              flex: 75,
                                                                                               child: Text(
                                                                                                 gastosCuentaItem.cuenta,
                                                                                                 textAlign: TextAlign.center,
                                                                                                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                                       fontFamily: 'Outfit',
+                                                                                                      fontSize: 16.0,
                                                                                                       letterSpacing: 0.0,
                                                                                                     ),
                                                                                               ),
@@ -688,7 +704,7 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                         ),
                                                                                       ),
                                                                                       Flexible(
-                                                                                        flex: 65,
+                                                                                        flex: 60,
                                                                                         child: Text(
                                                                                           formatNumber(
                                                                                             gastosCuentaItem.monto,
@@ -1225,6 +1241,8 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                   FFAppState().removeAtIndexFromCategoriasSeleccionadas(1);
                                                                                   safeSetState(() {});
                                                                                   await actions.procesarGraficoEtiqueta();
+
+                                                                                  context.pushNamed('Estadisticas');
                                                                                 },
                                                                                 width: MediaQuery.sizeOf(context).width * 0.5,
                                                                                 height: MediaQuery.sizeOf(context).height * 1.0,
@@ -1454,6 +1472,8 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                         FFAppState().insertAtIndexInSeleccionEtiquetasHistorico(0, _model.etiquetashistoricoValue!);
                                                                                         safeSetState(() {});
                                                                                         await actions.procesarGraficoHistoricoGastos();
+
+                                                                                        context.pushNamed('Estadisticas');
                                                                                       },
                                                                                       width: MediaQuery.sizeOf(context).width * 0.4,
                                                                                       height: MediaQuery.sizeOf(context).height * 1.0,
@@ -1552,6 +1572,965 @@ class _EstadisticasWidgetState extends State<EstadisticasWidget>
                                                                                   ),
                                                                                 ),
                                                                               ],
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          0.0, 16.0, 0.0, 0.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Flexible(
+                                            flex: 15,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Flexible(
+                                                  flex: 55,
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Flexible(
+                                                        child:
+                                                            FlutterFlowDropDown<
+                                                                String>(
+                                                          multiSelectController: _model
+                                                                  .dropDownValueController2 ??=
+                                                              FormListFieldController<
+                                                                  String>(_model
+                                                                      .dropDownValue2 ??=
+                                                                  List<
+                                                                      String>.from(
+                                                            FFAppState()
+                                                                    .seleccionPeriodos ??
+                                                                [],
+                                                          )),
+                                                          options: functions
+                                                              .calendarDropdown(),
+                                                          width:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .width *
+                                                                  0.4,
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.12,
+                                                          textStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyMedium
+                                                                  .override(
+                                                                    fontFamily:
+                                                                        'Outfit',
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .primaryText,
+                                                                    fontSize:
+                                                                        20.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                  ),
+                                                          hintText: 'Períodos',
+                                                          icon: Icon(
+                                                            Icons
+                                                                .keyboard_arrow_down_rounded,
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .secondaryText,
+                                                            size: 14.0,
+                                                          ),
+                                                          fillColor:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .alternate,
+                                                          elevation: 2.0,
+                                                          borderColor:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .alternate,
+                                                          borderWidth: 2.0,
+                                                          borderRadius: 24.0,
+                                                          margin:
+                                                              const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      16.0,
+                                                                      4.0,
+                                                                      16.0,
+                                                                      4.0),
+                                                          hidesUnderline: true,
+                                                          isOverButton: false,
+                                                          isSearchable: false,
+                                                          isMultiSelect: true,
+                                                          onMultiSelectChanged:
+                                                              (val) async {
+                                                            safeSetState(() =>
+                                                                _model.dropDownValue2 =
+                                                                    val);
+                                                            FFAppState()
+                                                                    .seleccionPeriodos =
+                                                                _model
+                                                                    .dropDownValue2!
+                                                                    .toList()
+                                                                    .cast<
+                                                                        String>();
+                                                            safeSetState(() {});
+                                                            await Future.wait([
+                                                              Future(() async {
+                                                                await actions
+                                                                    .procesarDatosGraficoPresupuesto();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .calcularGastosEIngresosTotales();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .calcularSaldoTotal();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .procesarDatosDeCuentas();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .obtenerCategoriasConTransacciones();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .obtenerCategoriasConTransaccionesHistorico();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .procesarDatosGraficoIngresoPorCategoria();
+                                                              }),
+                                                              Future(() async {
+                                                                await actions
+                                                                    .procesarDatosHistoricoIngreso();
+                                                              }),
+                                                            ]);
+
+                                                            context.pushNamed(
+                                                              'Estadisticas',
+                                                              extra: <String,
+                                                                  dynamic>{
+                                                                kTransitionInfoKey:
+                                                                    const TransitionInfo(
+                                                                  hasTransition:
+                                                                      true,
+                                                                  transitionType:
+                                                                      PageTransitionType
+                                                                          .fade,
+                                                                  duration: Duration(
+                                                                      milliseconds:
+                                                                          0),
+                                                                ),
+                                                              },
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                  flex: 45,
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Flexible(
+                                                        flex: 65,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      0.0,
+                                                                      4.0),
+                                                          child: Container(
+                                                            width: MediaQuery
+                                                                        .sizeOf(
+                                                                            context)
+                                                                    .width *
+                                                                1.0,
+                                                            height: MediaQuery
+                                                                        .sizeOf(
+                                                                            context)
+                                                                    .height *
+                                                                0.1,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .success,
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .only(
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        0.0),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        0.0),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        30.0),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        30.0),
+                                                              ),
+                                                            ),
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Flexible(
+                                                                  flex: 30,
+                                                                  child: Text(
+                                                                    'Ingresos totales',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Outfit',
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).primaryBackground,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                                Flexible(
+                                                                  flex: 70,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: const EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    child: Text(
+                                                                      formatNumber(
+                                                                        FFAppState()
+                                                                            .ingresoTotalVariable,
+                                                                        formatType:
+                                                                            FormatType.decimal,
+                                                                        decimalType:
+                                                                            DecimalType.automatic,
+                                                                        currency:
+                                                                            '\$',
+                                                                      ),
+                                                                      style: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyMedium
+                                                                          .override(
+                                                                            fontFamily:
+                                                                                'Outfit',
+                                                                            fontSize:
+                                                                                24.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        flex: 35,
+                                                        child: Container(
+                                                          width:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .width *
+                                                                  1.0,
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.05,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .primary,
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .only(
+                                                              bottomLeft: Radius
+                                                                  .circular(
+                                                                      30.0),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          30.0),
+                                                              topLeft: Radius
+                                                                  .circular(
+                                                                      0.0),
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      0.0),
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceEvenly,
+                                                            children: [
+                                                              Flexible(
+                                                                flex: 35,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          8.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                  child: Text(
+                                                                    'Saldo',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Outfit',
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).primaryBackground,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Flexible(
+                                                                flex: 65,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          8.0,
+                                                                          0.0),
+                                                                  child: Text(
+                                                                    formatNumber(
+                                                                      FFAppState()
+                                                                          .saldoVariable,
+                                                                      formatType:
+                                                                          FormatType
+                                                                              .compact,
+                                                                      currency:
+                                                                          '\$',
+                                                                    ),
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Outfit',
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).primaryBackground,
+                                                                          fontSize:
+                                                                              18.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 85,
+                                            child: Padding(
+                                              padding: const EdgeInsetsDirectional
+                                                  .fromSTEB(
+                                                      0.0, 32.0, 0.0, 0.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 85,
+                                                    child: Align(
+                                                      alignment:
+                                                          const AlignmentDirectional(
+                                                              0.0, -1.0),
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Flexible(
+                                                              flex: 10,
+                                                              child: Align(
+                                                                alignment:
+                                                                    const AlignmentDirectional(
+                                                                        0.0,
+                                                                        0.0),
+                                                                child: Text(
+                                                                  'Ingresos por cuentas',
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'Outfit',
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .secondaryText,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          8.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .max,
+                                                                children: [
+                                                                  Flexible(
+                                                                    child:
+                                                                        Container(
+                                                                      width: MediaQuery.sizeOf(context)
+                                                                              .width *
+                                                                          1.0,
+                                                                      height:
+                                                                          MediaQuery.sizeOf(context).height *
+                                                                              0.1,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .primaryBackground,
+                                                                      ),
+                                                                      child:
+                                                                          Builder(
+                                                                        builder:
+                                                                            (context) {
+                                                                          final ingresosCuenta = FFAppState()
+                                                                              .ingresosPorCuenta
+                                                                              .map((e) => e)
+                                                                              .toList();
+
+                                                                          return ListView
+                                                                              .separated(
+                                                                            padding:
+                                                                                EdgeInsets.zero,
+                                                                            primary:
+                                                                                false,
+                                                                            shrinkWrap:
+                                                                                true,
+                                                                            scrollDirection:
+                                                                                Axis.horizontal,
+                                                                            itemCount:
+                                                                                ingresosCuenta.length,
+                                                                            separatorBuilder: (_, __) =>
+                                                                                const SizedBox(width: 10.0),
+                                                                            itemBuilder:
+                                                                                (context, ingresosCuentaIndex) {
+                                                                              final ingresosCuentaItem = ingresosCuenta[ingresosCuentaIndex];
+                                                                              return Container(
+                                                                                width: 180.0,
+                                                                                height: MediaQuery.sizeOf(context).height * 0.01,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: FlutterFlowTheme.of(context).alternate,
+                                                                                  borderRadius: BorderRadius.circular(30.0),
+                                                                                ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 0.0),
+                                                                                  child: Column(
+                                                                                    mainAxisSize: MainAxisSize.max,
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                    children: [
+                                                                                      Flexible(
+                                                                                        flex: 40,
+                                                                                        child: Row(
+                                                                                          mainAxisSize: MainAxisSize.max,
+                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                          children: [
+                                                                                            Flexible(
+                                                                                              flex: 25,
+                                                                                              child: Container(
+                                                                                                width: MediaQuery.sizeOf(context).width * 0.6,
+                                                                                                height: MediaQuery.sizeOf(context).width * 0.6,
+                                                                                                clipBehavior: Clip.antiAlias,
+                                                                                                decoration: const BoxDecoration(
+                                                                                                  shape: BoxShape.circle,
+                                                                                                ),
+                                                                                                child: Image.network(
+                                                                                                  ingresosCuentaItem.logo,
+                                                                                                  fit: BoxFit.cover,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Flexible(
+                                                                                              flex: 75,
+                                                                                              child: Text(
+                                                                                                ingresosCuentaItem.cuenta,
+                                                                                                textAlign: TextAlign.center,
+                                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                      fontFamily: 'Outfit',
+                                                                                                      fontSize: 16.0,
+                                                                                                      letterSpacing: 0.0,
+                                                                                                    ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      Flexible(
+                                                                                        flex: 60,
+                                                                                        child: Text(
+                                                                                          formatNumber(
+                                                                                            ingresosCuentaItem.monto,
+                                                                                            formatType: FormatType.decimal,
+                                                                                            decimalType: DecimalType.automatic,
+                                                                                            currency: '\$',
+                                                                                          ),
+                                                                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                fontFamily: 'Outfit',
+                                                                                                fontSize: 20.0,
+                                                                                                letterSpacing: 0.0,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Flexible(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            4.0,
+                                                                            32.0,
+                                                                            4.0,
+                                                                            0.0),
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              30.0),
+                                                                  child:
+                                                                      Container(
+                                                                    width: MediaQuery.sizeOf(context)
+                                                                            .width *
+                                                                        1.0,
+                                                                    height:
+                                                                        MediaQuery.sizeOf(context).height *
+                                                                            0.5,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .accent4,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              30.0),
+                                                                    ),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .max,
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment: const AlignmentDirectional(
+                                                                              0.0,
+                                                                              0.0),
+                                                                          child:
+                                                                              Padding(
+                                                                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                                0.0,
+                                                                                12.0,
+                                                                                0.0,
+                                                                                0.0),
+                                                                            child:
+                                                                                Text(
+                                                                              'Importancia de categorías',
+                                                                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                    fontFamily: 'Outfit',
+                                                                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                    fontSize: 12.0,
+                                                                                    letterSpacing: 0.0,
+                                                                                  ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.max,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            Align(
+                                                                              alignment: const AlignmentDirectional(-0.7, 0.0),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                                                                                child: ClipRRect(
+                                                                                  borderRadius: BorderRadius.circular(30.0),
+                                                                                  child: Container(
+                                                                                    width: 118.0,
+                                                                                    height: 400.0,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                      borderRadius: BorderRadius.circular(30.0),
+                                                                                    ),
+                                                                                    child: Builder(
+                                                                                      builder: (context) {
+                                                                                        final ingresos = FFAppState().graficoIngresoPorCategoria.map((e) => e).toList();
+
+                                                                                        return ListView.separated(
+                                                                                          padding: EdgeInsets.zero,
+                                                                                          primary: false,
+                                                                                          scrollDirection: Axis.vertical,
+                                                                                          itemCount: ingresos.length,
+                                                                                          separatorBuilder: (_, __) => const SizedBox(height: 2.0),
+                                                                                          itemBuilder: (context, ingresosIndex) {
+                                                                                            final ingresosItem = ingresos[ingresosIndex];
+                                                                                            return Container(
+                                                                                              width: 100.0,
+                                                                                              height: ingresosItem.ingresoPorCategoriaPX.toDouble(),
+                                                                                              decoration: BoxDecoration(
+                                                                                                color: ingresosItem.color,
+                                                                                                border: Border.all(
+                                                                                                  color: FlutterFlowTheme.of(context).accent4,
+                                                                                                ),
+                                                                                              ),
+                                                                                              alignment: const AlignmentDirectional(0.0, 0.0),
+                                                                                              child: Text(
+                                                                                                formatNumber(
+                                                                                                  ingresosItem.porcentajeIngresoPorCategoria,
+                                                                                                  formatType: FormatType.percent,
+                                                                                                ),
+                                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                      fontFamily: 'Outfit',
+                                                                                                      fontSize: 18.0,
+                                                                                                      letterSpacing: 0.0,
+                                                                                                    ),
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        );
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            Container(
+                                                                              width: 222.0,
+                                                                              height: 380.0,
+                                                                              decoration: const BoxDecoration(),
+                                                                              child: Align(
+                                                                                alignment: const AlignmentDirectional(0.0, 0.0),
+                                                                                child: Builder(
+                                                                                  builder: (context) {
+                                                                                    final ingresoDetalle = FFAppState().graficoIngresoPorCategoria.map((e) => e).toList();
+
+                                                                                    return GridView.builder(
+                                                                                      padding: EdgeInsets.zero,
+                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                        crossAxisCount: 1,
+                                                                                        crossAxisSpacing: 2.0,
+                                                                                        mainAxisSpacing: 4.0,
+                                                                                        childAspectRatio: 3.0,
+                                                                                      ),
+                                                                                      scrollDirection: Axis.vertical,
+                                                                                      itemCount: ingresoDetalle.length,
+                                                                                      itemBuilder: (context, ingresoDetalleIndex) {
+                                                                                        final ingresoDetalleItem = ingresoDetalle[ingresoDetalleIndex];
+                                                                                        return Padding(
+                                                                                          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
+                                                                                          child: Row(
+                                                                                            mainAxisSize: MainAxisSize.max,
+                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Flexible(
+                                                                                                flex: 20,
+                                                                                                child: Align(
+                                                                                                  alignment: const AlignmentDirectional(-1.0, 0.0),
+                                                                                                  child: Container(
+                                                                                                    width: 30.0,
+                                                                                                    height: 30.0,
+                                                                                                    decoration: BoxDecoration(
+                                                                                                      color: ingresoDetalleItem.color,
+                                                                                                      borderRadius: BorderRadius.circular(5.0),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              Flexible(
+                                                                                                flex: 80,
+                                                                                                child: Column(
+                                                                                                  mainAxisSize: MainAxisSize.max,
+                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                      ingresoDetalleItem.categoria,
+                                                                                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                            fontFamily: 'Outfit',
+                                                                                                            fontSize: 16.0,
+                                                                                                            letterSpacing: 0.0,
+                                                                                                            fontWeight: FontWeight.normal,
+                                                                                                          ),
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      formatNumber(
+                                                                                                        ingresoDetalleItem.ingresoPorCategoriaAbs,
+                                                                                                        formatType: FormatType.decimal,
+                                                                                                        decimalType: DecimalType.automatic,
+                                                                                                        currency: '\$',
+                                                                                                      ),
+                                                                                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                            fontFamily: 'Outfit',
+                                                                                                            fontSize: 18.0,
+                                                                                                            letterSpacing: 0.0,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                          ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Flexible(
+                                                              child: Padding(
+                                                                padding: const EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        4.0,
+                                                                        32.0,
+                                                                        4.0,
+                                                                        32.0),
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              30.0),
+                                                                  child:
+                                                                      Container(
+                                                                    width: MediaQuery.sizeOf(context)
+                                                                            .width *
+                                                                        1.0,
+                                                                    height:
+                                                                        MediaQuery.sizeOf(context).height *
+                                                                            0.4,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .accent4,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              30.0),
+                                                                    ),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                          8.0,
+                                                                          0.0,
+                                                                          8.0,
+                                                                          0.0),
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Flexible(
+                                                                            flex:
+                                                                                10,
+                                                                            child:
+                                                                                Align(
+                                                                              alignment: const AlignmentDirectional(0.0, 0.0),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+                                                                                child: Text(
+                                                                                  'Histórico',
+                                                                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                        fontFamily: 'Outfit',
+                                                                                        color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                        fontSize: 12.0,
+                                                                                        letterSpacing: 0.0,
+                                                                                      ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                                0.0,
+                                                                                0.0,
+                                                                                0.0,
+                                                                                15.0),
+                                                                            child:
+                                                                                Container(
+                                                                              width: 400.0,
+                                                                              height: 300.0,
+                                                                              decoration: BoxDecoration(
+                                                                                color: FlutterFlowTheme.of(context).alternate,
+                                                                              ),
+                                                                              child: Builder(
+                                                                                builder: (context) {
+                                                                                  final padre = FFAppState().graficoHistoricoIngresoPadre.map((e) => e).toList();
+
+                                                                                  return ListView.separated(
+                                                                                    padding: EdgeInsets.zero,
+                                                                                    reverse: true,
+                                                                                    primary: false,
+                                                                                    scrollDirection: Axis.horizontal,
+                                                                                    itemCount: padre.length,
+                                                                                    separatorBuilder: (_, __) => const SizedBox(width: 50.0),
+                                                                                    itemBuilder: (context, padreIndex) {
+                                                                                      final padreItem = padre[padreIndex];
+                                                                                      return Column(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          ClipRRect(
+                                                                                            borderRadius: BorderRadius.circular(30.0),
+                                                                                            child: Container(
+                                                                                              width: 70.0,
+                                                                                              height: padreItem.alturaDataType.toDouble(),
+                                                                                              decoration: BoxDecoration(
+                                                                                                color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                                borderRadius: BorderRadius.circular(30.0),
+                                                                                              ),
+                                                                                              child: Builder(
+                                                                                                builder: (context) {
+                                                                                                  final hijo = FFAppState().graficoIngresoHistoricoHijo.map((e) => e).toList().where((e) => e.fecha == padreItem.fecha).toList();
+
+                                                                                                  return ListView.separated(
+                                                                                                    padding: EdgeInsets.zero,
+                                                                                                    reverse: true,
+                                                                                                    primary: false,
+                                                                                                    scrollDirection: Axis.vertical,
+                                                                                                    itemCount: hijo.length,
+                                                                                                    separatorBuilder: (_, __) => const SizedBox(height: 2.0),
+                                                                                                    itemBuilder: (context, hijoIndex) {
+                                                                                                      final hijoItem = hijo[hijoIndex];
+                                                                                                      return Container(
+                                                                                                        width: 100.0,
+                                                                                                        height: hijoItem.altura.toDouble(),
+                                                                                                        decoration: BoxDecoration(
+                                                                                                          color: hijoItem.color,
+                                                                                                        ),
+                                                                                                      );
+                                                                                                    },
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            padreItem.fecha,
+                                                                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                  fontFamily: 'Outfit',
+                                                                                                  letterSpacing: 0.0,
+                                                                                                ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      );
+                                                                                    },
+                                                                                  );
+                                                                                },
+                                                                              ),
                                                                             ),
                                                                           ),
                                                                         ],

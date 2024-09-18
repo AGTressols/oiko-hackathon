@@ -86,7 +86,12 @@ Future<double> calcularSaldoTotal() async {
     // Procesar los resultados de la consulta
     for (var doc in transaccionesSnapshot.docs) {
       String tipoMovimiento = doc['movimiento'];
-      double monto = doc['monto'];
+
+      // Convertir el monto a double explícitamente en caso de ser int
+      double monto = (doc['monto'] is int)
+          ? (doc['monto'] as int).toDouble()
+          : doc['monto'];
+
       print('Transacción tipo: $tipoMovimiento, monto: $monto');
 
       if (tipoMovimiento == 'Ingreso') {

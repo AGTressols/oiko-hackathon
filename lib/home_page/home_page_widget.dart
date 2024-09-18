@@ -43,7 +43,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             await actions.procesarDatosGraficoPresupuesto();
           }),
           Future(() async {
-            await actions.calcularGastosTotales();
+            await actions.calcularGastosEIngresosTotales();
           }),
           Future(() async {
             await actions.calcularSaldoTotal();
@@ -56,6 +56,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           }),
           Future(() async {
             await actions.obtenerCategoriasConTransaccionesHistorico();
+          }),
+          Future(() async {
+            await actions.procesarDatosGraficoIngresoPorCategoria();
+          }),
+          Future(() async {
+            await actions.procesarDatosHistoricoIngreso();
           }),
         ]);
         FFAppState().insertAtIndexInCategoriasHistorico(0, 'Todas');

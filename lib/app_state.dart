@@ -21,6 +21,28 @@ class FFAppState extends ChangeNotifier {
       _seleccionPeriodos =
           prefs.getStringList('ff_seleccionPeriodos') ?? _seleccionPeriodos;
     });
+    _safeInit(() {
+      _categoriasSeleccionadas =
+          prefs.getStringList('ff_categoriasSeleccionadas') ??
+              _categoriasSeleccionadas;
+    });
+    _safeInit(() {
+      _seleccionCategoriasHistorico =
+          prefs.getStringList('ff_seleccionCategoriasHistorico') ??
+              _seleccionCategoriasHistorico;
+    });
+    _safeInit(() {
+      _seleccionEtiquetasHistorico =
+          prefs.getStringList('ff_seleccionEtiquetasHistorico') ??
+              _seleccionEtiquetasHistorico;
+    });
+    _safeInit(() {
+      _colores = prefs
+              .getStringList('ff_colores')
+              ?.map((x) => Color(int.tryParse(x) ?? 0))
+              .toList() ??
+          _colores;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -327,18 +349,22 @@ class FFAppState extends ChangeNotifier {
   List<String> get categoriasSeleccionadas => _categoriasSeleccionadas;
   set categoriasSeleccionadas(List<String> value) {
     _categoriasSeleccionadas = value;
+    prefs.setStringList('ff_categoriasSeleccionadas', value);
   }
 
   void addToCategoriasSeleccionadas(String value) {
     categoriasSeleccionadas.add(value);
+    prefs.setStringList('ff_categoriasSeleccionadas', _categoriasSeleccionadas);
   }
 
   void removeFromCategoriasSeleccionadas(String value) {
     categoriasSeleccionadas.remove(value);
+    prefs.setStringList('ff_categoriasSeleccionadas', _categoriasSeleccionadas);
   }
 
   void removeAtIndexFromCategoriasSeleccionadas(int index) {
     categoriasSeleccionadas.removeAt(index);
+    prefs.setStringList('ff_categoriasSeleccionadas', _categoriasSeleccionadas);
   }
 
   void updateCategoriasSeleccionadasAtIndex(
@@ -346,10 +372,12 @@ class FFAppState extends ChangeNotifier {
     String Function(String) updateFn,
   ) {
     categoriasSeleccionadas[index] = updateFn(_categoriasSeleccionadas[index]);
+    prefs.setStringList('ff_categoriasSeleccionadas', _categoriasSeleccionadas);
   }
 
   void insertAtIndexInCategoriasSeleccionadas(int index, String value) {
     categoriasSeleccionadas.insert(index, value);
+    prefs.setStringList('ff_categoriasSeleccionadas', _categoriasSeleccionadas);
   }
 
   List<String> _categoriasHistorico = [];
@@ -415,18 +443,25 @@ class FFAppState extends ChangeNotifier {
       _seleccionCategoriasHistorico;
   set seleccionCategoriasHistorico(List<String> value) {
     _seleccionCategoriasHistorico = value;
+    prefs.setStringList('ff_seleccionCategoriasHistorico', value);
   }
 
   void addToSeleccionCategoriasHistorico(String value) {
     seleccionCategoriasHistorico.add(value);
+    prefs.setStringList(
+        'ff_seleccionCategoriasHistorico', _seleccionCategoriasHistorico);
   }
 
   void removeFromSeleccionCategoriasHistorico(String value) {
     seleccionCategoriasHistorico.remove(value);
+    prefs.setStringList(
+        'ff_seleccionCategoriasHistorico', _seleccionCategoriasHistorico);
   }
 
   void removeAtIndexFromSeleccionCategoriasHistorico(int index) {
     seleccionCategoriasHistorico.removeAt(index);
+    prefs.setStringList(
+        'ff_seleccionCategoriasHistorico', _seleccionCategoriasHistorico);
   }
 
   void updateSeleccionCategoriasHistoricoAtIndex(
@@ -435,28 +470,39 @@ class FFAppState extends ChangeNotifier {
   ) {
     seleccionCategoriasHistorico[index] =
         updateFn(_seleccionCategoriasHistorico[index]);
+    prefs.setStringList(
+        'ff_seleccionCategoriasHistorico', _seleccionCategoriasHistorico);
   }
 
   void insertAtIndexInSeleccionCategoriasHistorico(int index, String value) {
     seleccionCategoriasHistorico.insert(index, value);
+    prefs.setStringList(
+        'ff_seleccionCategoriasHistorico', _seleccionCategoriasHistorico);
   }
 
   List<String> _seleccionEtiquetasHistorico = [];
   List<String> get seleccionEtiquetasHistorico => _seleccionEtiquetasHistorico;
   set seleccionEtiquetasHistorico(List<String> value) {
     _seleccionEtiquetasHistorico = value;
+    prefs.setStringList('ff_seleccionEtiquetasHistorico', value);
   }
 
   void addToSeleccionEtiquetasHistorico(String value) {
     seleccionEtiquetasHistorico.add(value);
+    prefs.setStringList(
+        'ff_seleccionEtiquetasHistorico', _seleccionEtiquetasHistorico);
   }
 
   void removeFromSeleccionEtiquetasHistorico(String value) {
     seleccionEtiquetasHistorico.remove(value);
+    prefs.setStringList(
+        'ff_seleccionEtiquetasHistorico', _seleccionEtiquetasHistorico);
   }
 
   void removeAtIndexFromSeleccionEtiquetasHistorico(int index) {
     seleccionEtiquetasHistorico.removeAt(index);
+    prefs.setStringList(
+        'ff_seleccionEtiquetasHistorico', _seleccionEtiquetasHistorico);
   }
 
   void updateSeleccionEtiquetasHistoricoAtIndex(
@@ -465,10 +511,14 @@ class FFAppState extends ChangeNotifier {
   ) {
     seleccionEtiquetasHistorico[index] =
         updateFn(_seleccionEtiquetasHistorico[index]);
+    prefs.setStringList(
+        'ff_seleccionEtiquetasHistorico', _seleccionEtiquetasHistorico);
   }
 
   void insertAtIndexInSeleccionEtiquetasHistorico(int index, String value) {
     seleccionEtiquetasHistorico.insert(index, value);
+    prefs.setStringList(
+        'ff_seleccionEtiquetasHistorico', _seleccionEtiquetasHistorico);
   }
 
   String _nombreGraficoHistoricoGastos = '';
@@ -578,6 +628,212 @@ class FFAppState extends ChangeNotifier {
   set primerIngreso(bool value) {
     _primerIngreso = value;
   }
+
+  double _ingresoTotalVariable = 0.0;
+  double get ingresoTotalVariable => _ingresoTotalVariable;
+  set ingresoTotalVariable(double value) {
+    _ingresoTotalVariable = value;
+  }
+
+  List<GastosCuentasStruct> _ingresosPorCuenta = [];
+  List<GastosCuentasStruct> get ingresosPorCuenta => _ingresosPorCuenta;
+  set ingresosPorCuenta(List<GastosCuentasStruct> value) {
+    _ingresosPorCuenta = value;
+  }
+
+  void addToIngresosPorCuenta(GastosCuentasStruct value) {
+    ingresosPorCuenta.add(value);
+  }
+
+  void removeFromIngresosPorCuenta(GastosCuentasStruct value) {
+    ingresosPorCuenta.remove(value);
+  }
+
+  void removeAtIndexFromIngresosPorCuenta(int index) {
+    ingresosPorCuenta.removeAt(index);
+  }
+
+  void updateIngresosPorCuentaAtIndex(
+    int index,
+    GastosCuentasStruct Function(GastosCuentasStruct) updateFn,
+  ) {
+    ingresosPorCuenta[index] = updateFn(_ingresosPorCuenta[index]);
+  }
+
+  void insertAtIndexInIngresosPorCuenta(int index, GastosCuentasStruct value) {
+    ingresosPorCuenta.insert(index, value);
+  }
+
+  List<GraficoCategoriasIngresoStruct> _graficoIngresoPorCategoria = [];
+  List<GraficoCategoriasIngresoStruct> get graficoIngresoPorCategoria =>
+      _graficoIngresoPorCategoria;
+  set graficoIngresoPorCategoria(List<GraficoCategoriasIngresoStruct> value) {
+    _graficoIngresoPorCategoria = value;
+  }
+
+  void addToGraficoIngresoPorCategoria(GraficoCategoriasIngresoStruct value) {
+    graficoIngresoPorCategoria.add(value);
+  }
+
+  void removeFromGraficoIngresoPorCategoria(
+      GraficoCategoriasIngresoStruct value) {
+    graficoIngresoPorCategoria.remove(value);
+  }
+
+  void removeAtIndexFromGraficoIngresoPorCategoria(int index) {
+    graficoIngresoPorCategoria.removeAt(index);
+  }
+
+  void updateGraficoIngresoPorCategoriaAtIndex(
+    int index,
+    GraficoCategoriasIngresoStruct Function(GraficoCategoriasIngresoStruct)
+        updateFn,
+  ) {
+    graficoIngresoPorCategoria[index] =
+        updateFn(_graficoIngresoPorCategoria[index]);
+  }
+
+  void insertAtIndexInGraficoIngresoPorCategoria(
+      int index, GraficoCategoriasIngresoStruct value) {
+    graficoIngresoPorCategoria.insert(index, value);
+  }
+
+  List<Color> _colores = [
+    const Color(0xff00dba4),
+    const Color(0xff7699d4),
+    const Color(0xff9448bc),
+    const Color(0xff480355),
+    const Color(0xffefbc9b),
+    const Color(0xffeac435),
+    const Color(0xff345995),
+    const Color(0xfffb4d3d),
+    const Color(0xffca1551),
+    const Color(0xffdf9a57),
+    const Color(0xfffc7a57),
+    const Color(0xfffcd757),
+    const Color(0xff5e5b52),
+    const Color(0xff791e94),
+    const Color(0xffde6449),
+    const Color(0xff407899),
+    const Color(0xffcfd11a),
+    const Color(0xff9f87af),
+    const Color(0xff88527f),
+    const Color(0xff614344),
+    const Color(0xff332c23),
+    const Color(0xffe56399),
+    const Color(0xffe5d4ce),
+    const Color(0xffde6e4b),
+    const Color(0xff7a6563)
+  ];
+  List<Color> get colores => _colores;
+  set colores(List<Color> value) {
+    _colores = value;
+    prefs.setStringList(
+        'ff_colores', value.map((x) => x.value.toString()).toList());
+  }
+
+  void addToColores(Color value) {
+    colores.add(value);
+    prefs.setStringList(
+        'ff_colores', _colores.map((x) => x.value.toString()).toList());
+  }
+
+  void removeFromColores(Color value) {
+    colores.remove(value);
+    prefs.setStringList(
+        'ff_colores', _colores.map((x) => x.value.toString()).toList());
+  }
+
+  void removeAtIndexFromColores(int index) {
+    colores.removeAt(index);
+    prefs.setStringList(
+        'ff_colores', _colores.map((x) => x.value.toString()).toList());
+  }
+
+  void updateColoresAtIndex(
+    int index,
+    Color Function(Color) updateFn,
+  ) {
+    colores[index] = updateFn(_colores[index]);
+    prefs.setStringList(
+        'ff_colores', _colores.map((x) => x.value.toString()).toList());
+  }
+
+  void insertAtIndexInColores(int index, Color value) {
+    colores.insert(index, value);
+    prefs.setStringList(
+        'ff_colores', _colores.map((x) => x.value.toString()).toList());
+  }
+
+  List<GraficoHistoricoIngresoStruct> _graficoHistoricoIngresoPadre = [];
+  List<GraficoHistoricoIngresoStruct> get graficoHistoricoIngresoPadre =>
+      _graficoHistoricoIngresoPadre;
+  set graficoHistoricoIngresoPadre(List<GraficoHistoricoIngresoStruct> value) {
+    _graficoHistoricoIngresoPadre = value;
+  }
+
+  void addToGraficoHistoricoIngresoPadre(GraficoHistoricoIngresoStruct value) {
+    graficoHistoricoIngresoPadre.add(value);
+  }
+
+  void removeFromGraficoHistoricoIngresoPadre(
+      GraficoHistoricoIngresoStruct value) {
+    graficoHistoricoIngresoPadre.remove(value);
+  }
+
+  void removeAtIndexFromGraficoHistoricoIngresoPadre(int index) {
+    graficoHistoricoIngresoPadre.removeAt(index);
+  }
+
+  void updateGraficoHistoricoIngresoPadreAtIndex(
+    int index,
+    GraficoHistoricoIngresoStruct Function(GraficoHistoricoIngresoStruct)
+        updateFn,
+  ) {
+    graficoHistoricoIngresoPadre[index] =
+        updateFn(_graficoHistoricoIngresoPadre[index]);
+  }
+
+  void insertAtIndexInGraficoHistoricoIngresoPadre(
+      int index, GraficoHistoricoIngresoStruct value) {
+    graficoHistoricoIngresoPadre.insert(index, value);
+  }
+
+  List<CategoriasIngresoHistoricoStruct> _graficoIngresoHistoricoHijo = [];
+  List<CategoriasIngresoHistoricoStruct> get graficoIngresoHistoricoHijo =>
+      _graficoIngresoHistoricoHijo;
+  set graficoIngresoHistoricoHijo(
+      List<CategoriasIngresoHistoricoStruct> value) {
+    _graficoIngresoHistoricoHijo = value;
+  }
+
+  void addToGraficoIngresoHistoricoHijo(
+      CategoriasIngresoHistoricoStruct value) {
+    graficoIngresoHistoricoHijo.add(value);
+  }
+
+  void removeFromGraficoIngresoHistoricoHijo(
+      CategoriasIngresoHistoricoStruct value) {
+    graficoIngresoHistoricoHijo.remove(value);
+  }
+
+  void removeAtIndexFromGraficoIngresoHistoricoHijo(int index) {
+    graficoIngresoHistoricoHijo.removeAt(index);
+  }
+
+  void updateGraficoIngresoHistoricoHijoAtIndex(
+    int index,
+    CategoriasIngresoHistoricoStruct Function(CategoriasIngresoHistoricoStruct)
+        updateFn,
+  ) {
+    graficoIngresoHistoricoHijo[index] =
+        updateFn(_graficoIngresoHistoricoHijo[index]);
+  }
+
+  void insertAtIndexInGraficoIngresoHistoricoHijo(
+      int index, CategoriasIngresoHistoricoStruct value) {
+    graficoIngresoHistoricoHijo.insert(index, value);
+  }
 }
 
 void _safeInit(Function() initializeField) {
@@ -590,4 +846,11 @@ Future _safeInitAsync(Function() initializeField) async {
   try {
     await initializeField();
   } catch (_) {}
+}
+
+Color? _colorFromIntValue(int? val) {
+  if (val == null) {
+    return null;
+  }
+  return Color(val);
 }

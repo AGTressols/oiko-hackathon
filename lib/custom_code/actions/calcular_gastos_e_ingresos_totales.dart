@@ -12,8 +12,9 @@ import 'package:flutter/material.dart';
 // Importación adicional para autenticación de Firebase
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<double> calcularGastosTotales() async {
+Future<double> calcularGastosEIngresosTotales() async {
   double totalGastos = 0.0;
+  double totalIngresos = 0.0;
 
   try {
     // Obtener el UID del usuario autenticado
@@ -63,7 +64,8 @@ Future<double> calcularGastosTotales() async {
 
     // Realizar las consultas a Firebase para cada rango de fechas
     for (var rango in rangosDeFechas) {
-      final querySnapshot = await FirebaseFirestore.instance
+      // Consultar transacciones de tipo "Gasto"
+      final gastosSnapshot = await FirebaseFirestore.instance
           .collection('Transacciones')
           .where('movimiento', whereIn: ['Gasto', 'gasto'])
           .where('uid', isEqualTo: uid)
@@ -71,20 +73,38 @@ Future<double> calcularGastosTotales() async {
           .where('fecha', isLessThanOrEqualTo: rango['fin'])
           .get();
 
-      for (var doc in querySnapshot.docs) {
+      // Sumar todos los montos de gastos
+      for (var doc in gastosSnapshot.docs) {
         totalGastos += doc['monto'];
+      }
+
+      // Consultar transacciones de tipo "Ingreso"
+      final ingresosSnapshot = await FirebaseFirestore.instance
+          .collection('Transacciones')
+          .where('movimiento', whereIn: ['Ingreso', 'ingreso'])
+          .where('uid', isEqualTo: uid)
+          .where('fecha', isGreaterThanOrEqualTo: rango['inicio'])
+          .where('fecha', isLessThanOrEqualTo: rango['fin'])
+          .get();
+
+      // Sumar todos los montos de ingresos
+      for (var doc in ingresosSnapshot.docs) {
+        totalIngresos += doc['monto'];
       }
     }
 
-    // Forzar actualización en la App State con un valor numérico
+    // Guardar el total de gastos en la AppState
     FFAppState().gastoTotalVariable = totalGastos;
+    // Guardar el total de ingresos en la AppState
+    FFAppState().ingresoTotalVariable = totalIngresos;
 
-    // Retornar el total de gastos como un valor double
+    // Retornar el total de gastos como un valor double (puedes cambiarlo si prefieres devolver ingresos)
     return totalGastos;
   } catch (e) {
     // Manejar el error y asignar el mensaje a la App State
     FFAppState().gastoTotalVariable =
         -1.0; // Retorna un valor negativo en caso de error
+    FFAppState().ingresoTotalVariable = -1.0;
     return -1.0;
   }
 }

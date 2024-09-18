@@ -13,8 +13,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> procesarDatosDeCuentas() async {
-  // Inicializar la lista para almacenar los datos de las cuentas
+  // Inicializar la lista para almacenar los datos de las cuentas de gastos e ingresos
   List<Map<String, dynamic>> listaGastosCuentas = [];
+  List<Map<String, dynamic>> listaIngresosCuentas = [];
 
   try {
     // Obtener el UID del usuario autenticado
@@ -52,10 +53,11 @@ Future<void> procesarDatosDeCuentas() async {
       return DateTime(startDate.year, startDate.month + 1, 0, 23, 59, 59);
     }).toList();
 
-    // Variable para almacenar el gasto total de todas las cuentas
+    // Variables para almacenar el gasto e ingreso total de todas las cuentas
     double gastoTotal = 0;
+    double ingresoTotal = 0;
 
-    // Iterar sobre cada rango de fechas y hacer la consulta
+    // Iterar sobre cada rango de fechas y hacer la consulta para "Gasto"
     for (int i = 0; i < startDates.length; i++) {
       QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
           .collection('Transacciones')
@@ -66,7 +68,11 @@ Future<void> procesarDatosDeCuentas() async {
           .get();
 
       for (var doc in transaccionesSnapshot.docs) {
-        double monto = doc['monto'];
+        // Convertir el monto a double si es necesario
+        double monto = (doc['monto'] is int)
+            ? (doc['monto'] as int).toDouble()
+            : doc['monto'];
+
         DocumentReference cuentaRef = doc['cuenta'];
 
         // Obtener el nombre y el logo de la cuenta
@@ -103,11 +109,73 @@ Future<void> procesarDatosDeCuentas() async {
       gastoCuenta['restoMonto'] = gastoTotal - gastoCuenta['monto'];
     }
 
-    // Almacenar los detalles en la App State
+    // Guardar los detalles de gastos en la App State
     FFAppState().gastosPorCuenta = listaGastosCuentas
         .map((e) => GastosCuentasStruct(
               cuenta: e['cuenta'] as String,
-              logo: e['logo'] as String, // Nuevo campo agregado
+              logo: e['logo'] as String,
+              monto: e['monto'] as double,
+              restoMonto: e['restoMonto'] as double,
+            ))
+        .toList();
+
+    // Iterar sobre cada rango de fechas y hacer la consulta para "Ingreso"
+    for (int i = 0; i < startDates.length; i++) {
+      QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
+          .collection('Transacciones')
+          .where('uid', isEqualTo: uid)
+          .where('movimiento', whereIn: ['Ingreso', 'ingreso'])
+          .where('fecha', isGreaterThanOrEqualTo: startDates[i])
+          .where('fecha', isLessThanOrEqualTo: endDates[i])
+          .get();
+
+      for (var doc in transaccionesSnapshot.docs) {
+        // Convertir el monto a double si es necesario
+        double monto = (doc['monto'] is int)
+            ? (doc['monto'] as int).toDouble()
+            : doc['monto'];
+
+        DocumentReference cuentaRef = doc['cuenta'];
+
+        // Obtener el nombre y el logo de la cuenta
+        DocumentSnapshot cuentaSnapshot = await cuentaRef.get();
+        String nombreCuenta = cuentaSnapshot['cuenta'];
+        String logoCuenta = cuentaSnapshot['logo'];
+
+        // Buscar si la cuenta ya está en la lista
+        var cuentaExistente = listaIngresosCuentas.firstWhere(
+          (ingresoCuenta) => ingresoCuenta['cuenta'] == nombreCuenta,
+          orElse: () => {},
+        );
+
+        if (cuentaExistente.isEmpty) {
+          // Si la cuenta no existe, agregar un nuevo objeto a la lista
+          listaIngresosCuentas.add({
+            'cuenta': nombreCuenta,
+            'logo': logoCuenta,
+            'monto': monto,
+            'restoMonto': 0,
+          });
+        } else {
+          // Si la cuenta ya existe, sumar el monto al total existente
+          cuentaExistente['monto'] += monto;
+        }
+
+        // Sumar el monto al ingreso total
+        ingresoTotal += monto;
+      }
+    }
+
+    // Calcular el resto de ingreso por cada cuenta
+    for (var ingresoCuenta in listaIngresosCuentas) {
+      ingresoCuenta['restoMonto'] = ingresoTotal - ingresoCuenta['monto'];
+    }
+
+    // Guardar los detalles de ingresos en la App State
+    FFAppState().ingresosPorCuenta = listaIngresosCuentas
+        .map((e) => GastosCuentasStruct(
+              cuenta: e['cuenta'] as String,
+              logo: e['logo'] as String,
               monto: e['monto'] as double,
               restoMonto: e['restoMonto'] as double,
             ))

@@ -3,7 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '/backend/schema/util/firestore_util.dart';
+import '/backend/schema/util/schema_util.dart';
 
+import 'index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 class TortaCategoriaGastoStruct extends FFFirebaseStruct {
@@ -11,10 +13,12 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
     String? logo,
     String? categoria,
     double? gasto,
+    Color? color,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _logo = logo,
         _categoria = categoria,
         _gasto = gasto,
+        _color = color,
         super(firestoreUtilData);
 
   // "logo" field.
@@ -40,11 +44,19 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
 
   bool hasGasto() => _gasto != null;
 
+  // "color" field.
+  Color? _color;
+  Color? get color => _color;
+  set color(Color? val) => _color = val;
+
+  bool hasColor() => _color != null;
+
   static TortaCategoriaGastoStruct fromMap(Map<String, dynamic> data) =>
       TortaCategoriaGastoStruct(
         logo: data['logo'] as String?,
         categoria: data['categoria'] as String?,
         gasto: castToType<double>(data['gasto']),
+        color: getSchemaColor(data['color']),
       );
 
   static TortaCategoriaGastoStruct? maybeFromMap(dynamic data) => data is Map
@@ -55,6 +67,7 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
         'logo': _logo,
         'categoria': _categoria,
         'gasto': _gasto,
+        'color': _color,
       }.withoutNulls;
 
   @override
@@ -70,6 +83,10 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
         'gasto': serializeParam(
           _gasto,
           ParamType.double,
+        ),
+        'color': serializeParam(
+          _color,
+          ParamType.Color,
         ),
       }.withoutNulls;
 
@@ -91,6 +108,11 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
           ParamType.double,
           false,
         ),
+        color: deserializeParam(
+          data['color'],
+          ParamType.Color,
+          false,
+        ),
       );
 
   @override
@@ -101,17 +123,20 @@ class TortaCategoriaGastoStruct extends FFFirebaseStruct {
     return other is TortaCategoriaGastoStruct &&
         logo == other.logo &&
         categoria == other.categoria &&
-        gasto == other.gasto;
+        gasto == other.gasto &&
+        color == other.color;
   }
 
   @override
-  int get hashCode => const ListEquality().hash([logo, categoria, gasto]);
+  int get hashCode =>
+      const ListEquality().hash([logo, categoria, gasto, color]);
 }
 
 TortaCategoriaGastoStruct createTortaCategoriaGastoStruct({
   String? logo,
   String? categoria,
   double? gasto,
+  Color? color,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -121,6 +146,7 @@ TortaCategoriaGastoStruct createTortaCategoriaGastoStruct({
       logo: logo,
       categoria: categoria,
       gasto: gasto,
+      color: color,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,
