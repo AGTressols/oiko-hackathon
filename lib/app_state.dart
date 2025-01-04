@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'flutter_flow/flutter_flow_util.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -43,6 +45,142 @@ class FFAppState extends ChangeNotifier {
               .toList() ??
           _colores;
     });
+    _safeInit(() {
+      _tad = prefs.getDouble('ff_tad') ?? _tad;
+    });
+    _safeInit(() {
+      _transaccionesAhorro = prefs
+              .getStringList('ff_transaccionesAhorro')
+              ?.map((x) {
+                try {
+                  return TotalidadDeTransaccionesStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _transaccionesAhorro;
+    });
+    _safeInit(() {
+      _transaccionesGasto = prefs
+              .getStringList('ff_transaccionesGasto')
+              ?.map((x) {
+                try {
+                  return TotalidadDeTransaccionesStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _transaccionesGasto;
+    });
+    _safeInit(() {
+      _transaccionesTraspaso = prefs
+              .getStringList('ff_transaccionesTraspaso')
+              ?.map((x) {
+                try {
+                  return TotalidadDeTransaccionesStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _transaccionesTraspaso;
+    });
+    _safeInit(() {
+      _transaccionesIngreso = prefs
+              .getStringList('ff_transaccionesIngreso')
+              ?.map((x) {
+                try {
+                  return TotalidadDeTransaccionesStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _transaccionesIngreso;
+    });
+    _safeInit(() {
+      _cacheCategorias = prefs
+              .getStringList('ff_cacheCategorias')
+              ?.map((x) {
+                try {
+                  return CategoriasCacheStructStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _cacheCategorias;
+    });
+    _safeInit(() {
+      _cacheCuentas = prefs
+              .getStringList('ff_cacheCuentas')
+              ?.map((x) {
+                try {
+                  return CuentaCacheStructStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _cacheCuentas;
+    });
+    _safeInit(() {
+      _cacheEtiquetas = prefs
+              .getStringList('ff_cacheEtiquetas')
+              ?.map((x) {
+                try {
+                  return EtiquetaCacheStructStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _cacheEtiquetas;
+    });
+    _safeInit(() {
+      _ultimoTimestampTransaccion =
+          prefs.getString('ff_ultimoTimestampTransaccion') ??
+              _ultimoTimestampTransaccion;
+    });
+    _safeInit(() {
+      _transaccionesAjuste = prefs
+              .getStringList('ff_transaccionesAjuste')
+              ?.map((x) {
+                try {
+                  return TotalidadDeTransaccionesStruct.fromSerializableMap(
+                      jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _transaccionesAjuste;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -51,6 +189,323 @@ class FFAppState extends ChangeNotifier {
   }
 
   late SharedPreferences prefs;
+
+  List<GraficoAhorroPorCuentaPadreStruct> _cuentaAhorroPadreMas = [];
+  List<GraficoAhorroPorCuentaPadreStruct> get cuentaAhorroPadreMas =>
+      _cuentaAhorroPadreMas;
+  set cuentaAhorroPadreMas(List<GraficoAhorroPorCuentaPadreStruct> value) {
+    _cuentaAhorroPadreMas = value;
+  }
+
+  void addToCuentaAhorroPadreMas(GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMas.add(value);
+  }
+
+  void removeFromCuentaAhorroPadreMas(GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMas.remove(value);
+  }
+
+  void removeAtIndexFromCuentaAhorroPadreMas(int index) {
+    cuentaAhorroPadreMas.removeAt(index);
+  }
+
+  void updateCuentaAhorroPadreMasAtIndex(
+    int index,
+    GraficoAhorroPorCuentaPadreStruct Function(
+            GraficoAhorroPorCuentaPadreStruct)
+        updateFn,
+  ) {
+    cuentaAhorroPadreMas[index] = updateFn(_cuentaAhorroPadreMas[index]);
+  }
+
+  void insertAtIndexInCuentaAhorroPadreMas(
+      int index, GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMas.insert(index, value);
+  }
+
+  List<GraficoAhorroPorCuentaPadreStruct> _cuentaAhorroPadreMenos = [];
+  List<GraficoAhorroPorCuentaPadreStruct> get cuentaAhorroPadreMenos =>
+      _cuentaAhorroPadreMenos;
+  set cuentaAhorroPadreMenos(List<GraficoAhorroPorCuentaPadreStruct> value) {
+    _cuentaAhorroPadreMenos = value;
+  }
+
+  void addToCuentaAhorroPadreMenos(GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMenos.add(value);
+  }
+
+  void removeFromCuentaAhorroPadreMenos(
+      GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMenos.remove(value);
+  }
+
+  void removeAtIndexFromCuentaAhorroPadreMenos(int index) {
+    cuentaAhorroPadreMenos.removeAt(index);
+  }
+
+  void updateCuentaAhorroPadreMenosAtIndex(
+    int index,
+    GraficoAhorroPorCuentaPadreStruct Function(
+            GraficoAhorroPorCuentaPadreStruct)
+        updateFn,
+  ) {
+    cuentaAhorroPadreMenos[index] = updateFn(_cuentaAhorroPadreMenos[index]);
+  }
+
+  void insertAtIndexInCuentaAhorroPadreMenos(
+      int index, GraficoAhorroPorCuentaPadreStruct value) {
+    cuentaAhorroPadreMenos.insert(index, value);
+  }
+
+  int _alturaMaximaPadreMas = 0;
+  int get alturaMaximaPadreMas => _alturaMaximaPadreMas;
+  set alturaMaximaPadreMas(int value) {
+    _alturaMaximaPadreMas = value;
+  }
+
+  int _alturaMaximaPadreMenos = 0;
+  int get alturaMaximaPadreMenos => _alturaMaximaPadreMenos;
+  set alturaMaximaPadreMenos(int value) {
+    _alturaMaximaPadreMenos = value;
+  }
+
+  List<double> _totalAjusteGraficoGeneral = [];
+  List<double> get totalAjusteGraficoGeneral => _totalAjusteGraficoGeneral;
+  set totalAjusteGraficoGeneral(List<double> value) {
+    _totalAjusteGraficoGeneral = value;
+  }
+
+  void addToTotalAjusteGraficoGeneral(double value) {
+    totalAjusteGraficoGeneral.add(value);
+  }
+
+  void removeFromTotalAjusteGraficoGeneral(double value) {
+    totalAjusteGraficoGeneral.remove(value);
+  }
+
+  void removeAtIndexFromTotalAjusteGraficoGeneral(int index) {
+    totalAjusteGraficoGeneral.removeAt(index);
+  }
+
+  void updateTotalAjusteGraficoGeneralAtIndex(
+    int index,
+    double Function(double) updateFn,
+  ) {
+    totalAjusteGraficoGeneral[index] =
+        updateFn(_totalAjusteGraficoGeneral[index]);
+  }
+
+  void insertAtIndexInTotalAjusteGraficoGeneral(int index, double value) {
+    totalAjusteGraficoGeneral.insert(index, value);
+  }
+
+  List<GraficoAhorroCuentaStruct> _graficoAhorroCuenta = [];
+  List<GraficoAhorroCuentaStruct> get graficoAhorroCuenta =>
+      _graficoAhorroCuenta;
+  set graficoAhorroCuenta(List<GraficoAhorroCuentaStruct> value) {
+    _graficoAhorroCuenta = value;
+  }
+
+  void addToGraficoAhorroCuenta(GraficoAhorroCuentaStruct value) {
+    graficoAhorroCuenta.add(value);
+  }
+
+  void removeFromGraficoAhorroCuenta(GraficoAhorroCuentaStruct value) {
+    graficoAhorroCuenta.remove(value);
+  }
+
+  void removeAtIndexFromGraficoAhorroCuenta(int index) {
+    graficoAhorroCuenta.removeAt(index);
+  }
+
+  void updateGraficoAhorroCuentaAtIndex(
+    int index,
+    GraficoAhorroCuentaStruct Function(GraficoAhorroCuentaStruct) updateFn,
+  ) {
+    graficoAhorroCuenta[index] = updateFn(_graficoAhorroCuenta[index]);
+  }
+
+  void insertAtIndexInGraficoAhorroCuenta(
+      int index, GraficoAhorroCuentaStruct value) {
+    graficoAhorroCuenta.insert(index, value);
+  }
+
+  List<AhorroPorCuentaStruct> _ahorroPorCuenta = [];
+  List<AhorroPorCuentaStruct> get ahorroPorCuenta => _ahorroPorCuenta;
+  set ahorroPorCuenta(List<AhorroPorCuentaStruct> value) {
+    _ahorroPorCuenta = value;
+  }
+
+  void addToAhorroPorCuenta(AhorroPorCuentaStruct value) {
+    ahorroPorCuenta.add(value);
+  }
+
+  void removeFromAhorroPorCuenta(AhorroPorCuentaStruct value) {
+    ahorroPorCuenta.remove(value);
+  }
+
+  void removeAtIndexFromAhorroPorCuenta(int index) {
+    ahorroPorCuenta.removeAt(index);
+  }
+
+  void updateAhorroPorCuentaAtIndex(
+    int index,
+    AhorroPorCuentaStruct Function(AhorroPorCuentaStruct) updateFn,
+  ) {
+    ahorroPorCuenta[index] = updateFn(_ahorroPorCuenta[index]);
+  }
+
+  void insertAtIndexInAhorroPorCuenta(int index, AhorroPorCuentaStruct value) {
+    ahorroPorCuenta.insert(index, value);
+  }
+
+  List<GraficoAhorroPorCuentaPadreStruct> _graficoAhorroPorCuentaPadre = [];
+  List<GraficoAhorroPorCuentaPadreStruct> get graficoAhorroPorCuentaPadre =>
+      _graficoAhorroPorCuentaPadre;
+  set graficoAhorroPorCuentaPadre(
+      List<GraficoAhorroPorCuentaPadreStruct> value) {
+    _graficoAhorroPorCuentaPadre = value;
+  }
+
+  void addToGraficoAhorroPorCuentaPadre(
+      GraficoAhorroPorCuentaPadreStruct value) {
+    graficoAhorroPorCuentaPadre.add(value);
+  }
+
+  void removeFromGraficoAhorroPorCuentaPadre(
+      GraficoAhorroPorCuentaPadreStruct value) {
+    graficoAhorroPorCuentaPadre.remove(value);
+  }
+
+  void removeAtIndexFromGraficoAhorroPorCuentaPadre(int index) {
+    graficoAhorroPorCuentaPadre.removeAt(index);
+  }
+
+  void updateGraficoAhorroPorCuentaPadreAtIndex(
+    int index,
+    GraficoAhorroPorCuentaPadreStruct Function(
+            GraficoAhorroPorCuentaPadreStruct)
+        updateFn,
+  ) {
+    graficoAhorroPorCuentaPadre[index] =
+        updateFn(_graficoAhorroPorCuentaPadre[index]);
+  }
+
+  void insertAtIndexInGraficoAhorroPorCuentaPadre(
+      int index, GraficoAhorroPorCuentaPadreStruct value) {
+    graficoAhorroPorCuentaPadre.insert(index, value);
+  }
+
+  List<GraficoAhorroPorCuentaHijoStruct> _graficoAhorroPorCuentaHijo = [];
+  List<GraficoAhorroPorCuentaHijoStruct> get graficoAhorroPorCuentaHijo =>
+      _graficoAhorroPorCuentaHijo;
+  set graficoAhorroPorCuentaHijo(List<GraficoAhorroPorCuentaHijoStruct> value) {
+    _graficoAhorroPorCuentaHijo = value;
+  }
+
+  void addToGraficoAhorroPorCuentaHijo(GraficoAhorroPorCuentaHijoStruct value) {
+    graficoAhorroPorCuentaHijo.add(value);
+  }
+
+  void removeFromGraficoAhorroPorCuentaHijo(
+      GraficoAhorroPorCuentaHijoStruct value) {
+    graficoAhorroPorCuentaHijo.remove(value);
+  }
+
+  void removeAtIndexFromGraficoAhorroPorCuentaHijo(int index) {
+    graficoAhorroPorCuentaHijo.removeAt(index);
+  }
+
+  void updateGraficoAhorroPorCuentaHijoAtIndex(
+    int index,
+    GraficoAhorroPorCuentaHijoStruct Function(GraficoAhorroPorCuentaHijoStruct)
+        updateFn,
+  ) {
+    graficoAhorroPorCuentaHijo[index] =
+        updateFn(_graficoAhorroPorCuentaHijo[index]);
+  }
+
+  void insertAtIndexInGraficoAhorroPorCuentaHijo(
+      int index, GraficoAhorroPorCuentaHijoStruct value) {
+    graficoAhorroPorCuentaHijo.insert(index, value);
+  }
+
+  List<GraficoAhorroPorCuentaPadreStruct> _padreMenos = [];
+  List<GraficoAhorroPorCuentaPadreStruct> get padreMenos => _padreMenos;
+  set padreMenos(List<GraficoAhorroPorCuentaPadreStruct> value) {
+    _padreMenos = value;
+  }
+
+  void addToPadreMenos(GraficoAhorroPorCuentaPadreStruct value) {
+    padreMenos.add(value);
+  }
+
+  void removeFromPadreMenos(GraficoAhorroPorCuentaPadreStruct value) {
+    padreMenos.remove(value);
+  }
+
+  void removeAtIndexFromPadreMenos(int index) {
+    padreMenos.removeAt(index);
+  }
+
+  void updatePadreMenosAtIndex(
+    int index,
+    GraficoAhorroPorCuentaPadreStruct Function(
+            GraficoAhorroPorCuentaPadreStruct)
+        updateFn,
+  ) {
+    padreMenos[index] = updateFn(_padreMenos[index]);
+  }
+
+  void insertAtIndexInPadreMenos(
+      int index, GraficoAhorroPorCuentaPadreStruct value) {
+    padreMenos.insert(index, value);
+  }
+
+  List<GraficoAhorroPorCuentaHijoStruct> _hijoMenos = [];
+  List<GraficoAhorroPorCuentaHijoStruct> get hijoMenos => _hijoMenos;
+  set hijoMenos(List<GraficoAhorroPorCuentaHijoStruct> value) {
+    _hijoMenos = value;
+  }
+
+  void addToHijoMenos(GraficoAhorroPorCuentaHijoStruct value) {
+    hijoMenos.add(value);
+  }
+
+  void removeFromHijoMenos(GraficoAhorroPorCuentaHijoStruct value) {
+    hijoMenos.remove(value);
+  }
+
+  void removeAtIndexFromHijoMenos(int index) {
+    hijoMenos.removeAt(index);
+  }
+
+  void updateHijoMenosAtIndex(
+    int index,
+    GraficoAhorroPorCuentaHijoStruct Function(GraficoAhorroPorCuentaHijoStruct)
+        updateFn,
+  ) {
+    hijoMenos[index] = updateFn(_hijoMenos[index]);
+  }
+
+  void insertAtIndexInHijoMenos(
+      int index, GraficoAhorroPorCuentaHijoStruct value) {
+    hijoMenos.insert(index, value);
+  }
+
+  int _alturaMaximaContainerPadreCuentaAhorroMas = 0;
+  int get alturaMaximaContainerPadreCuentaAhorroMas =>
+      _alturaMaximaContainerPadreCuentaAhorroMas;
+  set alturaMaximaContainerPadreCuentaAhorroMas(int value) {
+    _alturaMaximaContainerPadreCuentaAhorroMas = value;
+  }
+
+  int _alturaMaximaContainerPadreCuentaAhorroMenos = 0;
+  int get alturaMaximaContainerPadreCuentaAhorroMenos =>
+      _alturaMaximaContainerPadreCuentaAhorroMenos;
+  set alturaMaximaContainerPadreCuentaAhorroMenos(int value) {
+    _alturaMaximaContainerPadreCuentaAhorroMenos = value;
+  }
 
   DateTime? _flowFecha;
   DateTime? get flowFecha => _flowFecha;
@@ -80,6 +535,16 @@ class FFAppState extends ChangeNotifier {
     updateFn(_flowCuenta);
   }
 
+  FlowCuentaStruct _flowCuentaCredito = FlowCuentaStruct();
+  FlowCuentaStruct get flowCuentaCredito => _flowCuentaCredito;
+  set flowCuentaCredito(FlowCuentaStruct value) {
+    _flowCuentaCredito = value;
+  }
+
+  void updateFlowCuentaCreditoStruct(Function(FlowCuentaStruct) updateFn) {
+    updateFn(_flowCuentaCredito);
+  }
+
   FlowCategoriaStruct _flowCategoria = FlowCategoriaStruct();
   FlowCategoriaStruct get flowCategoria => _flowCategoria;
   set flowCategoria(FlowCategoriaStruct value) {
@@ -98,16 +563,6 @@ class FFAppState extends ChangeNotifier {
 
   void updateFlowEtiquetaStruct(Function(FlowEtiquetaStruct) updateFn) {
     updateFn(_flowEtiqueta);
-  }
-
-  FlowCuentaStruct _flowtraspasoCuenta = FlowCuentaStruct();
-  FlowCuentaStruct get flowtraspasoCuenta => _flowtraspasoCuenta;
-  set flowtraspasoCuenta(FlowCuentaStruct value) {
-    _flowtraspasoCuenta = value;
-  }
-
-  void updateFlowtraspasoCuentaStruct(Function(FlowCuentaStruct) updateFn) {
-    updateFn(_flowtraspasoCuenta);
   }
 
   String _imagen = '';
@@ -588,12 +1043,6 @@ class FFAppState extends ChangeNotifier {
     periodosGraficoHistoricoGastos.insert(index, value);
   }
 
-  DocumentReference? _flowCuentaCredito;
-  DocumentReference? get flowCuentaCredito => _flowCuentaCredito;
-  set flowCuentaCredito(DocumentReference? value) {
-    _flowCuentaCredito = value;
-  }
-
   List<DateTime> _mesesDisponibles = [];
   List<DateTime> get mesesDisponibles => _mesesDisponibles;
   set mesesDisponibles(List<DateTime> value) {
@@ -833,6 +1282,676 @@ class FFAppState extends ChangeNotifier {
   void insertAtIndexInGraficoIngresoHistoricoHijo(
       int index, CategoriasIngresoHistoricoStruct value) {
     graficoIngresoHistoricoHijo.insert(index, value);
+  }
+
+  double _flowMontoAhorro = 0.0;
+  double get flowMontoAhorro => _flowMontoAhorro;
+  set flowMontoAhorro(double value) {
+    _flowMontoAhorro = value;
+  }
+
+  double _flowMontoDivisa = 0.0;
+  double get flowMontoDivisa => _flowMontoDivisa;
+  set flowMontoDivisa(double value) {
+    _flowMontoDivisa = value;
+  }
+
+  double _tad = 0.0;
+  double get tad => _tad;
+  set tad(double value) {
+    _tad = value;
+    prefs.setDouble('ff_tad', value);
+  }
+
+  bool _esAhorro = false;
+  bool get esAhorro => _esAhorro;
+  set esAhorro(bool value) {
+    _esAhorro = value;
+  }
+
+  int _alturaMaximaContainerPadreAhorroMas = 0;
+  int get alturaMaximaContainerPadreAhorroMas =>
+      _alturaMaximaContainerPadreAhorroMas;
+  set alturaMaximaContainerPadreAhorroMas(int value) {
+    _alturaMaximaContainerPadreAhorroMas = value;
+  }
+
+  int _alturaMaximaContainerPadreAhorroMenos = 0;
+  int get alturaMaximaContainerPadreAhorroMenos =>
+      _alturaMaximaContainerPadreAhorroMenos;
+  set alturaMaximaContainerPadreAhorroMenos(int value) {
+    _alturaMaximaContainerPadreAhorroMenos = value;
+  }
+
+  List<String> _cuentasDeAhorroDropdown = [];
+  List<String> get cuentasDeAhorroDropdown => _cuentasDeAhorroDropdown;
+  set cuentasDeAhorroDropdown(List<String> value) {
+    _cuentasDeAhorroDropdown = value;
+  }
+
+  void addToCuentasDeAhorroDropdown(String value) {
+    cuentasDeAhorroDropdown.add(value);
+  }
+
+  void removeFromCuentasDeAhorroDropdown(String value) {
+    cuentasDeAhorroDropdown.remove(value);
+  }
+
+  void removeAtIndexFromCuentasDeAhorroDropdown(int index) {
+    cuentasDeAhorroDropdown.removeAt(index);
+  }
+
+  void updateCuentasDeAhorroDropdownAtIndex(
+    int index,
+    String Function(String) updateFn,
+  ) {
+    cuentasDeAhorroDropdown[index] = updateFn(_cuentasDeAhorroDropdown[index]);
+  }
+
+  void insertAtIndexInCuentasDeAhorroDropdown(int index, String value) {
+    cuentasDeAhorroDropdown.insert(index, value);
+  }
+
+  List<String> _seleccionCuentaAhorro = [];
+  List<String> get seleccionCuentaAhorro => _seleccionCuentaAhorro;
+  set seleccionCuentaAhorro(List<String> value) {
+    _seleccionCuentaAhorro = value;
+  }
+
+  void addToSeleccionCuentaAhorro(String value) {
+    seleccionCuentaAhorro.add(value);
+  }
+
+  void removeFromSeleccionCuentaAhorro(String value) {
+    seleccionCuentaAhorro.remove(value);
+  }
+
+  void removeAtIndexFromSeleccionCuentaAhorro(int index) {
+    seleccionCuentaAhorro.removeAt(index);
+  }
+
+  void updateSeleccionCuentaAhorroAtIndex(
+    int index,
+    String Function(String) updateFn,
+  ) {
+    seleccionCuentaAhorro[index] = updateFn(_seleccionCuentaAhorro[index]);
+  }
+
+  void insertAtIndexInSeleccionCuentaAhorro(int index, String value) {
+    seleccionCuentaAhorro.insert(index, value);
+  }
+
+  List<SaldosCuentasAppStateStruct> _saldosCuentas = [];
+  List<SaldosCuentasAppStateStruct> get saldosCuentas => _saldosCuentas;
+  set saldosCuentas(List<SaldosCuentasAppStateStruct> value) {
+    _saldosCuentas = value;
+  }
+
+  void addToSaldosCuentas(SaldosCuentasAppStateStruct value) {
+    saldosCuentas.add(value);
+  }
+
+  void removeFromSaldosCuentas(SaldosCuentasAppStateStruct value) {
+    saldosCuentas.remove(value);
+  }
+
+  void removeAtIndexFromSaldosCuentas(int index) {
+    saldosCuentas.removeAt(index);
+  }
+
+  void updateSaldosCuentasAtIndex(
+    int index,
+    SaldosCuentasAppStateStruct Function(SaldosCuentasAppStateStruct) updateFn,
+  ) {
+    saldosCuentas[index] = updateFn(_saldosCuentas[index]);
+  }
+
+  void insertAtIndexInSaldosCuentas(
+      int index, SaldosCuentasAppStateStruct value) {
+    saldosCuentas.insert(index, value);
+  }
+
+  double _saldoGeneral = 0.0;
+  double get saldoGeneral => _saldoGeneral;
+  set saldoGeneral(double value) {
+    _saldoGeneral = value;
+  }
+
+  double _saldoAhorroGeneral = 0.0;
+  double get saldoAhorroGeneral => _saldoAhorroGeneral;
+  set saldoAhorroGeneral(double value) {
+    _saldoAhorroGeneral = value;
+  }
+
+  List<TodasTransaccionesStruct> _todasTransacciones = [];
+  List<TodasTransaccionesStruct> get todasTransacciones => _todasTransacciones;
+  set todasTransacciones(List<TodasTransaccionesStruct> value) {
+    _todasTransacciones = value;
+  }
+
+  void addToTodasTransacciones(TodasTransaccionesStruct value) {
+    todasTransacciones.add(value);
+  }
+
+  void removeFromTodasTransacciones(TodasTransaccionesStruct value) {
+    todasTransacciones.remove(value);
+  }
+
+  void removeAtIndexFromTodasTransacciones(int index) {
+    todasTransacciones.removeAt(index);
+  }
+
+  void updateTodasTransaccionesAtIndex(
+    int index,
+    TodasTransaccionesStruct Function(TodasTransaccionesStruct) updateFn,
+  ) {
+    todasTransacciones[index] = updateFn(_todasTransacciones[index]);
+  }
+
+  void insertAtIndexInTodasTransacciones(
+      int index, TodasTransaccionesStruct value) {
+    todasTransacciones.insert(index, value);
+  }
+
+  List<IngresoGastoAhorroStruct> _ingresoGastoAhorro = [];
+  List<IngresoGastoAhorroStruct> get ingresoGastoAhorro => _ingresoGastoAhorro;
+  set ingresoGastoAhorro(List<IngresoGastoAhorroStruct> value) {
+    _ingresoGastoAhorro = value;
+  }
+
+  void addToIngresoGastoAhorro(IngresoGastoAhorroStruct value) {
+    ingresoGastoAhorro.add(value);
+  }
+
+  void removeFromIngresoGastoAhorro(IngresoGastoAhorroStruct value) {
+    ingresoGastoAhorro.remove(value);
+  }
+
+  void removeAtIndexFromIngresoGastoAhorro(int index) {
+    ingresoGastoAhorro.removeAt(index);
+  }
+
+  void updateIngresoGastoAhorroAtIndex(
+    int index,
+    IngresoGastoAhorroStruct Function(IngresoGastoAhorroStruct) updateFn,
+  ) {
+    ingresoGastoAhorro[index] = updateFn(_ingresoGastoAhorro[index]);
+  }
+
+  void insertAtIndexInIngresoGastoAhorro(
+      int index, IngresoGastoAhorroStruct value) {
+    ingresoGastoAhorro.insert(index, value);
+  }
+
+  List<String> _fechaIngresoGastoAhorro = [];
+  List<String> get fechaIngresoGastoAhorro => _fechaIngresoGastoAhorro;
+  set fechaIngresoGastoAhorro(List<String> value) {
+    _fechaIngresoGastoAhorro = value;
+  }
+
+  void addToFechaIngresoGastoAhorro(String value) {
+    fechaIngresoGastoAhorro.add(value);
+  }
+
+  void removeFromFechaIngresoGastoAhorro(String value) {
+    fechaIngresoGastoAhorro.remove(value);
+  }
+
+  void removeAtIndexFromFechaIngresoGastoAhorro(int index) {
+    fechaIngresoGastoAhorro.removeAt(index);
+  }
+
+  void updateFechaIngresoGastoAhorroAtIndex(
+    int index,
+    String Function(String) updateFn,
+  ) {
+    fechaIngresoGastoAhorro[index] = updateFn(_fechaIngresoGastoAhorro[index]);
+  }
+
+  void insertAtIndexInFechaIngresoGastoAhorro(int index, String value) {
+    fechaIngresoGastoAhorro.insert(index, value);
+  }
+
+  List<double> _totalIngresoGraficoGeneral = [];
+  List<double> get totalIngresoGraficoGeneral => _totalIngresoGraficoGeneral;
+  set totalIngresoGraficoGeneral(List<double> value) {
+    _totalIngresoGraficoGeneral = value;
+  }
+
+  void addToTotalIngresoGraficoGeneral(double value) {
+    totalIngresoGraficoGeneral.add(value);
+  }
+
+  void removeFromTotalIngresoGraficoGeneral(double value) {
+    totalIngresoGraficoGeneral.remove(value);
+  }
+
+  void removeAtIndexFromTotalIngresoGraficoGeneral(int index) {
+    totalIngresoGraficoGeneral.removeAt(index);
+  }
+
+  void updateTotalIngresoGraficoGeneralAtIndex(
+    int index,
+    double Function(double) updateFn,
+  ) {
+    totalIngresoGraficoGeneral[index] =
+        updateFn(_totalIngresoGraficoGeneral[index]);
+  }
+
+  void insertAtIndexInTotalIngresoGraficoGeneral(int index, double value) {
+    totalIngresoGraficoGeneral.insert(index, value);
+  }
+
+  List<double> _totalGastoGraficoGeneral = [];
+  List<double> get totalGastoGraficoGeneral => _totalGastoGraficoGeneral;
+  set totalGastoGraficoGeneral(List<double> value) {
+    _totalGastoGraficoGeneral = value;
+  }
+
+  void addToTotalGastoGraficoGeneral(double value) {
+    totalGastoGraficoGeneral.add(value);
+  }
+
+  void removeFromTotalGastoGraficoGeneral(double value) {
+    totalGastoGraficoGeneral.remove(value);
+  }
+
+  void removeAtIndexFromTotalGastoGraficoGeneral(int index) {
+    totalGastoGraficoGeneral.removeAt(index);
+  }
+
+  void updateTotalGastoGraficoGeneralAtIndex(
+    int index,
+    double Function(double) updateFn,
+  ) {
+    totalGastoGraficoGeneral[index] =
+        updateFn(_totalGastoGraficoGeneral[index]);
+  }
+
+  void insertAtIndexInTotalGastoGraficoGeneral(int index, double value) {
+    totalGastoGraficoGeneral.insert(index, value);
+  }
+
+  List<double> _totalAhorroGraficoGeneral = [];
+  List<double> get totalAhorroGraficoGeneral => _totalAhorroGraficoGeneral;
+  set totalAhorroGraficoGeneral(List<double> value) {
+    _totalAhorroGraficoGeneral = value;
+  }
+
+  void addToTotalAhorroGraficoGeneral(double value) {
+    totalAhorroGraficoGeneral.add(value);
+  }
+
+  void removeFromTotalAhorroGraficoGeneral(double value) {
+    totalAhorroGraficoGeneral.remove(value);
+  }
+
+  void removeAtIndexFromTotalAhorroGraficoGeneral(int index) {
+    totalAhorroGraficoGeneral.removeAt(index);
+  }
+
+  void updateTotalAhorroGraficoGeneralAtIndex(
+    int index,
+    double Function(double) updateFn,
+  ) {
+    totalAhorroGraficoGeneral[index] =
+        updateFn(_totalAhorroGraficoGeneral[index]);
+  }
+
+  void insertAtIndexInTotalAhorroGraficoGeneral(int index, double value) {
+    totalAhorroGraficoGeneral.insert(index, value);
+  }
+
+  List<TotalidadDeTransaccionesStruct> _transaccionesAhorro = [];
+  List<TotalidadDeTransaccionesStruct> get transaccionesAhorro =>
+      _transaccionesAhorro;
+  set transaccionesAhorro(List<TotalidadDeTransaccionesStruct> value) {
+    _transaccionesAhorro = value;
+    prefs.setStringList(
+        'ff_transaccionesAhorro', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToTransaccionesAhorro(TotalidadDeTransaccionesStruct value) {
+    transaccionesAhorro.add(value);
+    prefs.setStringList('ff_transaccionesAhorro',
+        _transaccionesAhorro.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromTransaccionesAhorro(TotalidadDeTransaccionesStruct value) {
+    transaccionesAhorro.remove(value);
+    prefs.setStringList('ff_transaccionesAhorro',
+        _transaccionesAhorro.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromTransaccionesAhorro(int index) {
+    transaccionesAhorro.removeAt(index);
+    prefs.setStringList('ff_transaccionesAhorro',
+        _transaccionesAhorro.map((x) => x.serialize()).toList());
+  }
+
+  void updateTransaccionesAhorroAtIndex(
+    int index,
+    TotalidadDeTransaccionesStruct Function(TotalidadDeTransaccionesStruct)
+        updateFn,
+  ) {
+    transaccionesAhorro[index] = updateFn(_transaccionesAhorro[index]);
+    prefs.setStringList('ff_transaccionesAhorro',
+        _transaccionesAhorro.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInTransaccionesAhorro(
+      int index, TotalidadDeTransaccionesStruct value) {
+    transaccionesAhorro.insert(index, value);
+    prefs.setStringList('ff_transaccionesAhorro',
+        _transaccionesAhorro.map((x) => x.serialize()).toList());
+  }
+
+  List<TotalidadDeTransaccionesStruct> _transaccionesGasto = [];
+  List<TotalidadDeTransaccionesStruct> get transaccionesGasto =>
+      _transaccionesGasto;
+  set transaccionesGasto(List<TotalidadDeTransaccionesStruct> value) {
+    _transaccionesGasto = value;
+    prefs.setStringList(
+        'ff_transaccionesGasto', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToTransaccionesGasto(TotalidadDeTransaccionesStruct value) {
+    transaccionesGasto.add(value);
+    prefs.setStringList('ff_transaccionesGasto',
+        _transaccionesGasto.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromTransaccionesGasto(TotalidadDeTransaccionesStruct value) {
+    transaccionesGasto.remove(value);
+    prefs.setStringList('ff_transaccionesGasto',
+        _transaccionesGasto.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromTransaccionesGasto(int index) {
+    transaccionesGasto.removeAt(index);
+    prefs.setStringList('ff_transaccionesGasto',
+        _transaccionesGasto.map((x) => x.serialize()).toList());
+  }
+
+  void updateTransaccionesGastoAtIndex(
+    int index,
+    TotalidadDeTransaccionesStruct Function(TotalidadDeTransaccionesStruct)
+        updateFn,
+  ) {
+    transaccionesGasto[index] = updateFn(_transaccionesGasto[index]);
+    prefs.setStringList('ff_transaccionesGasto',
+        _transaccionesGasto.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInTransaccionesGasto(
+      int index, TotalidadDeTransaccionesStruct value) {
+    transaccionesGasto.insert(index, value);
+    prefs.setStringList('ff_transaccionesGasto',
+        _transaccionesGasto.map((x) => x.serialize()).toList());
+  }
+
+  List<TotalidadDeTransaccionesStruct> _transaccionesTraspaso = [];
+  List<TotalidadDeTransaccionesStruct> get transaccionesTraspaso =>
+      _transaccionesTraspaso;
+  set transaccionesTraspaso(List<TotalidadDeTransaccionesStruct> value) {
+    _transaccionesTraspaso = value;
+    prefs.setStringList(
+        'ff_transaccionesTraspaso', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToTransaccionesTraspaso(TotalidadDeTransaccionesStruct value) {
+    transaccionesTraspaso.add(value);
+    prefs.setStringList('ff_transaccionesTraspaso',
+        _transaccionesTraspaso.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromTransaccionesTraspaso(TotalidadDeTransaccionesStruct value) {
+    transaccionesTraspaso.remove(value);
+    prefs.setStringList('ff_transaccionesTraspaso',
+        _transaccionesTraspaso.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromTransaccionesTraspaso(int index) {
+    transaccionesTraspaso.removeAt(index);
+    prefs.setStringList('ff_transaccionesTraspaso',
+        _transaccionesTraspaso.map((x) => x.serialize()).toList());
+  }
+
+  void updateTransaccionesTraspasoAtIndex(
+    int index,
+    TotalidadDeTransaccionesStruct Function(TotalidadDeTransaccionesStruct)
+        updateFn,
+  ) {
+    transaccionesTraspaso[index] = updateFn(_transaccionesTraspaso[index]);
+    prefs.setStringList('ff_transaccionesTraspaso',
+        _transaccionesTraspaso.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInTransaccionesTraspaso(
+      int index, TotalidadDeTransaccionesStruct value) {
+    transaccionesTraspaso.insert(index, value);
+    prefs.setStringList('ff_transaccionesTraspaso',
+        _transaccionesTraspaso.map((x) => x.serialize()).toList());
+  }
+
+  List<TotalidadDeTransaccionesStruct> _transaccionesIngreso = [];
+  List<TotalidadDeTransaccionesStruct> get transaccionesIngreso =>
+      _transaccionesIngreso;
+  set transaccionesIngreso(List<TotalidadDeTransaccionesStruct> value) {
+    _transaccionesIngreso = value;
+    prefs.setStringList(
+        'ff_transaccionesIngreso', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToTransaccionesIngreso(TotalidadDeTransaccionesStruct value) {
+    transaccionesIngreso.add(value);
+    prefs.setStringList('ff_transaccionesIngreso',
+        _transaccionesIngreso.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromTransaccionesIngreso(TotalidadDeTransaccionesStruct value) {
+    transaccionesIngreso.remove(value);
+    prefs.setStringList('ff_transaccionesIngreso',
+        _transaccionesIngreso.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromTransaccionesIngreso(int index) {
+    transaccionesIngreso.removeAt(index);
+    prefs.setStringList('ff_transaccionesIngreso',
+        _transaccionesIngreso.map((x) => x.serialize()).toList());
+  }
+
+  void updateTransaccionesIngresoAtIndex(
+    int index,
+    TotalidadDeTransaccionesStruct Function(TotalidadDeTransaccionesStruct)
+        updateFn,
+  ) {
+    transaccionesIngreso[index] = updateFn(_transaccionesIngreso[index]);
+    prefs.setStringList('ff_transaccionesIngreso',
+        _transaccionesIngreso.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInTransaccionesIngreso(
+      int index, TotalidadDeTransaccionesStruct value) {
+    transaccionesIngreso.insert(index, value);
+    prefs.setStringList('ff_transaccionesIngreso',
+        _transaccionesIngreso.map((x) => x.serialize()).toList());
+  }
+
+  List<CategoriasCacheStructStruct> _cacheCategorias = [];
+  List<CategoriasCacheStructStruct> get cacheCategorias => _cacheCategorias;
+  set cacheCategorias(List<CategoriasCacheStructStruct> value) {
+    _cacheCategorias = value;
+    prefs.setStringList(
+        'ff_cacheCategorias', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToCacheCategorias(CategoriasCacheStructStruct value) {
+    cacheCategorias.add(value);
+    prefs.setStringList('ff_cacheCategorias',
+        _cacheCategorias.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromCacheCategorias(CategoriasCacheStructStruct value) {
+    cacheCategorias.remove(value);
+    prefs.setStringList('ff_cacheCategorias',
+        _cacheCategorias.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromCacheCategorias(int index) {
+    cacheCategorias.removeAt(index);
+    prefs.setStringList('ff_cacheCategorias',
+        _cacheCategorias.map((x) => x.serialize()).toList());
+  }
+
+  void updateCacheCategoriasAtIndex(
+    int index,
+    CategoriasCacheStructStruct Function(CategoriasCacheStructStruct) updateFn,
+  ) {
+    cacheCategorias[index] = updateFn(_cacheCategorias[index]);
+    prefs.setStringList('ff_cacheCategorias',
+        _cacheCategorias.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInCacheCategorias(
+      int index, CategoriasCacheStructStruct value) {
+    cacheCategorias.insert(index, value);
+    prefs.setStringList('ff_cacheCategorias',
+        _cacheCategorias.map((x) => x.serialize()).toList());
+  }
+
+  List<CuentaCacheStructStruct> _cacheCuentas = [];
+  List<CuentaCacheStructStruct> get cacheCuentas => _cacheCuentas;
+  set cacheCuentas(List<CuentaCacheStructStruct> value) {
+    _cacheCuentas = value;
+    prefs.setStringList(
+        'ff_cacheCuentas', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToCacheCuentas(CuentaCacheStructStruct value) {
+    cacheCuentas.add(value);
+    prefs.setStringList(
+        'ff_cacheCuentas', _cacheCuentas.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromCacheCuentas(CuentaCacheStructStruct value) {
+    cacheCuentas.remove(value);
+    prefs.setStringList(
+        'ff_cacheCuentas', _cacheCuentas.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromCacheCuentas(int index) {
+    cacheCuentas.removeAt(index);
+    prefs.setStringList(
+        'ff_cacheCuentas', _cacheCuentas.map((x) => x.serialize()).toList());
+  }
+
+  void updateCacheCuentasAtIndex(
+    int index,
+    CuentaCacheStructStruct Function(CuentaCacheStructStruct) updateFn,
+  ) {
+    cacheCuentas[index] = updateFn(_cacheCuentas[index]);
+    prefs.setStringList(
+        'ff_cacheCuentas', _cacheCuentas.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInCacheCuentas(int index, CuentaCacheStructStruct value) {
+    cacheCuentas.insert(index, value);
+    prefs.setStringList(
+        'ff_cacheCuentas', _cacheCuentas.map((x) => x.serialize()).toList());
+  }
+
+  List<EtiquetaCacheStructStruct> _cacheEtiquetas = [];
+  List<EtiquetaCacheStructStruct> get cacheEtiquetas => _cacheEtiquetas;
+  set cacheEtiquetas(List<EtiquetaCacheStructStruct> value) {
+    _cacheEtiquetas = value;
+    prefs.setStringList(
+        'ff_cacheEtiquetas', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToCacheEtiquetas(EtiquetaCacheStructStruct value) {
+    cacheEtiquetas.add(value);
+    prefs.setStringList('ff_cacheEtiquetas',
+        _cacheEtiquetas.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromCacheEtiquetas(EtiquetaCacheStructStruct value) {
+    cacheEtiquetas.remove(value);
+    prefs.setStringList('ff_cacheEtiquetas',
+        _cacheEtiquetas.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromCacheEtiquetas(int index) {
+    cacheEtiquetas.removeAt(index);
+    prefs.setStringList('ff_cacheEtiquetas',
+        _cacheEtiquetas.map((x) => x.serialize()).toList());
+  }
+
+  void updateCacheEtiquetasAtIndex(
+    int index,
+    EtiquetaCacheStructStruct Function(EtiquetaCacheStructStruct) updateFn,
+  ) {
+    cacheEtiquetas[index] = updateFn(_cacheEtiquetas[index]);
+    prefs.setStringList('ff_cacheEtiquetas',
+        _cacheEtiquetas.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInCacheEtiquetas(
+      int index, EtiquetaCacheStructStruct value) {
+    cacheEtiquetas.insert(index, value);
+    prefs.setStringList('ff_cacheEtiquetas',
+        _cacheEtiquetas.map((x) => x.serialize()).toList());
+  }
+
+  String _ultimoTimestampTransaccion = '';
+  String get ultimoTimestampTransaccion => _ultimoTimestampTransaccion;
+  set ultimoTimestampTransaccion(String value) {
+    _ultimoTimestampTransaccion = value;
+    prefs.setString('ff_ultimoTimestampTransaccion', value);
+  }
+
+  List<TotalidadDeTransaccionesStruct> _transaccionesAjuste = [];
+  List<TotalidadDeTransaccionesStruct> get transaccionesAjuste =>
+      _transaccionesAjuste;
+  set transaccionesAjuste(List<TotalidadDeTransaccionesStruct> value) {
+    _transaccionesAjuste = value;
+    prefs.setStringList(
+        'ff_transaccionesAjuste', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToTransaccionesAjuste(TotalidadDeTransaccionesStruct value) {
+    transaccionesAjuste.add(value);
+    prefs.setStringList('ff_transaccionesAjuste',
+        _transaccionesAjuste.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromTransaccionesAjuste(TotalidadDeTransaccionesStruct value) {
+    transaccionesAjuste.remove(value);
+    prefs.setStringList('ff_transaccionesAjuste',
+        _transaccionesAjuste.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromTransaccionesAjuste(int index) {
+    transaccionesAjuste.removeAt(index);
+    prefs.setStringList('ff_transaccionesAjuste',
+        _transaccionesAjuste.map((x) => x.serialize()).toList());
+  }
+
+  void updateTransaccionesAjusteAtIndex(
+    int index,
+    TotalidadDeTransaccionesStruct Function(TotalidadDeTransaccionesStruct)
+        updateFn,
+  ) {
+    transaccionesAjuste[index] = updateFn(_transaccionesAjuste[index]);
+    prefs.setStringList('ff_transaccionesAjuste',
+        _transaccionesAjuste.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInTransaccionesAjuste(
+      int index, TotalidadDeTransaccionesStruct value) {
+    transaccionesAjuste.insert(index, value);
+    prefs.setStringList('ff_transaccionesAjuste',
+        _transaccionesAjuste.map((x) => x.serialize()).toList());
   }
 }
 

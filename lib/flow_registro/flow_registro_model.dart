@@ -22,12 +22,12 @@ class FlowRegistroModel extends FlutterFlowModel<FlowRegistroWidget> {
   int get tabBarCurrentIndex =>
       tabBarController != null ? tabBarController!.index : 0;
 
+  // State field(s) for pagoConAhorro widget.
+  bool? pagoConAhorroValue;
   // State field(s) for setMonto widget.
   FocusNode? setMontoFocusNode;
   TextEditingController? setMontoTextController;
   String? Function(BuildContext, String?)? setMontoTextControllerValidator;
-  // State field(s) for Switch widget.
-  bool? switchValue;
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode;
   TextEditingController? textController2;

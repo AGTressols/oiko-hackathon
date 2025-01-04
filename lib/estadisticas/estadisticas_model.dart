@@ -26,6 +26,12 @@ class EstadisticasModel extends FlutterFlowModel<EstadisticasWidget> {
   // State field(s) for DropDown widget.
   List<String>? dropDownValue2;
   FormFieldController<List<String>>? dropDownValueController2;
+  // State field(s) for dropdowncuentasahorro widget.
+  String? dropdowncuentasahorroValue;
+  FormFieldController<String>? dropdowncuentasahorroValueController;
+  // State field(s) for DropDown widget.
+  List<String>? dropDownValue3;
+  FormFieldController<List<String>>? dropDownValueController3;
 
   @override
   void initState(BuildContext context) {}

@@ -9,68 +9,55 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// Importaciones necesarias
+import '/backend/schema/structs/index.dart'; // Asegúrate de que este import incluye los structs necesarios
+import '/flutter_flow/flutter_flow_util.dart'; // Asegúrate de que FFAppState está definido aquí
 
 Future<void> obtenerEtiquetasHistorico() async {
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      throw Exception('No hay usuario autenticado');
-    }
-
     // Obtener la categoría seleccionada desde la appstate en el índice 0
     String? categoriaSeleccionada =
         FFAppState().seleccionCategoriasHistorico.isNotEmpty
             ? FFAppState().seleccionCategoriasHistorico[0]
             : null;
     if (categoriaSeleccionada == null) {
-      throw Exception('No hay categoría seleccionada en la appstate');
+      throw Exception(
+          'ETIQUETAS HISTORICO: No hay categoría seleccionada en la appstate');
     }
 
-    // Consultar las transacciones del usuario con tipo de movimiento "gasto", "Gasto" o "Mixta"
-    QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto', 'Mixta']).get();
-
     // Lista para almacenar las etiquetas
-    List<String> etiquetasHistorico = ['Todas']; // Inicializar con "Todas"
+    Set<String> etiquetasHistorico = {'Todas'}; // Inicializar con "Todas"
 
-    for (var transDoc in transaccionesSnapshot.docs) {
-      final data = transDoc.data() as Map<String, dynamic>;
-
-      // Resolver la referencia de la categoría
-      DocumentReference categoriaRef = data['categoria'];
-      DocumentSnapshot categoriaDoc = await categoriaRef.get();
-      String categoriaNombre =
-          categoriaDoc.exists ? categoriaDoc['categoria'] : "Sin categoría";
-
-      // Verificar si la categoría coincide con la seleccionada
-      if (categoriaNombre != categoriaSeleccionada) continue;
-
-      // Resolver la referencia de la etiqueta o asignar "Sin Etiqueta"
-      String etiquetaNombre = "Sin Etiqueta";
-      if (data['etiqueta'] != null && data['etiqueta'] is DocumentReference) {
-        DocumentReference etiquetaRef = data['etiqueta'];
-        DocumentSnapshot etiquetaDoc = await etiquetaRef.get();
-        etiquetaNombre =
-            etiquetaDoc.exists ? etiquetaDoc['etiqueta'] : "Sin Etiqueta";
+    // Obtener el ID de la categoría seleccionada desde cacheCategorias
+    String? categoriaSeleccionadaId;
+    for (var categoria in FFAppState().cacheCategorias) {
+      if (categoria.categoria == categoriaSeleccionada) {
+        categoriaSeleccionadaId = categoria.id;
+        break;
       }
+    }
+    if (categoriaSeleccionadaId == null) {
+      throw Exception(
+          'ETIQUETAS HISTORICO: No se encontró el ID de la categoría seleccionada');
+    }
 
-      // Agregar la etiqueta a la lista si no está ya incluida
-      if (!etiquetasHistorico.contains(etiquetaNombre)) {
-        etiquetasHistorico.add(etiquetaNombre);
+    // Iterar sobre cacheEtiquetas y agregar las que pertenecen a la categoría seleccionada
+    for (var etiqueta in FFAppState().cacheEtiquetas) {
+      if (etiqueta.categoria != null) {
+        String etiquetaCategoriaId = etiqueta.categoria!.id;
+        if (etiquetaCategoriaId == categoriaSeleccionadaId) {
+          String etiquetaNombre = etiqueta.etiqueta ?? 'Sin Etiqueta';
+          etiquetasHistorico.add(etiquetaNombre);
+        }
       }
     }
 
     // Guardar la lista de etiquetas en la appstate etiquetasHistorico
-    FFAppState().etiquetasHistorico = etiquetasHistorico;
+    FFAppState().etiquetasHistorico = etiquetasHistorico.toList();
 
     print(
-        'Etiquetas históricas guardadas en la App State: ${FFAppState().etiquetasHistorico}');
+        'ETIQUETAS HISTORICO: Etiquetas históricas guardadas en la App State: ${FFAppState().etiquetasHistorico}');
   } catch (e) {
-    print('Error en la consulta a Firebase: $e');
+    print('ETIQUETAS HISTORICO: Error al procesar las etiquetas: $e');
   }
 }

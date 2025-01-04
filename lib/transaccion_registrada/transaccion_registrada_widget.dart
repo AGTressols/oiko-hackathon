@@ -29,15 +29,13 @@ class _TransaccionRegistradaWidgetState
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       await actions.guardarMesActualEnSeleccionPeriodos();
+      await actions.obtenerYProcesarTransaccionesCompletas();
       await Future.wait([
         Future(() async {
           await actions.procesarDatosGraficoPresupuesto();
         }),
         Future(() async {
           await actions.calcularGastosEIngresosTotales();
-        }),
-        Future(() async {
-          await actions.calcularSaldoTotal();
         }),
         Future(() async {
           await actions.procesarDatosDeCuentas();
@@ -53,6 +51,24 @@ class _TransaccionRegistradaWidgetState
         }),
         Future(() async {
           await actions.procesarDatosHistoricoIngreso();
+        }),
+        Future(() async {
+          await actions.procesarDatosHistoricoAhorro();
+        }),
+        Future(() async {
+          await actions.poblarDropdownCuentaAhorro();
+        }),
+        Future(() async {
+          await actions.obtenerSaldosCuentas();
+        }),
+        Future(() async {
+          await actions.obtenerTodasLasTransacciones();
+        }),
+        Future(() async {
+          await actions.saldoGeneral();
+        }),
+        Future(() async {
+          await actions.saldoCuentasAhorro();
         }),
       ]);
       FFAppState().insertAtIndexInCategoriasHistorico(0, 'Todas');
@@ -75,52 +91,59 @@ class _TransaccionRegistradaWidgetState
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primary,
-        body: SafeArea(
-          top: true,
-          child: InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () async {
-              context.pushNamed(
-                'HomePage',
-                extra: <String, dynamic>{
-                  kTransitionInfoKey: const TransitionInfo(
-                    hasTransition: true,
-                    transitionType: PageTransitionType.leftToRight,
-                  ),
-                },
-              );
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Flexible(
-                  child: Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: FlutterFlowTheme.of(context).accent2,
-                      size: 120.0,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          key: scaffoldKey,
+          backgroundColor: FlutterFlowTheme.of(context).primary,
+          body: SafeArea(
+            top: true,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () async {
+                context.pushNamed(
+                  'HomePage',
+                  extra: <String, dynamic>{
+                    kTransitionInfoKey: const TransitionInfo(
+                      hasTransition: true,
+                      transitionType: PageTransitionType.leftToRight,
+                    ),
+                  },
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Flexible(
+                    child: Align(
+                      alignment: const AlignmentDirectional(0.0, 1.0),
+                      child: Icon(
+                        Icons.check_rounded,
+                        color: FlutterFlowTheme.of(context).accent2,
+                        size: 120.0,
+                      ),
                     ),
                   ),
-                ),
-                Flexible(
-                  child: Text(
-                    '¡Registrado!',
-                    style: FlutterFlowTheme.of(context).displayMedium.override(
-                          fontFamily: 'Outfit',
-                          color: FlutterFlowTheme.of(context).accent2,
-                          letterSpacing: 0.0,
-                        ),
+                  Flexible(
+                    child: Text(
+                      '¡Registrado!',
+                      style:
+                          FlutterFlowTheme.of(context).displayMedium.override(
+                                fontFamily: 'Outfit',
+                                color: FlutterFlowTheme.of(context).accent2,
+                                letterSpacing: 0.0,
+                              ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

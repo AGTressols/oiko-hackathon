@@ -15,6 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
+
   await initFirebase();
 
   await FlutterFlowTheme.initialize();
@@ -55,7 +56,7 @@ class _MyAppState extends State<MyApp> {
 
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
-    userStream = oikoOficialFirebaseUserStream()
+    userStream = oikoFirebaseUserStream()
       ..listen((user) {
         _appStateNotifier.update(user);
       });
@@ -81,7 +82,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Oiko oficial',
+      title: 'Oiko',
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -154,7 +155,7 @@ class _NavBarPageState extends State<NavBarPage> {
               Icons.account_tree_rounded,
               size: 24.0,
             ),
-            label: 'Home',
+            label: '',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -162,7 +163,7 @@ class _NavBarPageState extends State<NavBarPage> {
               Icons.add_rounded,
               size: 24.0,
             ),
-            label: 'Home',
+            label: '',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -170,7 +171,7 @@ class _NavBarPageState extends State<NavBarPage> {
               Icons.query_stats_rounded,
               size: 24.0,
             ),
-            label: 'Home',
+            label: '',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -178,7 +179,7 @@ class _NavBarPageState extends State<NavBarPage> {
               Icons.settings_rounded,
               size: 24.0,
             ),
-            label: 'Home',
+            label: '',
             tooltip: '',
           )
         ],

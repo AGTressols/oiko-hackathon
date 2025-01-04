@@ -10,14 +10,14 @@ class FlowTraspasoModel extends FlutterFlowModel<FlowTraspasoWidget> {
   int get tabBarCurrentIndex =>
       tabBarController != null ? tabBarController!.index : 0;
 
-  // State field(s) for TextField widget.
-  FocusNode? textFieldFocusNode;
-  TextEditingController? textController1;
-  String? Function(BuildContext, String?)? textController1Validator;
   // State field(s) for setMonto widget.
   FocusNode? setMontoFocusNode;
   TextEditingController? setMontoTextController;
   String? Function(BuildContext, String?)? setMontoTextControllerValidator;
+  // State field(s) for TextField widget.
+  FocusNode? textFieldFocusNode;
+  TextEditingController? textController2;
+  String? Function(BuildContext, String?)? textController2Validator;
 
   @override
   void initState(BuildContext context) {}
@@ -25,10 +25,10 @@ class FlowTraspasoModel extends FlutterFlowModel<FlowTraspasoWidget> {
   @override
   void dispose() {
     tabBarController?.dispose();
-    textFieldFocusNode?.dispose();
-    textController1?.dispose();
-
     setMontoFocusNode?.dispose();
     setMontoTextController?.dispose();
+
+    textFieldFocusNode?.dispose();
+    textController2?.dispose();
   }
 }

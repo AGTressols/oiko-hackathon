@@ -40,12 +40,36 @@ class CuentasRecord extends FirestoreRecord {
   bool get ahorro => _ahorro ?? false;
   bool hasAhorro() => _ahorro != null;
 
+  // "divisa" field.
+  String? _divisa;
+  String get divisa => _divisa ?? '';
+  bool hasDivisa() => _divisa != null;
+
+  // "ppp" field.
+  double? _ppp;
+  double get ppp => _ppp ?? 0.0;
+  bool hasPpp() => _ppp != null;
+
+  // "tap" field.
+  double? _tap;
+  double get tap => _tap ?? 0.0;
+  bool hasTap() => _tap != null;
+
+  // "tad" field.
+  double? _tad;
+  double get tad => _tad ?? 0.0;
+  bool hasTad() => _tad != null;
+
   void _initializeFields() {
     _uid = snapshotData['uid'] as String?;
     _cuenta = snapshotData['cuenta'] as String?;
     _logo = snapshotData['logo'] as String?;
     _activa = snapshotData['activa'] as bool?;
     _ahorro = snapshotData['ahorro'] as bool?;
+    _divisa = snapshotData['divisa'] as String?;
+    _ppp = castToType<double>(snapshotData['ppp']);
+    _tap = castToType<double>(snapshotData['tap']);
+    _tad = castToType<double>(snapshotData['tad']);
   }
 
   static CollectionReference get collection =>
@@ -88,6 +112,10 @@ Map<String, dynamic> createCuentasRecordData({
   String? logo,
   bool? activa,
   bool? ahorro,
+  String? divisa,
+  double? ppp,
+  double? tap,
+  double? tad,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -96,6 +124,10 @@ Map<String, dynamic> createCuentasRecordData({
       'logo': logo,
       'activa': activa,
       'ahorro': ahorro,
+      'divisa': divisa,
+      'ppp': ppp,
+      'tap': tap,
+      'tad': tad,
     }.withoutNulls,
   );
 
@@ -111,12 +143,25 @@ class CuentasRecordDocumentEquality implements Equality<CuentasRecord> {
         e1?.cuenta == e2?.cuenta &&
         e1?.logo == e2?.logo &&
         e1?.activa == e2?.activa &&
-        e1?.ahorro == e2?.ahorro;
+        e1?.ahorro == e2?.ahorro &&
+        e1?.divisa == e2?.divisa &&
+        e1?.ppp == e2?.ppp &&
+        e1?.tap == e2?.tap &&
+        e1?.tad == e2?.tad;
   }
 
   @override
-  int hash(CuentasRecord? e) => const ListEquality()
-      .hash([e?.uid, e?.cuenta, e?.logo, e?.activa, e?.ahorro]);
+  int hash(CuentasRecord? e) => const ListEquality().hash([
+        e?.uid,
+        e?.cuenta,
+        e?.logo,
+        e?.activa,
+        e?.ahorro,
+        e?.divisa,
+        e?.ppp,
+        e?.tap,
+        e?.tad
+      ]);
 
   @override
   bool isValidKey(Object? o) => o is CuentasRecord;

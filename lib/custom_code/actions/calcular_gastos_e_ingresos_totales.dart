@@ -9,22 +9,20 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// Importación adicional para autenticación de Firebase
-import 'package:firebase_auth/firebase_auth.dart';
-
 Future<double> calcularGastosEIngresosTotales() async {
   double totalGastos = 0.0;
   double totalIngresos = 0.0;
+  double totalAhorro = 0.0;
 
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      return -1.0; // Retorna un valor negativo o de error en caso de que no haya usuario autenticado
-    }
-
-    // Acceder al estado de la aplicación para obtener los períodos seleccionados
+    // Obtener los períodos seleccionados del AppState
     List<String> seleccionPeriodos = FFAppState().seleccionPeriodos;
+
+    // Verificar que hay períodos seleccionados
+    if (seleccionPeriodos.isEmpty) {
+      print('No hay períodos seleccionados.');
+      return 0.0;
+    }
 
     // Convertir los meses seleccionados a rangos de fechas
     List<Map<String, DateTime>> convertirMesesARangos(
@@ -62,49 +60,81 @@ Future<double> calcularGastosEIngresosTotales() async {
     List<Map<String, DateTime>> rangosDeFechas =
         convertirMesesARangos(seleccionPeriodos);
 
-    // Realizar las consultas a Firebase para cada rango de fechas
-    for (var rango in rangosDeFechas) {
-      // Consultar transacciones de tipo "Gasto"
-      final gastosSnapshot = await FirebaseFirestore.instance
-          .collection('Transacciones')
-          .where('movimiento', whereIn: ['Gasto', 'gasto'])
-          .where('uid', isEqualTo: uid)
-          .where('fecha', isGreaterThanOrEqualTo: rango['inicio'])
-          .where('fecha', isLessThanOrEqualTo: rango['fin'])
-          .get();
-
-      // Sumar todos los montos de gastos
-      for (var doc in gastosSnapshot.docs) {
-        totalGastos += doc['monto'];
+    // Función para verificar si una fecha está dentro de los rangos
+    bool fechaEnRangos(DateTime fecha, List<Map<String, DateTime>> rangos) {
+      for (var rango in rangos) {
+        if (fecha.isAfter(
+                rango['inicio']!.subtract(Duration(milliseconds: 1))) &&
+            fecha.isBefore(rango['fin']!.add(Duration(milliseconds: 1)))) {
+          return true;
+        }
       }
+      return false;
+    }
 
-      // Consultar transacciones de tipo "Ingreso"
-      final ingresosSnapshot = await FirebaseFirestore.instance
-          .collection('Transacciones')
-          .where('movimiento', whereIn: ['Ingreso', 'ingreso'])
-          .where('uid', isEqualTo: uid)
-          .where('fecha', isGreaterThanOrEqualTo: rango['inicio'])
-          .where('fecha', isLessThanOrEqualTo: rango['fin'])
-          .get();
-
-      // Sumar todos los montos de ingresos
-      for (var doc in ingresosSnapshot.docs) {
-        totalIngresos += doc['monto'];
+    // Procesar transacciones de gastos
+    for (var transaccion in FFAppState().transaccionesGasto) {
+      // Parsear la fecha
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
+          if (fechaEnRangos(fechaTransaccion, rangosDeFechas)) {
+            totalGastos += transaccion.monto ?? 0.0;
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+        }
       }
     }
 
-    // Guardar el total de gastos en la AppState
-    FFAppState().gastoTotalVariable = totalGastos;
-    // Guardar el total de ingresos en la AppState
-    FFAppState().ingresoTotalVariable = totalIngresos;
+    // Procesar transacciones de ingresos
+    for (var transaccion in FFAppState().transaccionesIngreso) {
+      // Parsear la fecha
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
+          if (fechaEnRangos(fechaTransaccion, rangosDeFechas)) {
+            totalIngresos += transaccion.monto ?? 0.0;
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+        }
+      }
+    }
 
-    // Retornar el total de gastos como un valor double (puedes cambiarlo si prefieres devolver ingresos)
+    // Procesar transacciones de ahorro
+    for (var transaccion in FFAppState().transaccionesAhorro) {
+      // Parsear la fecha
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
+          if (fechaEnRangos(fechaTransaccion, rangosDeFechas)) {
+            totalAhorro += (transaccion.monto ?? 0.0) * -1; // Invertir el signo
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+        }
+      }
+    }
+
+    // Guardar los totales en el AppState
+    FFAppState().gastoTotalVariable = totalGastos;
+    FFAppState().ingresoTotalVariable = totalIngresos;
+    FFAppState().saldoAhorroGeneral = totalAhorro;
+
+    print('TOTAL GASTOS = $totalGastos');
+    print('TOTAL INGRESOS = $totalIngresos');
+    print('TOTAL AHORRO = $totalAhorro');
+
+    // Retornar el total de gastos
     return totalGastos;
   } catch (e) {
-    // Manejar el error y asignar el mensaje a la App State
-    FFAppState().gastoTotalVariable =
-        -1.0; // Retorna un valor negativo en caso de error
+    print('Error al calcular gastos e ingresos totales: $e');
+
+    // Manejar el error y asignar valores negativos a las variables del AppState
+    FFAppState().gastoTotalVariable = -1.0;
     FFAppState().ingresoTotalVariable = -1.0;
+    FFAppState().saldoAhorroGeneral = -1.0;
     return -1.0;
   }
 }

@@ -9,50 +9,50 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// Importaciones necesarias
+import '/backend/schema/structs/index.dart'; // Asegúrate de que este import incluye los structs necesarios
+import '/flutter_flow/flutter_flow_util.dart'; // Asegúrate de que FFAppState está definido aquí
 
 Future<void> procesarGraficoEtiqueta() async {
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      throw Exception('No hay usuario autenticado');
-    }
+    print('PROCESAR GRÁFICO ETIQUETA: Iniciando función');
 
-    // Obtener la categoría seleccionada desde la appstate
+    // Obtener la categoría seleccionada desde la AppState
     String? categoriaSeleccionada =
         FFAppState().categoriasSeleccionadas.isNotEmpty
             ? FFAppState().categoriasSeleccionadas.first
             : null;
     if (categoriaSeleccionada == null) {
-      throw Exception('No hay categoría seleccionada');
+      print('PROCESAR GRÁFICO ETIQUETA: No hay categoría seleccionada');
+      return;
     }
 
-    print('grafico etiquetas: Categoría seleccionada: $categoriaSeleccionada');
+    print(
+        'PROCESAR GRÁFICO ETIQUETA: Categoría seleccionada: $categoriaSeleccionada');
 
-    // Consultar las transacciones filtradas por UID y movimiento "Gasto"
-    QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto']).get();
+    // Obtener las transacciones de gasto desde FFAppState().transaccionesGasto
+    List<TotalidadDeTransaccionesStruct> transaccionesGasto =
+        FFAppState().transaccionesGasto;
 
+    // Verificar que hay transacciones disponibles
+    if (transaccionesGasto.isEmpty) {
+      print(
+          'PROCESAR GRÁFICO ETIQUETA: No hay transacciones de gasto disponibles.');
+      return;
+    }
+
+    // Crear un mapa para almacenar los resultados
     Map<String, Map<String, double>> resultado = {};
 
-    for (var transDoc in transaccionesSnapshot.docs) {
-      final data = transDoc.data() as Map<String, dynamic>;
-
-      // Resolver la referencia de categoría
-      DocumentReference categoriaRef = data['categoria'];
-      DocumentSnapshot categoriaDoc = await categoriaRef.get();
-      String categoriaNombre =
-          categoriaDoc.exists ? categoriaDoc['categoria'] : "Sin categoría";
-
-      print('grafico etiquetas: Categoría encontrada: $categoriaNombre');
+    // Procesar las transacciones
+    for (var transaccion in transaccionesGasto) {
+      // Obtener la categoría de la transacción
+      String categoriaNombre = transaccion.categoria ?? 'Sin categoría';
 
       // Filtrar por la categoría seleccionada
       if (categoriaNombre != categoriaSeleccionada) {
-        print('grafico etiquetas: Categoría $categoriaNombre descartada');
+        print(
+            'PROCESAR GRÁFICO ETIQUETA: Categoría $categoriaNombre descartada');
         continue;
       }
 
@@ -60,35 +60,28 @@ Future<void> procesarGraficoEtiqueta() async {
         resultado[categoriaNombre] = {};
       }
 
-      // Resolver la referencia de etiqueta o asignar "sin etiqueta" si la referencia es un string vacío
-      String etiquetaNombre = "sin etiqueta";
-      if (data['etiqueta'] != null && data['etiqueta'] is DocumentReference) {
-        DocumentReference etiquetaRef = data['etiqueta'];
-        DocumentSnapshot etiquetaDoc = await etiquetaRef.get();
-        etiquetaNombre =
-            etiquetaDoc.exists ? etiquetaDoc['etiqueta'] : "sin etiqueta";
-      }
-
-      print('grafico etiquetas: Etiqueta encontrada: $etiquetaNombre');
+      // Obtener la etiqueta de la transacción
+      String etiquetaNombre = transaccion.etiqueta ?? 'sin etiqueta';
 
       // Sumar el monto a la etiqueta correspondiente
       resultado[categoriaNombre]![etiquetaNombre] =
           (resultado[categoriaNombre]![etiquetaNombre] ?? 0.0) +
-              (data['monto'] ?? 0.0);
+              (transaccion.monto ?? 0.0);
     }
 
-    // Almacenar los detalles en la App State
+    // Almacenar los detalles en el AppState
     FFAppState().graficoEtiquetaAppState = resultado.entries
-        .expand((categoriaEntry) => categoriaEntry.value.entries
-            .map((etiquetaEntry) => GraficoEtiquetaStruct(
-                  etiquetas: etiquetaEntry.key,
-                  gasto: etiquetaEntry.value,
-                )))
+        .expand((categoriaEntry) =>
+            categoriaEntry.value.entries.map((etiquetaEntry) {
+              return GraficoEtiquetaStruct(
+                etiquetas: etiquetaEntry.key,
+                gasto: etiquetaEntry.value,
+              );
+            }))
         .toList();
 
-    print(
-        'grafico etiquetas: Datos almacenados en la App State: ${FFAppState().graficoEtiquetaAppState}');
+    print('PROCESAR GRÁFICO ETIQUETA: Datos almacenados en el AppState');
   } catch (e) {
-    print('grafico etiquetas: Error en la consulta a Firebase: $e');
+    print('PROCESAR GRÁFICO ETIQUETA: Error: $e');
   }
 }

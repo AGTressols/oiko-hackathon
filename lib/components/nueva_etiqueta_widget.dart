@@ -99,6 +99,8 @@ class _NuevaEtiquetaWidgetState extends State<NuevaEtiquetaWidget> {
                                 controller: _model.textController,
                                 focusNode: _model.textFieldFocusNode,
                                 autofocus: true,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                                 obscureText: false,
                                 decoration: InputDecoration(
                                   labelText: 'Nombre',
@@ -126,7 +128,7 @@ class _NuevaEtiquetaWidgetState extends State<NuevaEtiquetaWidget> {
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color:
-                                          FlutterFlowTheme.of(context).tertiary,
+                                          FlutterFlowTheme.of(context).primary,
                                       width: 2.0,
                                     ),
                                     borderRadius: BorderRadius.circular(100.0),
@@ -190,7 +192,7 @@ class _NuevaEtiquetaWidgetState extends State<NuevaEtiquetaWidget> {
                                 24.0, 0.0, 24.0, 0.0),
                             iconPadding: const EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
-                            color: FlutterFlowTheme.of(context).tertiary,
+                            color: FlutterFlowTheme.of(context).primary,
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(

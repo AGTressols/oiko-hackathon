@@ -45,7 +45,7 @@ int? presupuestoDisponibleValido(int? presupuestoDisponibleGrafico) {
       : 0;
 }
 
-double? funcionAjusteDeCuenta(double? monto) {
+double? cambiarSimbolo(double? monto) {
   // Verificar si monto no es nulo
   if (monto != null) {
     double ajuste = monto * (-1); // Multiplicar por -1 para invertir el signo
@@ -53,4 +53,37 @@ double? funcionAjusteDeCuenta(double? monto) {
   } else {
     return null; // Si el monto es nulo, devolver nulo
   }
+}
+
+double? calcularMontoAhorro(
+  double divisa,
+  double tipoDeCambio,
+) {
+  double montoAhorro = divisa * tipoDeCambio;
+  return montoAhorro;
+}
+
+double? ajusteDivisa(
+  double montoDivisa,
+  double ppp,
+  double numero,
+) {
+  double ajusteDivisa = (montoDivisa * ppp) * numero;
+  return ajusteDivisa;
+}
+
+int? alturaModificada(
+  int altura,
+  int modificador,
+) {
+  int nuevaAltura = altura + modificador;
+  return nuevaAltura;
+}
+
+double? resta(
+  double numeroUno,
+  double numeroDos,
+) {
+  double resta = numeroUno - numeroDos;
+  return resta;
 }

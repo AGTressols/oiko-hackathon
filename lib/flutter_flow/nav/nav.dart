@@ -8,12 +8,15 @@ import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
 import '/main.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
 
 const kTransitionInfoKey = '__transition_info__';
+
+GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppStateNotifier extends ChangeNotifier {
   AppStateNotifier._();
@@ -72,6 +75,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
+      navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) =>
           appStateNotifier.loggedIn ? const NavBarPage() : const LoginPageWidget(),
       routes: [
@@ -233,6 +237,86 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'flowAhorro',
           path: '/flowAhorro',
           builder: (context, params) => const FlowAhorroWidget(),
+        ),
+        FFRoute(
+          name: 'detalleTransaccion',
+          path: '/detalleTransaccion',
+          builder: (context, params) => DetalleTransaccionWidget(
+            parametroTransaccion: params.getParam(
+              'parametroTransaccion',
+              ParamType.DataStruct,
+              isList: false,
+              structBuilder: TodasTransaccionesStruct.fromSerializableMap,
+            ),
+            divisa: params.getParam(
+              'divisa',
+              ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'detalleTransaccionAhorro',
+          path: '/detalleTransaccionAhorro',
+          builder: (context, params) => DetalleTransaccionAhorroWidget(
+            parametroTransaccion: params.getParam(
+              'parametroTransaccion',
+              ParamType.DataStruct,
+              isList: false,
+              structBuilder: TodasTransaccionesStruct.fromSerializableMap,
+            ),
+            divisa: params.getParam(
+              'divisa',
+              ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'detalleTransaccionAjuste',
+          path: '/detalleTransaccionAjuste',
+          builder: (context, params) => DetalleTransaccionAjusteWidget(
+            parametroTransaccion: params.getParam(
+              'parametroTransaccion',
+              ParamType.DataStruct,
+              isList: false,
+              structBuilder: TodasTransaccionesStruct.fromSerializableMap,
+            ),
+            divisa: params.getParam(
+              'divisa',
+              ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'detalleTransaccionTraspaso',
+          path: '/detalleTransaccionTraspaso',
+          builder: (context, params) => DetalleTransaccionTraspasoWidget(
+            parametroTransaccion: params.getParam(
+              'parametroTransaccion',
+              ParamType.DataStruct,
+              isList: false,
+              structBuilder: TodasTransaccionesStruct.fromSerializableMap,
+            ),
+            divisa: params.getParam(
+              'divisa',
+              ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'detalleTransaccionDesahorro',
+          path: '/detalleTransaccionDesahorro',
+          builder: (context, params) => DetalleTransaccionDesahorroWidget(
+            parametroTransaccion: params.getParam(
+              'parametroTransaccion',
+              ParamType.DataStruct,
+              isList: false,
+              structBuilder: TodasTransaccionesStruct.fromSerializableMap,
+            ),
+            divisa: params.getParam(
+              'divisa',
+              ParamType.bool,
+            ),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -420,10 +504,10 @@ class FFRoute {
               : builder(context, ffParams);
           final child = appStateNotifier.loading
               ? Container(
-                  color: Colors.transparent,
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
                   child: Image.asset(
-                    'assets/images/tuta_y_ale.jpg',
-                    fit: BoxFit.cover,
+                    'assets/images/logo-oiko-para-flutter.png',
+                    fit: BoxFit.contain,
                   ),
                 )
               : page;

@@ -9,19 +9,17 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// Importaciones necesarias
+import '/backend/schema/structs/index.dart'; // Asegúrate de que este import incluye los structs necesarios
+import '/flutter_flow/flutter_flow_util.dart'; // Asegúrate de que FFAppState está definido aquí
+
 import 'package:intl/intl.dart'; // Asegúrate de importar esto si no está ya
 
 Future<void> procesarGraficoHistoricoGastos() async {
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      throw Exception('No hay usuario autenticado');
-    }
+    print('PROCESAR GRÁFICO HISTÓRICO GASTOS: Iniciando función');
 
-    // Leer las appstates de categorías y etiquetas
+    // Leer las AppStates de categorías y etiquetas
     String categoriaSeleccionada =
         FFAppState().seleccionCategoriasHistorico.isNotEmpty
             ? FFAppState().seleccionCategoriasHistorico[0]
@@ -32,38 +30,29 @@ Future<void> procesarGraficoHistoricoGastos() async {
             : "Todas";
 
     print(
-        'Filtrando por categoría: $categoriaSeleccionada y etiqueta: $etiquetaSeleccionada');
+        'PROCESAR GRÁFICO HISTÓRICO GASTOS: Filtrando por categoría: $categoriaSeleccionada y etiqueta: $etiquetaSeleccionada');
 
-    // Consultar las transacciones filtradas por UID y tipo de movimiento
-    QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto', 'Mixta']).get();
+    // Obtener las transacciones de gasto desde FFAppState().transaccionesGasto
+    List<TotalidadDeTransaccionesStruct> transaccionesGasto =
+        FFAppState().transaccionesGasto;
 
-    // Mapa para almacenar los datos agrupados por periodo y categoría
+    // Verificar que hay transacciones disponibles
+    if (transaccionesGasto.isEmpty) {
+      print(
+          'PROCESAR GRÁFICO HISTÓRICO GASTOS: No hay transacciones de gasto disponibles.');
+      return;
+    }
+
+    // Mapa para almacenar los datos agrupados por periodo
     Map<String, double> gastosPorPeriodo = {};
-    DateTime minFecha = DateTime.now();
-    DateTime maxFecha = DateTime.now();
+    DateTime? minFecha;
+    DateTime? maxFecha;
 
-    for (var transDoc in transaccionesSnapshot.docs) {
-      final data = transDoc.data() as Map<String, dynamic>;
-
-      // Resolver la referencia de categoría
-      DocumentReference categoriaRef = data['categoria'];
-      DocumentSnapshot categoriaDoc = await categoriaRef.get();
-      String categoriaNombre =
-          categoriaDoc.exists ? categoriaDoc['categoria'] : "Sin categoría";
-
-      // Resolver la referencia de etiqueta o asignar "sin etiqueta" si la referencia es un string vacío
-      String etiquetaNombre = "Sin Etiqueta";
-      if (data['etiqueta'] != null && data['etiqueta'] is DocumentReference) {
-        DocumentReference etiquetaRef = data['etiqueta'];
-        DocumentSnapshot etiquetaDoc = await etiquetaRef.get();
-        etiquetaNombre =
-            etiquetaDoc.exists ? etiquetaDoc['etiqueta'] : "Sin Etiqueta";
-      }
-
+    for (var transaccion in transaccionesGasto) {
       // Filtrar según la categoría y etiqueta seleccionada
+      String categoriaNombre = transaccion.categoria ?? "Sin categoría";
+      String etiquetaNombre = transaccion.etiqueta ?? "Sin Etiqueta";
+
       if (categoriaSeleccionada != "Todas" &&
           categoriaNombre != categoriaSeleccionada) {
         continue;
@@ -74,13 +63,19 @@ Future<void> procesarGraficoHistoricoGastos() async {
         }
       }
 
-      // Obtener el período (mes y año) de la transacción
-      DateTime fecha = (data['fecha'] as Timestamp).toDate();
-      if (fecha.isBefore(minFecha)) {
-        minFecha = DateTime(fecha.year, fecha.month);
+      // Obtener la fecha de la transacción
+      if (transaccion.fecha == null || transaccion.fecha!.isEmpty) {
+        continue;
       }
-      if (fecha.isAfter(maxFecha)) {
-        maxFecha = DateTime(fecha.year, fecha.month);
+      DateTime fecha = DateTime.parse(transaccion.fecha!);
+      DateTime fechaMes = DateTime(fecha.year, fecha.month);
+
+      // Actualizar minFecha y maxFecha
+      if (minFecha == null || fechaMes.isBefore(minFecha)) {
+        minFecha = fechaMes;
+      }
+      if (maxFecha == null || fechaMes.isAfter(maxFecha)) {
+        maxFecha = fechaMes;
       }
 
       String mes = DateFormat('MMM', 'es_ES').format(fecha);
@@ -88,8 +83,14 @@ Future<void> procesarGraficoHistoricoGastos() async {
       String periodo = "$mesCapitalizado ${fecha.year.toString().substring(2)}";
 
       // Sumar el monto al período correspondiente
-      gastosPorPeriodo[periodo] =
-          (gastosPorPeriodo[periodo] ?? 0.0) + (data['monto'] ?? 0.0);
+      double monto = transaccion.monto ?? 0.0;
+      gastosPorPeriodo[periodo] = (gastosPorPeriodo[periodo] ?? 0.0) + monto;
+    }
+
+    if (minFecha == null || maxFecha == null) {
+      print(
+          'PROCESAR GRÁFICO HISTÓRICO GASTOS: No hay fechas válidas en las transacciones.');
+      return;
     }
 
     // Asegurar que todos los meses desde minFecha hasta maxFecha estén en el mapa
@@ -107,7 +108,11 @@ Future<void> procesarGraficoHistoricoGastos() async {
       periodos.add(periodo);
       gastos.add(gastosPorPeriodo[periodo] ?? 0.0);
 
-      iteradorFecha = DateTime(iteradorFecha.year, iteradorFecha.month + 1);
+      // Avanzar al siguiente mes
+      iteradorFecha = DateTime(
+        iteradorFecha.month == 12 ? iteradorFecha.year + 1 : iteradorFecha.year,
+        iteradorFecha.month % 12 + 1,
+      );
     }
 
     // Guardar los datos en las AppStates
@@ -117,11 +122,15 @@ Future<void> procesarGraficoHistoricoGastos() async {
     FFAppState().periodosGraficoHistoricoGastos = periodos;
     FFAppState().gastoGraficoHistoricoGastos = gastos;
 
-    print('Datos almacenados en las App States:');
-    print('Nombre: ${FFAppState().nombreGraficoHistoricoGastos}');
-    print('Periodos: ${FFAppState().periodosGraficoHistoricoGastos}');
-    print('Gastos: ${FFAppState().gastoGraficoHistoricoGastos}');
+    print(
+        'PROCESAR GRÁFICO HISTÓRICO GASTOS: Datos almacenados en las AppStates:');
+    print(
+        'PROCESAR GRÁFICO HISTÓRICO GASTOS: Nombre: ${FFAppState().nombreGraficoHistoricoGastos}');
+    print(
+        'PROCESAR GRÁFICO HISTÓRICO GASTOS: Periodos: ${FFAppState().periodosGraficoHistoricoGastos}');
+    print(
+        'PROCESAR GRÁFICO HISTÓRICO GASTOS: Gastos: ${FFAppState().gastoGraficoHistoricoGastos}');
   } catch (e) {
-    print('Error en la consulta a Firebase: $e');
+    print('PROCESAR GRÁFICO HISTÓRICO GASTOS: Error: $e');
   }
 }

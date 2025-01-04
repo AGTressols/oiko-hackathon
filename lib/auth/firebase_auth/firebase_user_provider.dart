@@ -5,8 +5,8 @@ import '../base_auth_user_provider.dart';
 
 export '../base_auth_user_provider.dart';
 
-class OikoOficialFirebaseUser extends BaseAuthUser {
-  OikoOficialFirebaseUser(this.user);
+class OikoFirebaseUser extends BaseAuthUser {
+  OikoFirebaseUser(this.user);
   User? user;
   @override
   bool get loggedIn => user != null;
@@ -33,6 +33,11 @@ class OikoOficialFirebaseUser extends BaseAuthUser {
   }
 
   @override
+  Future? updatePassword(String newPassword) async {
+    await user?.updatePassword(newPassword);
+  }
+
+  @override
   Future? sendEmailVerification() => user?.sendEmailVerification();
 
   @override
@@ -54,18 +59,17 @@ class OikoOficialFirebaseUser extends BaseAuthUser {
 
   static BaseAuthUser fromUserCredential(UserCredential userCredential) =>
       fromFirebaseUser(userCredential.user);
-  static BaseAuthUser fromFirebaseUser(User? user) =>
-      OikoOficialFirebaseUser(user);
+  static BaseAuthUser fromFirebaseUser(User? user) => OikoFirebaseUser(user);
 }
 
-Stream<BaseAuthUser> oikoOficialFirebaseUserStream() => FirebaseAuth.instance
+Stream<BaseAuthUser> oikoFirebaseUserStream() => FirebaseAuth.instance
         .authStateChanges()
         .debounce((user) => user == null && !loggedIn
             ? TimerStream(true, const Duration(seconds: 1))
             : Stream.value(user))
         .map<BaseAuthUser>(
       (user) {
-        currentUser = OikoOficialFirebaseUser(user);
+        currentUser = OikoFirebaseUser(user);
         return currentUser!;
       },
     );

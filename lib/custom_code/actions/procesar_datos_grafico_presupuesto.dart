@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 
 Future<void> procesarDatosGraficoPresupuesto() async {
@@ -18,14 +16,14 @@ Future<void> procesarDatosGraficoPresupuesto() async {
   List<Map<String, dynamic>> listaGraficoPresupuesto = [];
 
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      throw Exception('No hay usuario autenticado');
-    }
-
     // Obtener los períodos seleccionados desde la App State
     List<String> seleccionPeriodos = FFAppState().seleccionPeriodos;
+
+    // Verificar que hay períodos seleccionados
+    if (seleccionPeriodos.isEmpty) {
+      print('No hay períodos seleccionados.');
+      return;
+    }
 
     // Convertir los períodos seleccionados en rangos de fechas
     List<Map<String, DateTime>> rangosDeFechas = seleccionPeriodos.map((mes) {
@@ -51,47 +49,69 @@ Future<void> procesarDatosGraficoPresupuesto() async {
       };
     }).toList();
 
-    // Consultar las transacciones filtradas por UID, Movimiento y Fecha
-    QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto']).get();
-
     // Crear un mapa para agrupar las transacciones por categoría
     Map<String, Map<String, dynamic>> categoriasData = {};
 
-    for (var transDoc in transaccionesSnapshot.docs) {
-      DateTime fecha = (transDoc['fecha'] as Timestamp).toDate();
+    // Obtener las transacciones de tipo 'Gasto' desde FFAppState
+    List<TotalidadDeTransaccionesStruct> transaccionesGasto =
+        FFAppState().transaccionesGasto;
 
-      // Verificar si la transacción está dentro de alguno de los rangos de fechas seleccionados
-      bool dentroDeRango = false;
-      for (var rango in rangosDeFechas) {
-        if (fecha.isAfter(rango['inicio']!) && fecha.isBefore(rango['fin']!)) {
-          dentroDeRango = true;
-          break;
+    for (var transaccion in transaccionesGasto) {
+      // Parsear la fecha de la transacción
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
+
+          // Verificar si la transacción está dentro de alguno de los rangos de fechas seleccionados
+          bool dentroDeRango = false;
+          for (var rango in rangosDeFechas) {
+            if (fechaTransaccion.isAfter(
+                    rango['inicio']!.subtract(Duration(milliseconds: 1))) &&
+                fechaTransaccion
+                    .isBefore(rango['fin']!.add(Duration(milliseconds: 1)))) {
+              dentroDeRango = true;
+              break;
+            }
+          }
+          if (!dentroDeRango) continue;
+
+          // Obtener la categoría de la transacción
+          String categoria = transaccion.categoria ?? 'Sin Categoría';
+
+          // Obtener los datos de la categoría desde el caché
+          CategoriasCacheStructStruct? categoriaData;
+          for (var c in FFAppState().cacheCategorias) {
+            if (c.categoria == categoria) {
+              categoriaData = c;
+              break;
+            }
+          }
+
+          if (categoriaData == null) {
+            print('No se encontró la categoría "$categoria" en el caché.');
+            continue;
+          }
+
+          String logo = categoriaData.logo ?? '';
+          double presupuesto = categoriaData.presupuesto ?? 0.0;
+          double monto = transaccion.monto ?? 0.0;
+
+          // Si la categoría ya existe en el mapa, actualizar los valores
+          if (categoriasData.containsKey(categoria)) {
+            categoriasData[categoria]!['gastadoAbs'] += monto;
+          } else {
+            // Si no existe, crear una nueva entrada en el mapa
+            categoriasData[categoria] = {
+              'categoria': categoria,
+              'logo': logo,
+              'gastadoAbs': monto,
+              'presupuesto': presupuesto,
+            };
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+          continue;
         }
-      }
-      if (!dentroDeRango) continue;
-
-      // Resolver la referencia de la categoría
-      DocumentReference categoriaRef = transDoc['categoria'];
-      DocumentSnapshot categoriaDoc = await categoriaRef.get();
-      String categoria = categoriaDoc['categoria'];
-      String logo = categoriaDoc['logo'];
-      double monto = double.tryParse(transDoc['monto'].toString()) ?? 0.0;
-
-      // Si la categoría ya existe en el mapa, actualizar los valores
-      if (categoriasData.containsKey(categoria)) {
-        categoriasData[categoria]!['gastadoAbs'] += monto;
-      } else {
-        // Si no existe, crear una nueva entrada en el mapa
-        categoriasData[categoria] = {
-          'categoria': categoria,
-          'logo': logo,
-          'gastadoAbs': monto,
-          'presupuesto':
-              double.tryParse(categoriaDoc['presupuesto'].toString()) ?? 0.0,
-        };
       }
     }
 
@@ -99,29 +119,40 @@ Future<void> procesarDatosGraficoPresupuesto() async {
     categoriasData.forEach((categoria, data) {
       double presupuestoAjustado =
           data['presupuesto'] * seleccionPeriodos.length;
-      double presupuestoDisponible = presupuestoAjustado - data['gastadoAbs'];
+      double gastadoAbs = data['gastadoAbs'];
+      double presupuestoDisponible = presupuestoAjustado - gastadoAbs;
+
+      // *** MODIFICACIÓN SOLICITADA ***
+      // Si el presupuesto es igual a 0, disponible es 0
+      if (data['presupuesto'] == 0.0) {
+        presupuestoDisponible = 0.0;
+      }
+
       if (presupuestoAjustado < 1) {
         presupuestoAjustado = 1;
       }
+
       // Calcular el porcentaje del gasto sobre el presupuesto ajustado
-      double porcentajeGrafico = (data['gastadoAbs'] / presupuestoAjustado);
+      double porcentajeGrafico = (gastadoAbs / presupuestoAjustado);
 
       // Multiplicar el porcentaje por 235 px para obtener el valor en píxeles
       int widthInPx = (porcentajeGrafico * 235).toInt();
 
+      // Asegurar que el widthInPx no exceda 235
+      widthInPx = widthInPx.clamp(0, 235);
+
       // Seleccionar un color aleatorio de la lista de colores almacenada en AppState
-      List<Color> colores =
-          FFAppState().colores; // Acceso a la lista de colores
+      List<Color> colores = FFAppState().colores;
       int randomIndex = Random().nextInt(colores.length);
-      Color colorAleatorio = colores[randomIndex]; // Obtener el color
+      Color colorAleatorio = colores[randomIndex];
 
       listaGraficoPresupuesto.add({
         'categoria': data['categoria'],
         'logo': data['logo'],
-        'gastoAbs': data['gastadoAbs'].toInt(),
+        'gastadoAbs': gastadoAbs.toInt(),
         'presupuestoDisponible': presupuestoDisponible.toInt(),
         'presupuestoGrafico': widthInPx,
-        'color': colorAleatorio, // Asignar el color directamente
+        'color': colorAleatorio,
       });
     });
 
@@ -130,16 +161,16 @@ Future<void> procesarDatosGraficoPresupuesto() async {
         .map((e) => GraficoPresupuestoStruct(
               categoria: e['categoria'] as String,
               logo: e['logo'] as String,
-              gastadoAbs: e['gastoAbs'] as int,
+              gastadoAbs: e['gastadoAbs'] as int,
               presupuestoDisponible: e['presupuestoDisponible'] as int,
               presupuestoGrafico: e['presupuestoGrafico'] as int,
-              color: e['color'] as Color, // Asignar el Color
+              color: e['color'] as Color,
             ))
         .toList();
 
     print(
-        'Datos almacenados en la App State: ${FFAppState().graficoPresupuestoAppState}');
+        'GRAFICO GASTO PRESUPUESTO: Datos almacenados en la App State: ${FFAppState().graficoPresupuestoAppState}');
   } catch (e) {
-    print('Error en la consulta a Firebase: $e');
+    print('GRAFICO GASTO PRESUPUESTO: Error al procesar los datos: $e');
   }
 }

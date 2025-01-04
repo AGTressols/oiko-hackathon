@@ -9,42 +9,50 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '/backend/schema/structs/index.dart'; // Asegúrate de que este import incluye los structs necesarios
+import '/flutter_flow/flutter_flow_util.dart'; // Asegúrate de que FFAppState está definido aquí
 
 Future<List<String>> obtenerCategoriasConTransaccionesHistorico() async {
-  List<String> categorias = ['Todas']; // Inicializar con "Todas"
+  // Inicializar la lista de categorías con "Todas"
+  Set<String> categoriasSet = {'Todas'};
 
   try {
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      throw Exception('No hay usuario autenticado');
+    print('OBTENER CAT CON TRANS HISTORICO: Iniciando proceso.');
+
+    // Obtener las categorías desde el cacheCategorias en FFAppState
+    List<CategoriasCacheStructStruct> cacheCategorias =
+        FFAppState().cacheCategorias;
+
+    // Verificar que hay categorías en el caché
+    if (cacheCategorias.isEmpty) {
+      print(
+          'OBTENER CAT CON TRANS HISTORICO: No hay categorías en cacheCategorias.');
+      FFAppState().categoriasHistorico = categoriasSet.toList();
+      return categoriasSet.toList();
     }
 
-    // Consultar todas las transacciones históricas filtradas por UID y tipo de movimiento
-    QuerySnapshot transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('movimiento', whereIn: ['Gasto', 'gasto', 'Mixta']).get();
+    // Iterar sobre cacheCategorias y agregar las categorías con movimiento "Gasto"
+    for (var categoria in cacheCategorias) {
+      String? movimiento = categoria.movimiento;
+      String? nombreCategoria = categoria.categoria;
 
-    for (var transDoc in transaccionesSnapshot.docs) {
-      // Resolver la referencia de categoría
-      DocumentReference categoriaRef = transDoc['categoria'];
-      DocumentSnapshot categoriaDoc = await categoriaRef.get();
-      String categoria = categoriaDoc['categoria'];
-
-      if (!categorias.contains(categoria)) {
-        categorias.add(categoria);
+      if (movimiento != null &&
+          nombreCategoria != null &&
+          movimiento.toLowerCase() == 'gasto') {
+        categoriasSet.add(nombreCategoria);
       }
     }
 
-    // Guardar el resultado en la appstate categoriasHistorico
-    FFAppState().categoriasHistorico = categorias;
-    print('Categorías históricas: ${FFAppState().categoriasHistorico}');
+    // Asignar la lista de categorías a la AppState
+    FFAppState().categoriasHistorico = categoriasSet.toList();
+    print(
+        'OBTENER CAT CON TRANS HISTORICO: Categorías históricas actualizadas: ${FFAppState().categoriasHistorico}');
 
-    return categorias;
+    return FFAppState().categoriasHistorico;
   } catch (e) {
-    print('Error en la consulta a Firebase: $e');
-    return [];
+    print('OBTENER CAT CON TRANS HISTORICO: Error en el procesamiento: $e');
+    // En caso de error, asignar una lista con solo "Todas"
+    FFAppState().categoriasHistorico = ['Todas'];
+    return ['Todas'];
   }
 }

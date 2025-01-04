@@ -31,3 +31,13 @@ export '/newlsignup_categorias/newlsignup_categorias_widget.dart'
 export '/detalle_categoria/detalle_categoria_widget.dart'
     show DetalleCategoriaWidget;
 export '/flow_ahorro/flow_ahorro_widget.dart' show FlowAhorroWidget;
+export '/detalle_transaccion/detalle_transaccion_widget.dart'
+    show DetalleTransaccionWidget;
+export '/detalle_transaccion_ahorro/detalle_transaccion_ahorro_widget.dart'
+    show DetalleTransaccionAhorroWidget;
+export '/detalle_transaccion_ajuste/detalle_transaccion_ajuste_widget.dart'
+    show DetalleTransaccionAjusteWidget;
+export '/detalle_transaccion_traspaso/detalle_transaccion_traspaso_widget.dart'
+    show DetalleTransaccionTraspasoWidget;
+export '/detalle_transaccion_desahorro/detalle_transaccion_desahorro_widget.dart'
+    show DetalleTransaccionDesahorroWidget;

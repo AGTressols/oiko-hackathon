@@ -60,10 +60,30 @@ class TransaccionesRecord extends FirestoreRecord {
   DocumentReference? get cuentaCredito => _cuentaCredito;
   bool hasCuentaCredito() => _cuentaCredito != null;
 
-  // "traspasoCuenta" field.
-  DocumentReference? _traspasoCuenta;
-  DocumentReference? get traspasoCuenta => _traspasoCuenta;
-  bool hasTraspasoCuenta() => _traspasoCuenta != null;
+  // "montoAhorro" field.
+  double? _montoAhorro;
+  double get montoAhorro => _montoAhorro ?? 0.0;
+  bool hasMontoAhorro() => _montoAhorro != null;
+
+  // "montoDivisa" field.
+  double? _montoDivisa;
+  double get montoDivisa => _montoDivisa ?? 0.0;
+  bool hasMontoDivisa() => _montoDivisa != null;
+
+  // "desahorro" field.
+  bool? _desahorro;
+  bool get desahorro => _desahorro ?? false;
+  bool hasDesahorro() => _desahorro != null;
+
+  // "timestamp" field.
+  DateTime? _timestamp;
+  DateTime? get timestamp => _timestamp;
+  bool hasTimestamp() => _timestamp != null;
+
+  // "eliminada" field.
+  bool? _eliminada;
+  bool get eliminada => _eliminada ?? false;
+  bool hasEliminada() => _eliminada != null;
 
   void _initializeFields() {
     _uid = snapshotData['uid'] as String?;
@@ -75,7 +95,11 @@ class TransaccionesRecord extends FirestoreRecord {
     _etiqueta = snapshotData['etiqueta'] as DocumentReference?;
     _observacion = snapshotData['observacion'] as String?;
     _cuentaCredito = snapshotData['cuentaCredito'] as DocumentReference?;
-    _traspasoCuenta = snapshotData['traspasoCuenta'] as DocumentReference?;
+    _montoAhorro = castToType<double>(snapshotData['montoAhorro']);
+    _montoDivisa = castToType<double>(snapshotData['montoDivisa']);
+    _desahorro = snapshotData['desahorro'] as bool?;
+    _timestamp = snapshotData['timestamp'] as DateTime?;
+    _eliminada = snapshotData['eliminada'] as bool?;
   }
 
   static CollectionReference get collection =>
@@ -122,7 +146,11 @@ Map<String, dynamic> createTransaccionesRecordData({
   DocumentReference? etiqueta,
   String? observacion,
   DocumentReference? cuentaCredito,
-  DocumentReference? traspasoCuenta,
+  double? montoAhorro,
+  double? montoDivisa,
+  bool? desahorro,
+  DateTime? timestamp,
+  bool? eliminada,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -135,7 +163,11 @@ Map<String, dynamic> createTransaccionesRecordData({
       'etiqueta': etiqueta,
       'observacion': observacion,
       'cuentaCredito': cuentaCredito,
-      'traspasoCuenta': traspasoCuenta,
+      'montoAhorro': montoAhorro,
+      'montoDivisa': montoDivisa,
+      'desahorro': desahorro,
+      'timestamp': timestamp,
+      'eliminada': eliminada,
     }.withoutNulls,
   );
 
@@ -157,7 +189,11 @@ class TransaccionesRecordDocumentEquality
         e1?.etiqueta == e2?.etiqueta &&
         e1?.observacion == e2?.observacion &&
         e1?.cuentaCredito == e2?.cuentaCredito &&
-        e1?.traspasoCuenta == e2?.traspasoCuenta;
+        e1?.montoAhorro == e2?.montoAhorro &&
+        e1?.montoDivisa == e2?.montoDivisa &&
+        e1?.desahorro == e2?.desahorro &&
+        e1?.timestamp == e2?.timestamp &&
+        e1?.eliminada == e2?.eliminada;
   }
 
   @override
@@ -171,7 +207,11 @@ class TransaccionesRecordDocumentEquality
         e?.etiqueta,
         e?.observacion,
         e?.cuentaCredito,
-        e?.traspasoCuenta
+        e?.montoAhorro,
+        e?.montoDivisa,
+        e?.desahorro,
+        e?.timestamp,
+        e?.eliminada
       ]);
 
   @override

@@ -10,9 +10,11 @@ class FlowCuentaStruct extends FFFirebaseStruct {
   FlowCuentaStruct({
     String? nombre,
     DocumentReference? cuentaRef,
+    String? logo,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _nombre = nombre,
         _cuentaRef = cuentaRef,
+        _logo = logo,
         super(firestoreUtilData);
 
   // "nombre" field.
@@ -29,10 +31,18 @@ class FlowCuentaStruct extends FFFirebaseStruct {
 
   bool hasCuentaRef() => _cuentaRef != null;
 
+  // "logo" field.
+  String? _logo;
+  String get logo => _logo ?? '';
+  set logo(String? val) => _logo = val;
+
+  bool hasLogo() => _logo != null;
+
   static FlowCuentaStruct fromMap(Map<String, dynamic> data) =>
       FlowCuentaStruct(
         nombre: data['nombre'] as String?,
         cuentaRef: data['cuentaRef'] as DocumentReference?,
+        logo: data['logo'] as String?,
       );
 
   static FlowCuentaStruct? maybeFromMap(dynamic data) => data is Map
@@ -42,6 +52,7 @@ class FlowCuentaStruct extends FFFirebaseStruct {
   Map<String, dynamic> toMap() => {
         'nombre': _nombre,
         'cuentaRef': _cuentaRef,
+        'logo': _logo,
       }.withoutNulls;
 
   @override
@@ -53,6 +64,10 @@ class FlowCuentaStruct extends FFFirebaseStruct {
         'cuentaRef': serializeParam(
           _cuentaRef,
           ParamType.DocumentReference,
+        ),
+        'logo': serializeParam(
+          _logo,
+          ParamType.String,
         ),
       }.withoutNulls;
 
@@ -69,6 +84,11 @@ class FlowCuentaStruct extends FFFirebaseStruct {
           false,
           collectionNamePath: ['Cuentas'],
         ),
+        logo: deserializeParam(
+          data['logo'],
+          ParamType.String,
+          false,
+        ),
       );
 
   @override
@@ -78,16 +98,18 @@ class FlowCuentaStruct extends FFFirebaseStruct {
   bool operator ==(Object other) {
     return other is FlowCuentaStruct &&
         nombre == other.nombre &&
-        cuentaRef == other.cuentaRef;
+        cuentaRef == other.cuentaRef &&
+        logo == other.logo;
   }
 
   @override
-  int get hashCode => const ListEquality().hash([nombre, cuentaRef]);
+  int get hashCode => const ListEquality().hash([nombre, cuentaRef, logo]);
 }
 
 FlowCuentaStruct createFlowCuentaStruct({
   String? nombre,
   DocumentReference? cuentaRef,
+  String? logo,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -96,6 +118,7 @@ FlowCuentaStruct createFlowCuentaStruct({
     FlowCuentaStruct(
       nombre: nombre,
       cuentaRef: cuentaRef,
+      logo: logo,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,

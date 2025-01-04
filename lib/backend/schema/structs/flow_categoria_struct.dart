@@ -10,9 +10,11 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
   FlowCategoriaStruct({
     String? nombre,
     DocumentReference? categoriaRef,
+    String? logo,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _nombre = nombre,
         _categoriaRef = categoriaRef,
+        _logo = logo,
         super(firestoreUtilData);
 
   // "nombre" field.
@@ -29,10 +31,18 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
 
   bool hasCategoriaRef() => _categoriaRef != null;
 
+  // "logo" field.
+  String? _logo;
+  String get logo => _logo ?? '';
+  set logo(String? val) => _logo = val;
+
+  bool hasLogo() => _logo != null;
+
   static FlowCategoriaStruct fromMap(Map<String, dynamic> data) =>
       FlowCategoriaStruct(
         nombre: data['nombre'] as String?,
         categoriaRef: data['categoriaRef'] as DocumentReference?,
+        logo: data['logo'] as String?,
       );
 
   static FlowCategoriaStruct? maybeFromMap(dynamic data) => data is Map
@@ -42,6 +52,7 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
   Map<String, dynamic> toMap() => {
         'nombre': _nombre,
         'categoriaRef': _categoriaRef,
+        'logo': _logo,
       }.withoutNulls;
 
   @override
@@ -53,6 +64,10 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
         'categoriaRef': serializeParam(
           _categoriaRef,
           ParamType.DocumentReference,
+        ),
+        'logo': serializeParam(
+          _logo,
+          ParamType.String,
         ),
       }.withoutNulls;
 
@@ -69,6 +84,11 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
           false,
           collectionNamePath: ['Categorias'],
         ),
+        logo: deserializeParam(
+          data['logo'],
+          ParamType.String,
+          false,
+        ),
       );
 
   @override
@@ -78,16 +98,18 @@ class FlowCategoriaStruct extends FFFirebaseStruct {
   bool operator ==(Object other) {
     return other is FlowCategoriaStruct &&
         nombre == other.nombre &&
-        categoriaRef == other.categoriaRef;
+        categoriaRef == other.categoriaRef &&
+        logo == other.logo;
   }
 
   @override
-  int get hashCode => const ListEquality().hash([nombre, categoriaRef]);
+  int get hashCode => const ListEquality().hash([nombre, categoriaRef, logo]);
 }
 
 FlowCategoriaStruct createFlowCategoriaStruct({
   String? nombre,
   DocumentReference? categoriaRef,
+  String? logo,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -96,6 +118,7 @@ FlowCategoriaStruct createFlowCategoriaStruct({
     FlowCategoriaStruct(
       nombre: nombre,
       categoriaRef: categoriaRef,
+      logo: logo,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,

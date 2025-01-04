@@ -15,6 +15,8 @@ class FlowAhorroModel extends FlutterFlowModel<FlowAhorroWidget> {
   void updateCategoriasFiltroAtIndex(int index, Function(String) updateFn) =>
       categoriasFiltro[index] = updateFn(categoriasFiltro[index]);
 
+  bool esDivisa = false;
+
   ///  State fields for stateful widgets in this page.
 
   // State field(s) for TabBar widget.
@@ -22,14 +24,14 @@ class FlowAhorroModel extends FlutterFlowModel<FlowAhorroWidget> {
   int get tabBarCurrentIndex =>
       tabBarController != null ? tabBarController!.index : 0;
 
-  // State field(s) for Switch widget.
-  bool? switchValue1;
+  // State field(s) for esAhorro widget.
+  bool? esAhorroValue;
   // State field(s) for setMonto widget.
   FocusNode? setMontoFocusNode;
   TextEditingController? setMontoTextController;
   String? Function(BuildContext, String?)? setMontoTextControllerValidator;
   // State field(s) for Switch widget.
-  bool? switchValue2;
+  bool? switchValue;
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode;
   TextEditingController? textController2;

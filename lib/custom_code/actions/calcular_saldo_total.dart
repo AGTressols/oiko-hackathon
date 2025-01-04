@@ -9,26 +9,22 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// Importación adicional para autenticación de Firebase
-import 'package:firebase_auth/firebase_auth.dart';
-
 Future<double> calcularSaldoTotal() async {
   double totalIngresos = 0.0;
   double totalGastos = 0.0;
-  double totalAjustes = 0.0; // Nueva variable para los ajustes
+  double totalAjustes = 0.0;
 
   try {
-    // Obtener el UID del usuario autenticado
-    final String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      print('Error: No hay usuario autenticado');
-      return -1.0; // Retorna un valor negativo o de error en caso de que no haya usuario autenticado
-    }
-    print('UID del usuario autenticado: $uid');
-
     // Acceder al estado de la aplicación para obtener los períodos seleccionados
     List<String> seleccionPeriodos = FFAppState().seleccionPeriodos;
     print('Períodos seleccionados: $seleccionPeriodos');
+
+    // Verificar que hay períodos seleccionados
+    if (seleccionPeriodos.isEmpty) {
+      print('No hay períodos seleccionados.');
+      FFAppState().saldoVariable = 0.0;
+      return 0.0;
+    }
 
     // Identificar el mes de corte (el mes más reciente seleccionado)
     DateTime? mesDeCorte;
@@ -47,9 +43,22 @@ Future<double> calcularSaldoTotal() async {
       'Diciembre': 12,
     };
 
-    for (String mes in seleccionPeriodos) {
-      int year = DateTime.now().year; // O usar el año que desees
-      int mesNumero = meses[mes]!;
+    for (String mesAnio in seleccionPeriodos) {
+      // Suponemos que el formato es 'Mes Año', por ejemplo 'Enero 2023'
+      List<String> partes = mesAnio.split(' ');
+      if (partes.length != 2) {
+        print('Formato de mes y año inválido: $mesAnio');
+        continue;
+      }
+      String mesTexto = partes[0];
+      int? year = int.tryParse(partes[1]);
+      int? mesNumero = meses[mesTexto];
+
+      if (year == null || mesNumero == null) {
+        print('Error al parsear mes y año: $mesAnio');
+        continue;
+      }
+
       DateTime fechaMes = DateTime(year, mesNumero, 1);
 
       if (mesDeCorte == null || fechaMes.isAfter(mesDeCorte)) {
@@ -58,11 +67,12 @@ Future<double> calcularSaldoTotal() async {
     }
 
     if (mesDeCorte == null) {
-      print('Error: Mes de corte es nulo');
+      print('CALCULAR SALDO: Error: Mes de corte es nulo');
+      FFAppState().saldoVariable = -1.0;
       return -1.0; // Retorna un valor negativo en caso de error
     }
 
-    print('Mes de corte: $mesDeCorte');
+    print('CALCULAR SALDO: Mes de corte: $mesDeCorte');
 
     // Definir el rango de la consulta desde el primer registro hasta el fin del mes de corte
     DateTime inicioHistorico =
@@ -70,54 +80,100 @@ Future<double> calcularSaldoTotal() async {
     DateTime finMesDeCorte =
         DateTime(mesDeCorte.year, mesDeCorte.month + 1, 0, 23, 59, 59);
 
-    print('Inicio histórico: $inicioHistorico');
-    print('Fin del mes de corte: $finMesDeCorte');
+    print('CALCULAR SALDO:  Inicio histórico: $inicioHistorico');
+    print('CALCULAR SALDO: Fin del mes de corte: $finMesDeCorte');
 
-    // Realizar la consulta a Firebase para ingresos, gastos y ajustes hasta el mes de corte
-    final transaccionesSnapshot = await FirebaseFirestore.instance
-        .collection('Transacciones')
-        .where('uid', isEqualTo: uid)
-        .where('fecha', isGreaterThanOrEqualTo: inicioHistorico)
-        .where('fecha', isLessThanOrEqualTo: finMesDeCorte)
-        .get();
+    // Procesar transacciones de ingresos
+    for (var transaccion in FFAppState().transaccionesIngreso) {
+      // Parsear la fecha de la transacción
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
 
-    print('Transacciones encontradas: ${transaccionesSnapshot.docs.length}');
+          // Verificar si la transacción está dentro del rango
+          if (fechaTransaccion.isAfter(
+                  inicioHistorico.subtract(Duration(milliseconds: 1))) &&
+              fechaTransaccion
+                  .isBefore(finMesDeCorte.add(Duration(milliseconds: 1)))) {
+            double monto = transaccion.monto ?? 0.0;
+            totalIngresos += monto;
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+          continue;
+        }
+      }
+    }
 
-    // Procesar los resultados de la consulta
-    for (var doc in transaccionesSnapshot.docs) {
-      String tipoMovimiento = doc['movimiento'];
+    // Procesar transacciones de gastos
+    for (var transaccion in FFAppState().transaccionesGasto) {
+      // Parsear la fecha de la transacción
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
 
-      // Convertir el monto a double explícitamente en caso de ser int
-      double monto = (doc['monto'] is int)
-          ? (doc['monto'] as int).toDouble()
-          : doc['monto'];
+          // Verificar si la transacción está dentro del rango
+          if (fechaTransaccion.isAfter(
+                  inicioHistorico.subtract(Duration(milliseconds: 1))) &&
+              fechaTransaccion
+                  .isBefore(finMesDeCorte.add(Duration(milliseconds: 1)))) {
+            double monto = transaccion.monto ?? 0.0;
+            totalGastos += monto;
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+          continue;
+        }
+      }
+    }
 
-      print('Transacción tipo: $tipoMovimiento, monto: $monto');
+    // Procesar transacciones de ajustes
+    for (var transaccion in FFAppState().transaccionesAjuste) {
+      // Parsear la fecha de la transacción
+      if (transaccion.fecha != null && transaccion.fecha!.isNotEmpty) {
+        try {
+          DateTime fechaTransaccion = DateTime.parse(transaccion.fecha!);
 
-      if (tipoMovimiento == 'Ingreso') {
-        totalIngresos += monto;
-        print('Total ingresos actualizado: $totalIngresos');
-      } else if (tipoMovimiento == 'Gasto') {
-        totalGastos += monto;
-        print('Total gastos actualizado: $totalGastos');
-      } else if (tipoMovimiento == 'Ajuste') {
-        // Resolver la referencia del campo "cuenta"
-        DocumentReference cuentaRef = doc['cuenta'];
-        DocumentSnapshot cuentaDoc = await cuentaRef.get();
+          // Verificar si la transacción está dentro del rango
+          if (fechaTransaccion.isAfter(
+                  inicioHistorico.subtract(Duration(milliseconds: 1))) &&
+              fechaTransaccion
+                  .isBefore(finMesDeCorte.add(Duration(milliseconds: 1)))) {
+            // Obtener la cuenta asociada a la transacción
+            String? cuentaNombre = transaccion.cuenta;
 
-        // Verificar si el campo "ahorro" es false en la cuenta
-        bool esAhorro = cuentaDoc['ahorro'] ??
-            false; // Si no existe el campo, asumimos false
-        if (!esAhorro) {
-          totalAjustes += monto;
-          print('Total ajustes actualizado: $totalAjustes');
+            // Buscar la cuenta en el caché
+            CuentaCacheStructStruct? cuentaData;
+            for (var cuenta in FFAppState().cacheCuentas) {
+              if (cuenta.cuenta == cuentaNombre) {
+                cuentaData = cuenta;
+                break;
+              }
+            }
+
+            if (cuentaData == null) {
+              print(
+                  'No se encontró la cuenta "${transaccion.cuenta}" en el caché.');
+              continue;
+            }
+
+            bool esAhorro = cuentaData.ahorro ?? false;
+
+            if (!esAhorro) {
+              double monto = transaccion.monto ?? 0.0;
+              totalAjustes += monto;
+            }
+          }
+        } catch (e) {
+          print('Error al parsear la fecha de la transacción: $e');
+          continue;
         }
       }
     }
 
     // Calcular el saldo (ajustes + ingresos - gastos)
     double saldo = totalAjustes + totalIngresos - totalGastos;
-    print('Saldo calculado: $saldo');
+    print('CALCULAR SALDO: Saldo calculado: $saldo');
 
     // Asignar el saldo a la App State como un valor double
     FFAppState().saldoVariable = saldo;
@@ -126,7 +182,7 @@ Future<double> calcularSaldoTotal() async {
     return saldo;
   } catch (e) {
     // Manejar el error y asignar el mensaje a la App State
-    print('Error en el cálculo del saldo: $e');
+    print('CALCULAR SALDO: Error en el cálculo del saldo: $e');
     FFAppState().saldoVariable =
         -1.0; // Retorna un valor negativo en caso de error
     return -1.0;
